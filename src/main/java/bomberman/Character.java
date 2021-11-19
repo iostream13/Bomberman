@@ -7,6 +7,8 @@ public class Character {
     private int right = 0;
     private int up = 0;
     private int down = 0;
+    public final int rect_w = 30;
+    public final int rect_h = 30;
     public Character (float x, float y) {
         this.x = x;
         this.y = y;
@@ -57,11 +59,6 @@ public class Character {
     }
 
     public void setY(float y) {
-        this.y = y;
-    }
-
-    public void setCharacter (float x, float y) {
-        this.x = x;
         this.y = y;
     }
 }

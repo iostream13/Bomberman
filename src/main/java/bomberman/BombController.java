@@ -16,13 +16,16 @@ public class BombController {
     public Image Grass = new Image(getClass().getResource("/image/grass.png").toURI().toString());
     public Image Wall = new Image(getClass().getResource("/image/wall.png").toURI().toString());
     public Image Brick = new Image(getClass().getResource("/image/brick.png").toURI().toString());
-    public Image Player = new Image(getClass().getResource("/image/player_up1.png").toURI().toString());
+    public Image Player = new Image(getClass().getResource("/image/dango.png").toURI().toString());
 
 
     public BombController() throws URISyntaxException {
 
     }
 
+    /**
+     * render map.
+     */
     public void render() {
         float x_ = 0;
         float y_ = 0;
@@ -44,18 +47,17 @@ public class BombController {
             }
             y_ += Map.height;
         }
-        BombermanApplication.gc.drawImage(Player, Map.player.getX(), Map.player.getY(), Map.weight, Map.height);
+        BombermanApplication.gc.drawImage(Player, Map.player.getX(), Map.player.getY(), Map.player.rect_w, Map.player.rect_h);
         //BombermanApplication.gc.drawImage(Player, 0, 0, Map.weight, Map.height);
     }
 
-    /*public void play() {
-        while (1 > 0) {
-            BombermanApplication.scene.setOnKeyPressed(Management::inputKeyPress);
-            BombermanApplication.scene.setOnKeyReleased(Management::inputKeyRelease);
-            Management.doPlayer();
-            System.out.println(Map.player.getX());
-            this.render();
-        }
-
-    }*/
+    /**
+     * run game.
+     */
+    public void play() {
+        //BombermanApplication.scene.setOnKeyPressed(Management::inputKeyPress);
+        //BombermanApplication.scene.setOnKeyReleased(Management::inputKeyRelease);
+        Management.doPlayer();
+        this.render();
+    }
 }
