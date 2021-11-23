@@ -14,31 +14,49 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import bomberman.GlobalVariable.RenderVariable;
+
+/**
+ * Chương trình chính.
+ */
 public class BombermanApplication extends Application {
-    public static Group root = new Group();
-    public static Canvas canvas = new Canvas(1240,520);
-    public static GraphicsContext gc = canvas.getGraphicsContext2D();
-    public static Scene scene = new Scene(root);
     @Override
     public void start(Stage stage) throws IOException, URISyntaxException {
+        Group root = RenderVariable.root;
+        Canvas canvas = RenderVariable.canvas;
+        Scene scene = RenderVariable.scene;
+
         GraphicsContext gc = canvas.getGraphicsContext2D();
+
         root.getChildren().add(canvas);
         scene.setRoot(root);
+
         GamePlay.render();
-        stage.setTitle("Hello!");
+
+        stage.setTitle("Bomberman");
         stage.setScene(scene);
+
         scene.setOnKeyPressed(GamePlay::inputKeyPress);
+
         final long startNanoTime = System.nanoTime();
         final long[] lastNanoTime = {System.nanoTime()};
-        GamePlay.gameStatus = GamePlay.gameStatusType.happening;
+
+        GamePlay.gameStatus = GamePlay.gameStatusType.PLAYING_;
+
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
-                double elapseTime = (currentNanoTime - lastNanoTime[0])/1000000000.0;
+                double elapseTime = (currentNanoTime - lastNanoTime[0]) / 1000000000.0;
+
                 lastNanoTime[0] = currentNanoTime;
-                if (GamePlay.gameStatus == GamePlay.gameStatusType.happening) GamePlay.play();
-                else return;
+
+                if (GamePlay.gameStatus == GamePlay.gameStatusType.PLAYING_) {
+                    GamePlay.play();
+                } else {
+                    return;
+                }
             }
         }.start();
+
         stage.show();
     }
 
