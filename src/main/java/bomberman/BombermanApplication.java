@@ -23,20 +23,20 @@ public class BombermanApplication extends Application {
     public void start(Stage stage) throws IOException, URISyntaxException {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
-        Management.importFromFile();
-        System.out.println(Map.height);
-        System.out.println(Map.weight);
-        BombController test = new BombController();
         scene.setRoot(root);
-        test.render();
+        GamePlay.render();
         stage.setTitle("Hello!");
         stage.setScene(scene);
-        scene.setOnKeyPressed(Management::inputKeyPress);
-        scene.setOnKeyReleased(Management::inputKeyRelease);
+        scene.setOnKeyPressed(GamePlay::inputKeyPress);
         final long startNanoTime = System.nanoTime();
+        final long[] lastNanoTime = {System.nanoTime()};
+        GamePlay.gameStatus = GamePlay.gameStatusType.happening;
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
-                test.play();
+                double elapseTime = (currentNanoTime - lastNanoTime[0])/1000000000.0;
+                lastNanoTime[0] = currentNanoTime;
+                if (GamePlay.gameStatus == GamePlay.gameStatusType.happening) GamePlay.play();
+                else return;
             }
         }.start();
         stage.show();
