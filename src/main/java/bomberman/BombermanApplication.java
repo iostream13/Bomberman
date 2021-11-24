@@ -37,6 +37,7 @@ public class BombermanApplication extends Application {
         stage.setScene(scene);
 
         scene.setOnKeyPressed(GamePlay::inputKeyPress);
+        scene.setOnKeyReleased(GamePlay::inputKeyRelease);
 
         final long startNanoTime = System.nanoTime();
         final long[] lastNanoTime = {System.nanoTime()};

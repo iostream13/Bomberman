@@ -88,6 +88,21 @@ public class Bomb extends GameObject {
     }
 
     /**
+     * Check xem bomb có block object này không.
+     * (chỉ không block khi owner mới đặt bomb, khi owner đi ra khỏi bomb sẽ bị block)
+     *
+     * @param tempObject object cần check
+     * @return có block hoặc không
+     */
+    public boolean checkBlockStatusWithObject(GameObject tempObject) {
+        if (tempObject != owner) {
+            return true;
+        }
+
+        return blockStatus;
+    }
+
+    /**
      * Sinh ra các flame.
      */
     public void createFlame() {

@@ -129,30 +129,30 @@ public class PlayGround {
     /**
      * Kiểm tra một ô có bị chặn không.
      */
-    public boolean isBlockCell(int x, int y) {
+    public boolean isBlockCell(int temp_x, int temp_y) {
         //các trường hợp bị chặn
         //ô tường
-        if ((cells[x][y] instanceof Wall)) {
+        if ((cells[temp_x][temp_y] instanceof Wall)) {
             return true;
         }
 
         // ô gạch chưa bị nổ
-        if (cells[x][y] instanceof Brick) {
-            if (((Brick) cells[x][y]).isInitialState()) {
+        if (cells[temp_x][temp_y] instanceof Brick) {
+            if (((Brick) cells[temp_x][temp_y]).isInitialState()) {
                 return true;
             }
         }
 
         // ô item chưa bị nổ
-        if ((cells[x][y] instanceof Item)) {
-            if (((Item) cells[x][y]).isInitialState()) {
+        if ((cells[temp_x][temp_y] instanceof Item)) {
+            if (((Item) cells[temp_x][temp_y]).isInitialState()) {
                 return true;
             }
         }
 
         // ô portal chưa bị nổ
-        if ((cells[x][y] instanceof Portal)) {
-            if (((Portal) cells[x][y]).isInitialState()) {
+        if ((cells[temp_x][temp_y] instanceof Portal)) {
+            if (((Portal) cells[temp_x][temp_y]).isInitialState()) {
                 return true;
             }
         }

@@ -34,7 +34,7 @@ public class Bomber extends MovingObject {
      * @param y tọa độ y
      */
     public Bomber(double x, double y) {
-        super(x, y, 30, 30);
+        super(x, y, 30, 30); // Kích thước mặc định
     }
 
     /**
@@ -102,7 +102,7 @@ public class Bomber extends MovingObject {
                         maxBomb++;
                         break;
                     case SPEED_ITEM_:
-                        setSpeed(getSpeed() + 20);
+                        setSpeed(getSpeed() + 1);
                         break;
                     case FLAME_ITEM_:
                         flameLength++;

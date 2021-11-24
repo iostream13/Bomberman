@@ -3,6 +3,7 @@ package bomberman;
 import java.util.ArrayList;
 
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.KeyCode;
 
 import bomberman.Object.*;
 import bomberman.Object.Map.PlayGround;
@@ -52,31 +53,43 @@ public class GamePlay {
     public static PlayGround map = new PlayGround();
 
     /**
-     * Xử lí thao tác bàn phím.
+     * Xử lí thao tác ấn phím.
      *
      * @param e Key Event
      */
     public static void inputKeyPress(KeyEvent e) {
-        String s = e.getCode().toString();
-
-        if (s.contains("RIGHT")) {
-            player.setObjectDirection(MovingObject.ObjectDirection.RIGHT_);
-            player.move();
-        } else if (s.contains("LEFT")) {
-            player.setObjectDirection(MovingObject.ObjectDirection.LEFT_);
-            player.move();
-        } else if (s.contains("UP")) {
-            player.setObjectDirection(MovingObject.ObjectDirection.UP_);
-            player.move();
-        } else if (s.contains("DOWN")) {
-            player.setObjectDirection(MovingObject.ObjectDirection.DOWN_);
-            player.move();
-        } else if (s.contains("SPACE")) {
+        if (e.getCode() == KeyCode.RIGHT || e.getCode() == KeyCode.D) {
+            player.setObjectDirection(MovingObject.ObjectDirection.RIGHT_, true);
+        } else if (e.getCode() == KeyCode.LEFT || e.getCode() == KeyCode.A) {
+            player.setObjectDirection(MovingObject.ObjectDirection.LEFT_, true);
+        } else if (e.getCode() == KeyCode.UP || e.getCode() == KeyCode.W) {
+            player.setObjectDirection(MovingObject.ObjectDirection.UP_, true);
+        } else if (e.getCode() == KeyCode.DOWN || e.getCode() == KeyCode.S) {
+            player.setObjectDirection(MovingObject.ObjectDirection.DOWN_, true);
+        } else if (e.getCode() == KeyCode.SPACE) {
             if (player.canCreateBomb()) {
                 player.createBomb();
             }
         }
     }
+
+    /**
+     * Xử lí thao tác nhả phím.
+     *
+     * @param e Key Event
+     */
+    public static void inputKeyRelease(KeyEvent e) {
+        if (e.getCode() == KeyCode.RIGHT || e.getCode() == KeyCode.D) {
+            player.setObjectDirection(MovingObject.ObjectDirection.RIGHT_, false);
+        } else if (e.getCode() == KeyCode.LEFT || e.getCode() == KeyCode.A) {
+            player.setObjectDirection(MovingObject.ObjectDirection.LEFT_, false);
+        } else if (e.getCode() == KeyCode.UP || e.getCode() == KeyCode.W) {
+            player.setObjectDirection(MovingObject.ObjectDirection.UP_, false);
+        } else if (e.getCode() == KeyCode.DOWN || e.getCode() == KeyCode.S) {
+            player.setObjectDirection(MovingObject.ObjectDirection.DOWN_, false);
+        }
+    }
+
 
     /**
      * Render screen.
@@ -170,7 +183,11 @@ public class GamePlay {
             }
         }
 
+        // Player luôn di chuyển (đứng im tại chỗ tốc độ bằng 0)
+        player.move();
+
         player.checkEatItems();
+
         render();
     }
 }
