@@ -34,7 +34,7 @@ public class Bomber extends MovingObject {
      * @param y tọa độ y
      */
     public Bomber(double x, double y) {
-        super(x, y, 30, 30); // Kích thước mặc định
+        super(x, y, 35, 35); // Kích thước mặc định
     }
 
     /**
