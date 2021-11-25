@@ -133,10 +133,10 @@ public abstract class GameObject {
      * @return có hoặc không
      */
     public boolean checkIntersect(GameObject other) {
-        return !(x >= other.getX() + other.getWidth()) &&
-                !(y >= other.getY() + other.getLength()) &&
-                !(x + width <= other.getX()) &&
-                !(y + length <= other.getY());
+        return !(x > other.getX() + other.getWidth()) &&
+                !(y > other.getY() + other.getLength()) &&
+                !(x + width < other.getX()) &&
+                !(y + length < other.getY());
     }
 
     /**
@@ -149,10 +149,10 @@ public abstract class GameObject {
      * @return có hoặc không
      */
     public boolean checkIntersect(double temp_x_1, double temp_x_2, double temp_y_1, double temp_y_2) {
-        return !(x >= temp_x_2) &&
-                !(y >= temp_y_2) &&
-                !(x + width <= temp_x_1) &&
-                !(y + length <= temp_y_1);
+        return !(x > temp_x_2) &&
+                !(y > temp_y_2) &&
+                !(x + width < temp_x_1) &&
+                !(y + length < temp_y_1);
     }
 
     /**

@@ -119,8 +119,9 @@ public class Bomber extends MovingObject {
     }
 
     /**
-     * Kiểm tra player có đang đứng trên portal không
-     * @return
+     * Kiểm tra player có đang đứng trên portal không.
+     *
+     * @return có đứng trên hoặc không
      */
     public boolean checkOnPortal() {
         int x1 = (int) (this.getX() / PvB_GamePlay.map.cellLength);
@@ -132,11 +133,11 @@ public class Bomber extends MovingObject {
             for (int j = x1; j <= x2; j++) {
                 GameObject now = PvB_GamePlay.map.cells[i][j];
 
-                 if (!(now instanceof Portal)) {
+                if (!(now instanceof Portal)) {
                     return false;
-                 }
+                }
 
-                 if (((Portal) now).isFinalState()) return true;
+                if (((Portal) now).isFinalState()) return true;
             }
 
         return false;

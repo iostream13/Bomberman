@@ -1,7 +1,6 @@
 package bomberman.Object.MovingObject.Threats;
 
 import bomberman.GlobalVariable.ImagesPath;
-import bomberman.Object.MovingObject.Threats.Enemy;
 import javafx.scene.image.Image;
 
 public class Oneal extends Enemy {
@@ -15,6 +14,16 @@ public class Oneal extends Enemy {
      */
     public Oneal(double x, double y, double width, double length) {
         super(x, y, width, length);
+    }
+
+    /**
+     * Constructor cho Oneal.
+     *
+     * @param x tọa độ x
+     * @param y tọa độ y
+     */
+    public Oneal(double x, double y) {
+        super(x, y);
     }
 
     @Override

@@ -46,13 +46,13 @@ public class Bomb extends GameObject {
     public Bomb(double x, double y, double width, double length) {
         super(x, y, width, length);
 
-        for (Bomber X: PvB_GamePlay.players) {
+        for (Bomber X : PvB_GamePlay.players) {
             if (X.checkIntersect(this)) {
                 unblockObject.add(X);
             }
         }
 
-        for (Enemy X: PvB_GamePlay.enemies) {
+        for (Enemy X : PvB_GamePlay.enemies) {
             if (X.checkIntersect(this)) {
                 unblockObject.add(X);
             }
@@ -60,7 +60,7 @@ public class Bomb extends GameObject {
     }
 
     public void updateUnblockList() {
-        for (int i=0;i<PvB_GamePlay.players.size();i++) {
+        for (int i = 0; i < PvB_GamePlay.players.size(); i++) {
             MovingObject X = PvB_GamePlay.players.get(i);
             if (unblockObject.contains(X) && !X.checkIntersect(this)) {
                 unblockObject.remove(X);
@@ -68,7 +68,7 @@ public class Bomb extends GameObject {
             }
         }
 
-        for (int i=0;i<PvB_GamePlay.enemies.size();i++) {
+        for (int i = 0; i < PvB_GamePlay.enemies.size(); i++) {
             MovingObject X = PvB_GamePlay.enemies.get(i);
             if (unblockObject.contains(X) && !X.checkIntersect(this)) {
                 unblockObject.remove(X);
@@ -76,6 +76,7 @@ public class Bomb extends GameObject {
             }
         }
     }
+
     /**
      * Constructor cho Bomb.
      *
@@ -91,13 +92,13 @@ public class Bomb extends GameObject {
         this.owner = owner;
         this.startTime = System.nanoTime();
 
-        for (Bomber X: PvB_GamePlay.players) {
+        for (Bomber X : PvB_GamePlay.players) {
             if (X.checkIntersect(this)) {
                 unblockObject.add(X);
             }
         }
 
-        for (Enemy X: PvB_GamePlay.enemies) {
+        for (Enemy X : PvB_GamePlay.enemies) {
             if (X.checkIntersect(this)) {
                 unblockObject.add(X);
             }
@@ -124,8 +125,7 @@ public class Bomb extends GameObject {
      * @return có block hoặc không
      */
     public boolean checkBlockStatusWithObject(MovingObject tempObject) {
-        if (unblockObject.contains(tempObject)) return false;
-        return true;
+        return !unblockObject.contains(tempObject);
     }
 
     /**

@@ -49,8 +49,6 @@ public class BombermanApplication extends Application {
 
                 if (PvB_GamePlay.gameStatus == PvB_GamePlay.gameStatusType.PLAYING_) {
                     PvB_GamePlay.play();
-                } else {
-                    return;
                 }
             }
         }.start();

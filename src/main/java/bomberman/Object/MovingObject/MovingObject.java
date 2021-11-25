@@ -5,6 +5,8 @@ import bomberman.PvB_GamePlay;
 import bomberman.Object.NonMovingObject.Bomb;
 import bomberman.Object.GameObject;
 
+import java.util.ArrayList;
+
 public abstract class MovingObject extends GameObject {
     /**
      * Constructor cho Moving Object.
@@ -16,6 +18,10 @@ public abstract class MovingObject extends GameObject {
      */
     public MovingObject(double x, double y, double width, double length) {
         super(x, y, width, length);
+
+        setObjectDirection(ObjectDirection.NONE_, true);
+
+        currentState = ObjectMovementState.HORIZONTAL_;
     }
 
     // MOVEMENT STATE ---------------------------------------------------------------------------
@@ -27,58 +33,55 @@ public abstract class MovingObject extends GameObject {
         LEFT_,
         RIGHT_,
         UP_,
-        DOWN_
+        DOWN_,
+        NONE_
     }
 
     /**
-     * Trạng thái đang đi sang trái hoặc không.
+     * Hàng chờ hướng di chuyển.
      */
-    private boolean LEFT_STATE;
+    private ArrayList<ObjectDirection> queueDirection = new ArrayList<>();
 
     /**
-     * Trạng thái đang đi sang phải hoặc không.
+     * Trạng thái hiện tại.
      */
-    private boolean RIGHT_STATE;
+    private ObjectDirection currentDirection;
 
     /**
-     * Trạng thái đang đi lên hoặc không.
-     */
-    private boolean UP_STATE;
-
-    /**
-     * Trạng thái đang đi xuống hoặc không.
-     */
-    private boolean DOWN_STATE;
-
-    /**
-     * Set trạng thái di chuyển cho object.
+     * Set hướng di chuyển cho object.
      *
      * @param objectDirection hướng di chuyển
-     * @param tempState       trạng thái có hoặc không
+     * @param tempDirection   trạng thái có hoặc không
      */
-    public void setObjectDirection(ObjectDirection objectDirection, boolean tempState) {
-        switch (objectDirection) {
-            case LEFT_:
-                LEFT_STATE = tempState;
-                break;
-            case RIGHT_:
-                RIGHT_STATE = tempState;
-                break;
-            case UP_:
-                UP_STATE = tempState;
-                break;
-            case DOWN_:
-                DOWN_STATE = tempState;
-                break;
+    public void setObjectDirection(ObjectDirection objectDirection, boolean tempDirection) {
+        queueDirection.remove(objectDirection);
+
+        if (tempDirection) {
+            queueDirection.add(objectDirection);
         }
+
+        currentDirection = queueDirection.get(queueDirection.size() - 1);
     }
+
+    /**
+     * Trạng thái di chuyển dọc hoặc ngang của object.
+     */
+    public enum ObjectMovementState {
+        VERTICAL_,
+        HORIZONTAL_
+    }
+
+    /**
+     * Trạng thái di chuyển hiện tại của object.
+     */
+    private ObjectMovementState currentState;
 
     //---------------------------------------------------------------------------------------------
 
     /**
      * Tốc độ của object.
      */
-    private double speed = 2.5; // DEFAULT SPEED
+    private double speed = 3; // DEFAULT SPEED
 
     /**
      * Độ lệch x giữa điểm cần di chuyển tới và điểm hiện tại.
@@ -105,20 +108,19 @@ public abstract class MovingObject extends GameObject {
         deltaX = 0;
         deltaY = 0;
 
-        if (LEFT_STATE) {
-            deltaX -= speed;
-        }
-
-        if (RIGHT_STATE) {
-            deltaX += speed;
-        }
-
-        if (UP_STATE) {
-            deltaY -= speed;
-        }
-
-        if (DOWN_STATE) {
-            deltaY += speed;
+        switch (currentDirection) {
+            case LEFT_:
+                deltaX -= speed;
+                break;
+            case RIGHT_:
+                deltaX += speed;
+                break;
+            case UP_:
+                deltaY -= speed;
+                break;
+            case DOWN_:
+                deltaY += speed;
+                break;
         }
     }
 
@@ -138,7 +140,7 @@ public abstract class MovingObject extends GameObject {
         //gặp bomb
         for (Bomb bomb : PvB_GamePlay.bombs) {
             if (bomb.checkIntersect(temp_x, temp_x + this.getWidth() - 1,
-                                    temp_y, temp_y + this.getLength() - 1) &&
+                    temp_y, temp_y + this.getLength() - 1) &&
                     bomb.checkBlockStatusWithObject(this)) {
                 return false;
             }
@@ -161,18 +163,48 @@ public abstract class MovingObject extends GameObject {
             return;
         }
 
-        double result_x = this.getX();
-        double result_y = this.getY();
+        double cellLength = PvB_GamePlay.map.cellLength;
 
-        if (checkCanMove(this.getX() + deltaX, this.getY())) {
-            result_x += deltaX;
+        double nowX = getX();
+        double nowY = getY();
+
+        //Biến này cộng vào tọa độ để object luôn nằm giữa cell.
+        double adjustPosition = (cellLength - this.getLength()) / 2;
+
+        if (currentState == ObjectMovementState.HORIZONTAL_) {
+            if (currentDirection == ObjectDirection.LEFT_ || currentDirection == ObjectDirection.RIGHT_) {
+                if (deltaX != 0 && checkCanMove(nowX + deltaX, nowY)) {
+                    setX(nowX + deltaX);
+                }
+            } else if (currentDirection == ObjectDirection.UP_ || currentDirection == ObjectDirection.DOWN_) {
+                int temp_x = (int) (this.getCenterX() / cellLength);
+
+                double newPositionX = temp_x * cellLength + adjustPosition;
+
+                if (deltaY != 0 && checkCanMove(newPositionX, nowY + cellLength * (deltaY > 0 ? 1 : -1))) {
+                    setX(newPositionX);
+                    setY(nowY + deltaY);
+
+                    currentState = ObjectMovementState.VERTICAL_;
+                }
+            }
+        } else if (currentState == ObjectMovementState.VERTICAL_) {
+            if (currentDirection == ObjectDirection.UP_ || currentDirection == ObjectDirection.DOWN_) {
+                if (deltaY != 0 && checkCanMove(nowX, nowY + deltaY)) {
+                    setY(nowY + deltaY);
+                }
+            } else if (currentDirection == ObjectDirection.LEFT_ || currentDirection == ObjectDirection.RIGHT_) {
+                int temp_y = (int) (this.getCenterY() / cellLength);
+
+                double newPositionY = temp_y * cellLength + adjustPosition;
+
+                if (deltaX != 0 && checkCanMove(nowX + cellLength * (deltaX > 0 ? 1 : -1), newPositionY)) {
+                    setX(nowX + deltaX);
+                    setY(newPositionY);
+
+                    currentState = ObjectMovementState.HORIZONTAL_;
+                }
+            }
         }
-
-        if (checkCanMove(this.getX(), this.getY() + deltaY)) {
-            result_y += deltaY;
-        }
-
-        setX(result_x);
-        setY(result_y);
     }
 }

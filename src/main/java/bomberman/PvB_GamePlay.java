@@ -1,6 +1,5 @@
 package bomberman;
 
-import java.nio.channels.AcceptPendingException;
 import java.util.ArrayList;
 
 import bomberman.GlobalVariable.ImagesPath;
@@ -116,7 +115,7 @@ public class PvB_GamePlay {
             player.draw();
         }
 
-        for (int i = enemies.size() - 1; i>=0;i--) {
+        for (int i = enemies.size() - 1; i >= 0; i--) {
             enemies.get(i).draw();
         }
         for (int i = flames.size() - 1; i >= 0; i--) {
@@ -128,7 +127,7 @@ public class PvB_GamePlay {
      * Xử lí thua game.
      */
     public static void gameOver() {
-        RenderVariable.gc.drawImage(ImagesPath.YouLose, map.mapLength/2 - 200, map.mapWidth/2 - 200, 400, 400);
+        RenderVariable.gc.drawImage(ImagesPath.YouLose, map.mapLength / 2 - 200, map.mapWidth / 2 - 200, 400, 400);
         needToWait = true;
         gameStatus = gameStatusType.LOSE_;
     }
@@ -137,7 +136,7 @@ public class PvB_GamePlay {
      * Xử lý thắng game.
      */
     public static void gameWon() {
-        RenderVariable.gc.drawImage(ImagesPath.YouWon, map.mapLength/2 - 200, map.mapWidth/2 - 200, 400, 400);
+        RenderVariable.gc.drawImage(ImagesPath.YouWon, map.mapLength / 2 - 200, map.mapWidth / 2 - 200, 400, 400);
         needToWait = true;
         gameStatus = gameStatusType.WON_;
     }
@@ -151,7 +150,7 @@ public class PvB_GamePlay {
             gameWon();
             return;
         }
-        RenderVariable.gc.drawImage(ImagesPath.LevelUp, map.mapLength/2 - 200, map.mapWidth/2 - 200, 400, 400);
+        RenderVariable.gc.drawImage(ImagesPath.LevelUp, map.mapLength / 2 - 200, map.mapWidth / 2 - 200, 400, 400);
         needToWait = true;
         player = null;
         players.clear();
@@ -183,7 +182,7 @@ public class PvB_GamePlay {
             }
 
             // nếu flame chạm quái
-            for (int j =0 ;j<enemies.size();j++) {
+            for (int j = 0; j < enemies.size(); j++) {
                 if (flames.get(i).checkIntersect(enemies.get(j))) {
                     enemies.remove(j);
                     j--;
@@ -192,7 +191,7 @@ public class PvB_GamePlay {
 
         }
 
-        for (int i = 0;i<enemies.size();i++) {
+        for (int i = 0; i < enemies.size(); i++) {
             // quái chạm nhân vật
             if (enemies.get(i).checkIntersect(player)) {
                 gameOver();
@@ -262,7 +261,7 @@ public class PvB_GamePlay {
             }
         }
 
-        for (int i = 0;i<enemies.size();i++) {
+        for (int i = 0; i < enemies.size(); i++) {
             //Quái di chuyển
             enemies.get(i).move();
         }

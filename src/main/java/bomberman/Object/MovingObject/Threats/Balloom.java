@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 
 public class Balloom extends Enemy {
     /**
-     * Constructor cho Balloon.
+     * Constructor cho Balloom.
      *
      * @param x      tọa độ x
      * @param y      tọa độ y
@@ -14,6 +14,16 @@ public class Balloom extends Enemy {
      */
     public Balloom(double x, double y, double width, double length) {
         super(x, y, width, length);
+    }
+
+    /**
+     * Constructor cho Balloom.
+     *
+     * @param x tọa độ x
+     * @param y tọa độ y
+     */
+    public Balloom(double x, double y) {
+        super(x, y);
     }
 
     @Override

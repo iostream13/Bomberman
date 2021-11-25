@@ -70,9 +70,6 @@ public class PlayGround {
             fileInputStream = new FileInputStream(MAP_PATH);
             bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
 
-            int cnt = 1;
-            int y = 0, x = 0;
-
             String[] item;
 
             String line = bufferedReader.readLine();
@@ -85,7 +82,7 @@ public class PlayGround {
             mapWidth = cellLength * numberOfRow;
 
             for (int levelNow = 0; levelNow < maxLevel; levelNow++) {
-                for (int i = 0; i< numberOfRow;i++) {
+                for (int i = 0; i < numberOfRow; i++) {
                     line = bufferedReader.readLine();
                     for (int j = 0; j < numberOfColumn; j++) {
                         allLevelMaps[levelNow][i][j] = line.charAt(j);
@@ -107,7 +104,7 @@ public class PlayGround {
     }
 
     public void createMapAtLevel() {
-        for (int y = 0; y <numberOfRow; y++) {
+        for (int y = 0; y < numberOfRow; y++) {
             for (int i = 0; i < numberOfColumn; i++) {
                 char tmp = allLevelMaps[level][y][i];
                 switch (tmp) {
@@ -134,11 +131,11 @@ public class PlayGround {
                         cells[y][i] = new Item(cellLength * i, cellLength * y, cellLength, cellLength, Item.typeOfItems.SPEED_ITEM_);
                         break;
                     case '1':
-                        PvB_GamePlay.enemies.add(new Balloom(cellLength * i, cellLength * y, cellLength, cellLength));
+                        PvB_GamePlay.enemies.add(new Balloom(cellLength * i, cellLength * y));
                         cells[y][i] = new Grass(cellLength * i, cellLength * y, cellLength, cellLength);
                         break;
                     case '2':
-                        PvB_GamePlay.enemies.add(new Oneal(cellLength * i, cellLength * y, cellLength, cellLength));
+                        PvB_GamePlay.enemies.add(new Oneal(cellLength * i, cellLength * y));
                         cells[y][i] = new Grass(cellLength * i, cellLength * y, cellLength, cellLength);
                         break;
                     default:
@@ -147,6 +144,7 @@ public class PlayGround {
             }
         }
     }
+
     /**
      * Import data from file.
      */
@@ -159,6 +157,10 @@ public class PlayGround {
 
     /**
      * Kiểm tra một ô có bị chặn không.
+     *
+     * @param temp_x chỉ số x
+     * @param temp_y chỉ số y
+     * @return có bị block hoặc không
      */
     public boolean isBlockCell(int temp_x, int temp_y) {
         //các trường hợp bị chặn
