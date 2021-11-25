@@ -32,6 +32,11 @@ public class ImagesPath {
     public static Image FlameVertical = createImage("/image/explosion_vertical.png");
     public static Image Portal = createImage("/image/Portal.png");
     public static Image FlameHorizontal = createImage("/image/explosion_horizontal.png");
+    public static Image Oneal = createImage("/image/oneal.png");
+    public static Image Balloom = createImage("/image/balloom.png");
+    public static Image LevelUp = createImage("/image/level_up.png");
+    public static Image YouWon = createImage("/image/you_won.png");
+    public static Image YouLose = createImage("/image/you_lose.png");
 
     public ImagesPath() throws URISyntaxException {
     }

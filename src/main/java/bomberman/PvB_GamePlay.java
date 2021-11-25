@@ -1,7 +1,10 @@
 package bomberman;
 
+import java.nio.channels.AcceptPendingException;
 import java.util.ArrayList;
 
+import bomberman.GlobalVariable.ImagesPath;
+import bomberman.GlobalVariable.RenderVariable;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.KeyCode;
 
@@ -12,7 +15,7 @@ import bomberman.Object.MovingObject.Threats.Enemy;
 import bomberman.Object.MovingObject.MovingObject;
 import bomberman.Object.NonMovingObject.*;
 
-public class GamePlay {
+public class PvB_GamePlay {
     /**
      * Trạng thái game (đang chơi, thắng, thua).
      */
@@ -27,10 +30,8 @@ public class GamePlay {
      */
     public static gameStatusType gameStatus;
 
-    /**
-     * Player.
-     */
-    public static Bomber player = null;
+
+    public static ArrayList<Bomber> players = new ArrayList<>();
 
     /**
      * Threats.
@@ -51,6 +52,13 @@ public class GamePlay {
      * Map.
      */
     public static PlayGround map = new PlayGround();
+
+    /**
+     * Player.
+     */
+    public static Bomber player = players.get(0);
+
+    private static boolean needToWait = false;
 
     /**
      * Xử lí thao tác ấn phím.
@@ -108,6 +116,9 @@ public class GamePlay {
             player.draw();
         }
 
+        for (int i = enemies.size() - 1; i>=0;i--) {
+            enemies.get(i).draw();
+        }
         for (int i = flames.size() - 1; i >= 0; i--) {
             flames.get(i).draw();
         }
@@ -117,13 +128,83 @@ public class GamePlay {
      * Xử lí thua game.
      */
     public static void gameOver() {
+        RenderVariable.gc.drawImage(ImagesPath.YouLose, map.mapLength/2 - 200, map.mapWidth/2 - 200, 400, 400);
+        needToWait = true;
         gameStatus = gameStatusType.LOSE_;
+    }
+
+    /**
+     * Xử lý thắng game.
+     */
+    public static void gameWon() {
+        RenderVariable.gc.drawImage(ImagesPath.YouWon, map.mapLength/2 - 200, map.mapWidth/2 - 200, 400, 400);
+        needToWait = true;
+        gameStatus = gameStatusType.WON_;
+    }
+
+    /**
+     * Lên level.
+     */
+    public static void nextLevel() {
+        map.level++;
+        if (map.maxLevel < map.level + 1) {
+            gameWon();
+            return;
+        }
+        RenderVariable.gc.drawImage(ImagesPath.LevelUp, map.mapLength/2 - 200, map.mapWidth/2 - 200, 400, 400);
+        needToWait = true;
+        player = null;
+        players.clear();
+        enemies.clear();
+        bombs.clear();
+        flames.clear();
+        map.createMapAtLevel();
+        player = players.get(0);
     }
 
     /**
      * Chạy game.
      */
     public static void play() {
+
+        if (needToWait) {
+            long startTime = System.nanoTime();
+            do {
+
+            } while (System.nanoTime() - startTime <= 2000000000);
+            needToWait = false;
+        }
+
+        for (int i = 0; i < flames.size(); i++) {
+            // nếu flame chạm nhân vật
+            if (flames.get(i).checkIntersect(player)) {
+                gameOver();
+                return;
+            }
+
+            // nếu flame chạm quái
+            for (int j =0 ;j<enemies.size();j++) {
+                if (flames.get(i).checkIntersect(enemies.get(j))) {
+                    enemies.remove(j);
+                    j--;
+                }
+            }
+
+        }
+
+        for (int i = 0;i<enemies.size();i++) {
+            // quái chạm nhân vật
+            if (enemies.get(i).checkIntersect(player)) {
+                gameOver();
+                return;
+            }
+        }
+
+        if (player.checkOnPortal() && enemies.isEmpty()) {
+            nextLevel();
+            return;
+        }
+
         //cập nhật trạng thái của bản đồ
         for (int i = 0; i < map.numberOfRow; i++) {
             for (int j = 0; j < map.numberOfColumn; j++) {
@@ -159,6 +240,8 @@ public class GamePlay {
                 bombs.get(i).getOwner().currentBomb--;
                 bombs.remove(i);
                 i--;
+            } else {
+                bombs.get(i).updateUnblockList();
             }
         }
 
@@ -168,10 +251,6 @@ public class GamePlay {
                 flames.remove(i);
                 i--;
             } else {
-                // nếu flame chạm nhân vật
-                if (flames.get(i).checkIntersect(player)) {
-                    gameOver();
-                }
                 // nếu flame chạm bom, kích nổ bom đó luôn
                 for (int j = 0; j < bombs.size(); j++)
                     if (flames.get(i).checkIntersect(bombs.get(j))) {
@@ -183,6 +262,10 @@ public class GamePlay {
             }
         }
 
+        for (int i = 0;i<enemies.size();i++) {
+            //Quái di chuyển
+            enemies.get(i).move();
+        }
         // Player luôn di chuyển (đứng im tại chỗ tốc độ bằng 0)
         player.move();
 

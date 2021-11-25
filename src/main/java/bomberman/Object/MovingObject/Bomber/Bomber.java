@@ -1,10 +1,11 @@
 package bomberman.Object.MovingObject.Bomber;
 
+import bomberman.Object.NonMovingObject.Portal;
 import javafx.scene.image.Image;
 
 import bomberman.GlobalVariable.ImagesPath;
 
-import bomberman.GamePlay;
+import bomberman.PvB_GamePlay;
 
 import bomberman.Object.GameObject;
 import bomberman.Object.MovingObject.MovingObject;
@@ -49,6 +50,10 @@ public class Bomber extends MovingObject {
         super(x, y, width, length);
     }
 
+    public Bomber() {
+        super(0, 0, 0, 0);
+    }
+
     /**
      * Check xem còn bomb để đặt không.
      *
@@ -64,30 +69,30 @@ public class Bomber extends MovingObject {
     public void createBomb() {
         int x =
                 (int)
-                        ((int) ((this.getX() + this.getWidth() / 2) / GamePlay.map.cellLength)
-                                * GamePlay.map.cellLength);
+                        ((int) ((this.getX() + this.getWidth() / 2) / PvB_GamePlay.map.cellLength)
+                                * PvB_GamePlay.map.cellLength);
         int y =
                 (int)
-                        ((int) ((this.getY() + this.getLength() / 2) / GamePlay.map.cellLength)
-                                * GamePlay.map.cellLength);
+                        ((int) ((this.getY() + this.getLength() / 2) / PvB_GamePlay.map.cellLength)
+                                * PvB_GamePlay.map.cellLength);
 
         currentBomb++;
 
-        GamePlay.bombs.add(new Bomb(x, y, GamePlay.map.cellLength, GamePlay.map.cellLength, this));
+        PvB_GamePlay.bombs.add(new Bomb(x, y, PvB_GamePlay.map.cellLength, PvB_GamePlay.map.cellLength, this));
     }
 
     /**
      * Kiểm tra trên phạm vi đang đứng có item không, nếu có thì thực hiện ăn.
      */
     public void checkEatItems() {
-        int x1 = (int) (this.getX() / GamePlay.map.cellLength);
-        int x2 = (int) ((this.getX() + this.getWidth() - 1) / GamePlay.map.cellLength);
-        int y1 = (int) (this.getY() / GamePlay.map.cellLength);
-        int y2 = (int) ((this.getY() + this.getLength() - 1) / GamePlay.map.cellLength);
+        int x1 = (int) (this.getX() / PvB_GamePlay.map.cellLength);
+        int x2 = (int) ((this.getX() + this.getWidth() - 1) / PvB_GamePlay.map.cellLength);
+        int y1 = (int) (this.getY() / PvB_GamePlay.map.cellLength);
+        int y2 = (int) ((this.getY() + this.getLength() - 1) / PvB_GamePlay.map.cellLength);
 
         for (int i = y1; i <= y2; i++)
             for (int j = x1; j <= x2; j++) {
-                GameObject now = GamePlay.map.cells[i][j];
+                GameObject now = PvB_GamePlay.map.cells[i][j];
 
                 if (!(now instanceof Item)) {
                     continue;
@@ -111,6 +116,30 @@ public class Bomber extends MovingObject {
 
                 ((Item) now).setAteStatus(true);
             }
+    }
+
+    /**
+     * Kiểm tra player có đang đứng trên portal không
+     * @return
+     */
+    public boolean checkOnPortal() {
+        int x1 = (int) (this.getX() / PvB_GamePlay.map.cellLength);
+        int x2 = (int) ((this.getX() + this.getWidth() - 1) / PvB_GamePlay.map.cellLength);
+        int y1 = (int) (this.getY() / PvB_GamePlay.map.cellLength);
+        int y2 = (int) ((this.getY() + this.getLength() - 1) / PvB_GamePlay.map.cellLength);
+
+        for (int i = y1; i <= y2; i++)
+            for (int j = x1; j <= x2; j++) {
+                GameObject now = PvB_GamePlay.map.cells[i][j];
+
+                 if (!(now instanceof Portal)) {
+                    return false;
+                 }
+
+                 if (((Portal) now).isFinalState()) return true;
+            }
+
+        return false;
     }
 
     @Override

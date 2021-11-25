@@ -1,13 +1,17 @@
 package bomberman.Object.NonMovingObject;
 
+import bomberman.Object.MovingObject.MovingObject;
+import bomberman.Object.MovingObject.Threats.Enemy;
 import javafx.scene.image.Image;
 
 import bomberman.GlobalVariable.ImagesPath;
 
-import bomberman.GamePlay;
+import bomberman.PvB_GamePlay;
 
 import bomberman.Object.MovingObject.Bomber.Bomber;
 import bomberman.Object.GameObject;
+
+import java.util.ArrayList;
 
 public class Bomb extends GameObject {
     /**
@@ -16,15 +20,11 @@ public class Bomb extends GameObject {
     private Bomber owner;
 
     /**
-     * Bomb hiện tại có block bomber hay không.
-     * (Khi bomber đi ra khỏi quả bomb vừa tạo bomb sẽ trở thành 1 block)
-     */
-    private boolean blockStatus;
-
-    /**
      * Explosion start time.
      */
     private long startTime;
+
+    private ArrayList<MovingObject> unblockObject = new ArrayList<>();
 
     /**
      * Explosion duration.
@@ -33,14 +33,6 @@ public class Bomb extends GameObject {
 
     public Bomber getOwner() {
         return owner;
-    }
-
-    public boolean getBlockStatus() {
-        return blockStatus;
-    }
-
-    public void setBlockStatus(boolean blockStatus) {
-        this.blockStatus = blockStatus;
     }
 
     /**
@@ -54,9 +46,36 @@ public class Bomb extends GameObject {
     public Bomb(double x, double y, double width, double length) {
         super(x, y, width, length);
 
-        blockStatus = false;
+        for (Bomber X: PvB_GamePlay.players) {
+            if (X.checkIntersect(this)) {
+                unblockObject.add(X);
+            }
+        }
+
+        for (Enemy X: PvB_GamePlay.enemies) {
+            if (X.checkIntersect(this)) {
+                unblockObject.add(X);
+            }
+        }
     }
 
+    public void updateUnblockList() {
+        for (int i=0;i<PvB_GamePlay.players.size();i++) {
+            MovingObject X = PvB_GamePlay.players.get(i);
+            if (unblockObject.contains(X) && !X.checkIntersect(this)) {
+                unblockObject.remove(X);
+                i--;
+            }
+        }
+
+        for (int i=0;i<PvB_GamePlay.enemies.size();i++) {
+            MovingObject X = PvB_GamePlay.enemies.get(i);
+            if (unblockObject.contains(X) && !X.checkIntersect(this)) {
+                unblockObject.remove(X);
+                i--;
+            }
+        }
+    }
     /**
      * Constructor cho Bomb.
      *
@@ -72,7 +91,17 @@ public class Bomb extends GameObject {
         this.owner = owner;
         this.startTime = System.nanoTime();
 
-        blockStatus = false;
+        for (Bomber X: PvB_GamePlay.players) {
+            if (X.checkIntersect(this)) {
+                unblockObject.add(X);
+            }
+        }
+
+        for (Enemy X: PvB_GamePlay.enemies) {
+            if (X.checkIntersect(this)) {
+                unblockObject.add(X);
+            }
+        }
     }
 
     @Override
@@ -94,89 +123,86 @@ public class Bomb extends GameObject {
      * @param tempObject object cần check
      * @return có block hoặc không
      */
-    public boolean checkBlockStatusWithObject(GameObject tempObject) {
-        if (tempObject != owner) {
-            return true;
-        }
-
-        return blockStatus;
+    public boolean checkBlockStatusWithObject(MovingObject tempObject) {
+        if (unblockObject.contains(tempObject)) return false;
+        return true;
     }
 
     /**
      * Sinh ra các flame.
      */
     public void createFlame() {
-        int x = (int) ((int) this.getX() / GamePlay.map.cellLength);
-        int y = (int) ((int) this.getY() / GamePlay.map.cellLength);
+        int x = (int) ((int) this.getX() / PvB_GamePlay.map.cellLength);
+        int y = (int) ((int) this.getY() / PvB_GamePlay.map.cellLength);
 
         int len = owner.flameLength;
-        int side = (int) GamePlay.map.cellLength;
+        int side = (int) PvB_GamePlay.map.cellLength;
 
         // sinh flame ra bên trái bom
         for (int i = x - 1; i >= 0 && i >= x - len; i--) {
             // gặp cô cản, ngừng sinh flame
-            if (GamePlay.map.isBlockCell(y, i)) {
-                Flame.handleIntersectCell(GamePlay.map.cells[y][i]);
+            if (PvB_GamePlay.map.isBlockCell(y, i)) {
+                Flame.handleIntersectCell(PvB_GamePlay.map.cells[y][i]);
 
                 break;
             }
 
             if (i == x - len) {
-                GamePlay.flames.add(new Flame(i * side, y * side, side, side, Flame.FlameType.LEFT_));
+                PvB_GamePlay.flames.add(new Flame(i * side, y * side, side, side, Flame.FlameType.LEFT_));
             } else {
-                GamePlay.flames.add(new Flame(i * side, y * side, side, side, Flame.FlameType.HORIZONTAL_));
+                PvB_GamePlay.flames.add(new Flame(i * side, y * side, side, side, Flame.FlameType.HORIZONTAL_));
             }
         }
 
         // sinh flame ra bên phải bom
-        for (int i = x + 1; i <= GamePlay.map.numberOfColumn && i <= x + len; i++) {
+        for (int i = x + 1; i <= PvB_GamePlay.map.numberOfColumn && i <= x + len; i++) {
             // gặp cô cản, ngừng sinh flame
-            if (GamePlay.map.isBlockCell(y, i)) {
-                Flame.handleIntersectCell(GamePlay.map.cells[y][i]);
+            if (PvB_GamePlay.map.isBlockCell(y, i)) {
+                Flame.handleIntersectCell(PvB_GamePlay.map.cells[y][i]);
 
                 break;
             }
 
             if (i == x + len) {
-                GamePlay.flames.add(new Flame(i * side, y * side, side, side, Flame.FlameType.RIGHT_));
+                PvB_GamePlay.flames.add(new Flame(i * side, y * side, side, side, Flame.FlameType.RIGHT_));
             } else {
-                GamePlay.flames.add(new Flame(i * side, y * side, side, side, Flame.FlameType.HORIZONTAL_));
+                PvB_GamePlay.flames.add(new Flame(i * side, y * side, side, side, Flame.FlameType.HORIZONTAL_));
             }
         }
 
         // sinh flame ra bên trên bom
         for (int i = y - 1; i >= 0 && i >= y - len; i--) {
             // gặp cô cản, ngừng sinh flame
-            if (GamePlay.map.isBlockCell(i, x)) {
-                Flame.handleIntersectCell(GamePlay.map.cells[i][x]);
+            if (PvB_GamePlay.map.isBlockCell(i, x)) {
+                Flame.handleIntersectCell(PvB_GamePlay.map.cells[i][x]);
 
                 break;
             }
 
             if (i == y - len) {
-                GamePlay.flames.add(new Flame(x * side, i * side, side, side, Flame.FlameType.UP_));
+                PvB_GamePlay.flames.add(new Flame(x * side, i * side, side, side, Flame.FlameType.UP_));
             } else {
-                GamePlay.flames.add(new Flame(x * side, i * side, side, side, Flame.FlameType.VERTICAL_));
+                PvB_GamePlay.flames.add(new Flame(x * side, i * side, side, side, Flame.FlameType.VERTICAL_));
             }
         }
 
         // sinh flame ra bên dưới bom
-        for (int i = y + 1; i <= GamePlay.map.numberOfRow && i <= y + len; i++) {
+        for (int i = y + 1; i <= PvB_GamePlay.map.numberOfRow && i <= y + len; i++) {
             // gặp cô cản, ngừng sinh flame
-            if (GamePlay.map.isBlockCell(i, x)) {
-                Flame.handleIntersectCell(GamePlay.map.cells[i][x]);
+            if (PvB_GamePlay.map.isBlockCell(i, x)) {
+                Flame.handleIntersectCell(PvB_GamePlay.map.cells[i][x]);
 
                 break;
             }
 
             if (i == y + len) {
-                GamePlay.flames.add(new Flame(x * side, i * side, side, side, Flame.FlameType.DOWN_));
+                PvB_GamePlay.flames.add(new Flame(x * side, i * side, side, side, Flame.FlameType.DOWN_));
             } else {
-                GamePlay.flames.add(new Flame(x * side, i * side, side, side, Flame.FlameType.VERTICAL_));
+                PvB_GamePlay.flames.add(new Flame(x * side, i * side, side, side, Flame.FlameType.VERTICAL_));
             }
         }
 
         //sinh flame ở chính giữa
-        GamePlay.flames.add(new Flame(x * side, y * side, side, side, Flame.FlameType.CENTER_));
+        PvB_GamePlay.flames.add(new Flame(x * side, y * side, side, side, Flame.FlameType.CENTER_));
     }
 }

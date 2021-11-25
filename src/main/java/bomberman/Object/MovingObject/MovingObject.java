@@ -1,6 +1,6 @@
 package bomberman.Object.MovingObject;
 
-import bomberman.GamePlay;
+import bomberman.PvB_GamePlay;
 
 import bomberman.Object.NonMovingObject.Bomb;
 import bomberman.Object.GameObject;
@@ -130,13 +130,13 @@ public abstract class MovingObject extends GameObject {
      * @return có hoặc không đứng được
      */
     boolean checkCanMove(double temp_x, double temp_y) {
-        int x1 = (int) (temp_x / GamePlay.map.cellLength);
-        int x2 = (int) ((temp_x + this.getWidth() - 1) / GamePlay.map.cellLength);
-        int y1 = (int) (temp_y / GamePlay.map.cellLength);
-        int y2 = (int) ((temp_y + this.getLength() - 1) / GamePlay.map.cellLength);
+        int x1 = (int) (temp_x / PvB_GamePlay.map.cellLength);
+        int x2 = (int) ((temp_x + this.getWidth() - 1) / PvB_GamePlay.map.cellLength);
+        int y1 = (int) (temp_y / PvB_GamePlay.map.cellLength);
+        int y2 = (int) ((temp_y + this.getLength() - 1) / PvB_GamePlay.map.cellLength);
 
         //gặp bomb
-        for (Bomb bomb : GamePlay.bombs) {
+        for (Bomb bomb : PvB_GamePlay.bombs) {
             if (bomb.checkIntersect(temp_x, temp_x + this.getWidth() - 1,
                                     temp_y, temp_y + this.getLength() - 1) &&
                     bomb.checkBlockStatusWithObject(this)) {
@@ -145,10 +145,10 @@ public abstract class MovingObject extends GameObject {
         }
 
         //đứng ở ô không cho phép
-        return !GamePlay.map.isBlockCell(y1, x1) &&
-                !GamePlay.map.isBlockCell(y1, x2) &&
-                !GamePlay.map.isBlockCell(y2, x1) &&
-                !GamePlay.map.isBlockCell(y2, x2);
+        return !PvB_GamePlay.map.isBlockCell(y1, x1) &&
+                !PvB_GamePlay.map.isBlockCell(y1, x2) &&
+                !PvB_GamePlay.map.isBlockCell(y2, x1) &&
+                !PvB_GamePlay.map.isBlockCell(y2, x2);
     }
 
     /**
@@ -174,12 +174,5 @@ public abstract class MovingObject extends GameObject {
 
         setX(result_x);
         setY(result_y);
-
-        //nếu người di chuyển ra khỏi bom mình đặt, đổi quả bom sang trạng thái block object
-        for (Bomb x : GamePlay.bombs) {
-            if (!x.checkIntersect(x.getOwner()) && !x.getBlockStatus()) {
-                x.setBlockStatus(true);
-            }
-        }
     }
 }

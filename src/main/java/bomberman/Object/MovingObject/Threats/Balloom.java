@@ -1,6 +1,9 @@
 package bomberman.Object.MovingObject.Threats;
 
-public class Balloon extends Enemy {
+import bomberman.GlobalVariable.ImagesPath;
+import javafx.scene.image.Image;
+
+public class Balloom extends Enemy {
     /**
      * Constructor cho Balloon.
      *
@@ -9,7 +12,12 @@ public class Balloon extends Enemy {
      * @param width  chiều rộng
      * @param length chiều dài
      */
-    public Balloon(double x, double y, double width, double length) {
+    public Balloom(double x, double y, double width, double length) {
         super(x, y, width, length);
+    }
+
+    @Override
+    public Image getImage() {
+        return ImagesPath.Balloom;
     }
 }

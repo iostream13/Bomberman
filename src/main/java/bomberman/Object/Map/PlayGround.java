@@ -2,15 +2,21 @@ package bomberman.Object.Map;
 
 import java.io.*;
 
-import bomberman.GamePlay;
+import bomberman.PvB_GamePlay;
 
 import bomberman.Object.MovingObject.Bomber.Bomber;
-import bomberman.Object.MovingObject.Threats.Balloon;
+import bomberman.Object.MovingObject.Threats.Balloom;
 import bomberman.Object.MovingObject.Threats.Oneal;
 import bomberman.Object.NonMovingObject.*;
 import bomberman.Object.GameObject;
 
 public class PlayGround {
+
+    /**
+     * số level.
+     */
+    public int maxLevel;
+
     /**
      * Level hiện tại.
      */
@@ -42,9 +48,21 @@ public class PlayGround {
     private static final String MAP_PATH = "src/main/java/resources/Map/map.txt";
 
     /**
-     * Import data from file.
+     * Lưu tất cả các bản đồ của các level.
      */
-    public PlayGround() {
+    private char[][][] allLevelMaps = new char[5][50][50];
+
+    /**
+     * kích thước bản đồ theo chiều ngang.
+     */
+    public double mapLength;
+
+    /**
+     * kích thước bản đồ theo chiều dọc.
+     */
+    public double mapWidth;
+
+    private void readMapsFromFile() {
         FileInputStream fileInputStream = null;
         BufferedReader bufferedReader = null;
 
@@ -58,59 +76,21 @@ public class PlayGround {
             String[] item;
 
             String line = bufferedReader.readLine();
+            item = line.split(" ");
+            maxLevel = Integer.parseInt(item[0]);
+            numberOfRow = Integer.parseInt(item[1]);
+            numberOfColumn = Integer.parseInt(item[2]);
 
-            while (cnt <= numberOfRow + 1) {
-                if (cnt == 1) {
-                    item = line.split(" ");
-                    level = Integer.parseInt(item[0]);
+            mapLength = cellLength * numberOfColumn;
+            mapWidth = cellLength * numberOfRow;
 
-                    numberOfRow = Integer.parseInt(item[1]);
-                    numberOfColumn = Integer.parseInt(item[2]);
-                } else {
-                    for (int i = 0; i < numberOfColumn; i++) {
-                        char tmp = line.charAt(i);
-                        switch (tmp) {
-                            case 'p':
-                                GamePlay.player = new Bomber(cellLength * i, cellLength * y);
-                                cells[y][i] = new Grass(cellLength * i, cellLength * y, cellLength, cellLength);
-                                break;
-                            case '#':
-                                cells[y][i] = new Wall(cellLength * i, cellLength * y, cellLength, cellLength);
-                                break;
-                            case '*':
-                                cells[y][i] = new Brick(cellLength * i, cellLength * y, cellLength, cellLength);
-                                break;
-                            case 'x':
-                                cells[y][i] = new Portal(cellLength * i, cellLength * y, cellLength, cellLength);
-                                break;
-                            case 'b':
-                                cells[y][i] = new Item(cellLength * i, cellLength * y, cellLength, cellLength, Item.typeOfItems.BOMB_ITEM_);
-                                break;
-                            case 'f':
-                                cells[y][i] = new Item(cellLength * i, cellLength * y, cellLength, cellLength, Item.typeOfItems.FLAME_ITEM_);
-                                break;
-                            case 's':
-                                cells[y][i] = new Item(cellLength * i, cellLength * y, cellLength, cellLength, Item.typeOfItems.SPEED_ITEM_);
-                                break;
-                            case '1':
-                                GamePlay.enemies.add(new Balloon(cellLength * i, cellLength * y, cellLength, cellLength));
-                                cells[y][i] = new Grass(cellLength * i, cellLength * y, cellLength, cellLength);
-                                break;
-                            case '2':
-                                GamePlay.enemies.add(new Oneal(cellLength * i, cellLength * y, cellLength, cellLength));
-                                cells[y][i] = new Grass(cellLength * i, cellLength * y, cellLength, cellLength);
-                                break;
-                            default:
-                                cells[y][i] = new Grass(cellLength * i, cellLength * y, cellLength, cellLength);
-                        }
+            for (int levelNow = 0; levelNow < maxLevel; levelNow++) {
+                for (int i = 0; i< numberOfRow;i++) {
+                    line = bufferedReader.readLine();
+                    for (int j = 0; j < numberOfColumn; j++) {
+                        allLevelMaps[levelNow][i][j] = line.charAt(j);
                     }
-
-                    y++;
                 }
-
-                cnt++;
-
-                line = bufferedReader.readLine();
             }
         } catch (FileNotFoundException ex) {
             System.out.println("File not found!");
@@ -126,6 +106,57 @@ public class PlayGround {
         }
     }
 
+    public void createMapAtLevel() {
+        for (int y = 0; y <numberOfRow; y++) {
+            for (int i = 0; i < numberOfColumn; i++) {
+                char tmp = allLevelMaps[level][y][i];
+                switch (tmp) {
+                    case 'p':
+                        PvB_GamePlay.players.add(new Bomber(cellLength * i, cellLength * y));
+                        cells[y][i] = new Grass(cellLength * i, cellLength * y, cellLength, cellLength);
+                        break;
+                    case '#':
+                        cells[y][i] = new Wall(cellLength * i, cellLength * y, cellLength, cellLength);
+                        break;
+                    case '*':
+                        cells[y][i] = new Brick(cellLength * i, cellLength * y, cellLength, cellLength);
+                        break;
+                    case 'x':
+                        cells[y][i] = new Portal(cellLength * i, cellLength * y, cellLength, cellLength);
+                        break;
+                    case 'b':
+                        cells[y][i] = new Item(cellLength * i, cellLength * y, cellLength, cellLength, Item.typeOfItems.BOMB_ITEM_);
+                        break;
+                    case 'f':
+                        cells[y][i] = new Item(cellLength * i, cellLength * y, cellLength, cellLength, Item.typeOfItems.FLAME_ITEM_);
+                        break;
+                    case 's':
+                        cells[y][i] = new Item(cellLength * i, cellLength * y, cellLength, cellLength, Item.typeOfItems.SPEED_ITEM_);
+                        break;
+                    case '1':
+                        PvB_GamePlay.enemies.add(new Balloom(cellLength * i, cellLength * y, cellLength, cellLength));
+                        cells[y][i] = new Grass(cellLength * i, cellLength * y, cellLength, cellLength);
+                        break;
+                    case '2':
+                        PvB_GamePlay.enemies.add(new Oneal(cellLength * i, cellLength * y, cellLength, cellLength));
+                        cells[y][i] = new Grass(cellLength * i, cellLength * y, cellLength, cellLength);
+                        break;
+                    default:
+                        cells[y][i] = new Grass(cellLength * i, cellLength * y, cellLength, cellLength);
+                }
+            }
+        }
+    }
+    /**
+     * Import data from file.
+     */
+    public PlayGround() {
+        if (level == 0) {
+            readMapsFromFile();
+        }
+        createMapAtLevel();
+    }
+
     /**
      * Kiểm tra một ô có bị chặn không.
      */
@@ -138,21 +169,21 @@ public class PlayGround {
 
         // ô gạch chưa bị nổ
         if (cells[temp_x][temp_y] instanceof Brick) {
-            if (((Brick) cells[temp_x][temp_y]).isInitialState()) {
+            if (!((Brick) cells[temp_x][temp_y]).isFinalState()) {
                 return true;
             }
         }
 
         // ô item chưa bị nổ
         if ((cells[temp_x][temp_y] instanceof Item)) {
-            if (((Item) cells[temp_x][temp_y]).isInitialState()) {
+            if (!((Item) cells[temp_x][temp_y]).isFinalState()) {
                 return true;
             }
         }
 
         // ô portal chưa bị nổ
         if ((cells[temp_x][temp_y] instanceof Portal)) {
-            if (((Portal) cells[temp_x][temp_y]).isInitialState()) {
+            if (!((Portal) cells[temp_x][temp_y]).isFinalState()) {
                 return true;
             }
         }

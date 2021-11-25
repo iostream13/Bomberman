@@ -4,7 +4,7 @@ import javafx.scene.image.Image;
 
 import bomberman.GlobalVariable.ImagesPath;
 
-import bomberman.GamePlay;
+import bomberman.PvB_GamePlay;
 
 import bomberman.Object.GameObject;
 
@@ -96,14 +96,14 @@ public class Flame extends GameObject {
      * Check xem ô nào bị nổ.
      */
     public void checkIntersectCells() {
-        int x1 = (int) (this.getX() / GamePlay.map.cellLength);
-        int x2 = (int) ((this.getX() + this.getWidth() - 1) / GamePlay.map.cellLength);
-        int y1 = (int) (this.getY() / GamePlay.map.cellLength);
-        int y2 = (int) ((this.getY() + this.getLength() - 1) / GamePlay.map.cellLength);
+        int x1 = (int) (this.getX() / PvB_GamePlay.map.cellLength);
+        int x2 = (int) ((this.getX() + this.getWidth() - 1) / PvB_GamePlay.map.cellLength);
+        int y1 = (int) (this.getY() / PvB_GamePlay.map.cellLength);
+        int y2 = (int) ((this.getY() + this.getLength() - 1) / PvB_GamePlay.map.cellLength);
 
         for (int i = y1; i <= y2; i++)
             for (int j = x1; j <= x2; j++) {
-                handleIntersectCell(GamePlay.map.cells[i][j]);
+                handleIntersectCell(PvB_GamePlay.map.cells[i][j]);
             }
     }
 
