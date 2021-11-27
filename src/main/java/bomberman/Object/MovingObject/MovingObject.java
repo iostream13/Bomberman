@@ -19,6 +19,10 @@ public abstract class MovingObject extends GameObject {
      */
     private int[][] state = new int[50][50];
     public boolean ok = false;
+    public boolean toRight = false;
+    public boolean toLeft = false;
+    public boolean toUp = false;
+    public boolean toDown = false;
     /**
      * Constructor cho Moving Object.
      *
@@ -243,8 +247,8 @@ public abstract class MovingObject extends GameObject {
             int y = p.getKey();
             int x = p.getValue();
             if (x == xPlayer && y == yPlayer) {
-                for (int i = 0; i < PvB_GamePlay.map.numberOfRow; i++) {
-                    for (int j = 0; j < PvB_GamePlay.map.numberOfColumn; j++) {
+                for (int i = 1; i < PvB_GamePlay.map.numberOfRow; i++) {
+                    for (int j = 1; j < PvB_GamePlay.map.numberOfColumn; j++) {
                         state[i][j] = 0;
                     }
                 }
@@ -255,6 +259,36 @@ public abstract class MovingObject extends GameObject {
                     p = tr[tmpY][tmpX];
                     tmpY = p.getKey();
                     tmpX = p.getValue();
+                }
+                state[tmpY][tmpX] = 1;
+                for (int i = 0; i <= 3; i++) {
+                    int newX = xEnemy + c[i];
+                    int newY = yEnemy + d[i];
+                    if (newX < 1 || newX >= PvB_GamePlay.map.numberOfColumn || newY < 1 || newY > PvB_GamePlay.map.numberOfRow) {
+                        continue;
+                    }
+                    if (state[newY][newX] == 1) {
+                        if (i == 0) {
+                            toDown = true;
+                            toUp = false;
+                        }
+                        else {
+                            if (i == 1) {
+                                toUp = true;
+                                toDown = false;
+                            }
+                        }
+                        if (i == 2) {
+                            toLeft = true;
+                            toRight = false;
+                        }
+                        else {
+                            if (i == 3) {
+                                toRight = true;
+                                toLeft = false;
+                            }
+                        }
+                    }
                 }
                 /*for (int i = 0; i < PvB_GamePlay.map.numberOfRow; i++) {
                     for (int j = 0; j < PvB_GamePlay.map.numberOfColumn; j++) {
