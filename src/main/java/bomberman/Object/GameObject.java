@@ -47,7 +47,6 @@ public abstract class GameObject {
 
     public void setX(double x) {
         this.x = x;
-
         calculateCenterPoint();
     }
 

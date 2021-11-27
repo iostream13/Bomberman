@@ -4,10 +4,21 @@ import bomberman.PvB_GamePlay;
 
 import bomberman.Object.NonMovingObject.Bomb;
 import bomberman.Object.GameObject;
+import bomberman.Object.Map.PlayGround;
+import javafx.scene.SubScene;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public abstract class MovingObject extends GameObject {
+
+    /**
+     * Trạng thái đường đi của object.
+     */
+    private int[][] state = new int[50][50];
+    public boolean ok = false;
     /**
      * Constructor cho Moving Object.
      *
@@ -22,6 +33,14 @@ public abstract class MovingObject extends GameObject {
         setObjectDirection(ObjectDirection.NONE_, true);
 
         currentState = ObjectMovementState.HORIZONTAL_;
+    }
+
+    public int[][] getState() {
+        return state;
+    }
+
+    public void setState(int[][] state) {
+        this.state = state;
     }
 
     // MOVEMENT STATE ---------------------------------------------------------------------------
@@ -206,5 +225,62 @@ public abstract class MovingObject extends GameObject {
                 }
             }
         }
+    }
+
+    public void findBestWay(int xEnemy, int yEnemy, int xPlayer, int yPlayer) {
+        boolean[][] dx = new boolean[110][110];
+        Pair<Integer, Integer>[][] tr = new Pair[110][110];
+        int[] c = {0, 0, -1, 1};
+        int[] d = {1, -1, 0, 0};
+        Queue <Pair<Integer, Integer>> q = new LinkedList<>();
+        Pair<Integer, Integer> p;
+        p = new Pair<>(yEnemy, xEnemy);
+        dx[yEnemy][xEnemy] = true;
+        q.add(p);
+        while (q.size() > 0) {
+            p = q.element();
+            q.remove();
+            int y = p.getKey();
+            int x = p.getValue();
+            if (x == xPlayer && y == yPlayer) {
+                for (int i = 0; i < PvB_GamePlay.map.numberOfRow; i++) {
+                    for (int j = 0; j < PvB_GamePlay.map.numberOfColumn; j++) {
+                        state[i][j] = 0;
+                    }
+                }
+                int tmpX = xPlayer;
+                int tmpY = yPlayer;
+                while (tmpX != xEnemy || tmpY != yEnemy) {
+                    state[tmpY][tmpX] = 1;
+                    p = tr[tmpY][tmpX];
+                    tmpY = p.getKey();
+                    tmpX = p.getValue();
+                }
+                /*for (int i = 0; i < PvB_GamePlay.map.numberOfRow; i++) {
+                    for (int j = 0; j < PvB_GamePlay.map.numberOfColumn; j++) {
+                        System.out.print(state[i][j]);
+                        System.out.print(' ');
+                    }
+                    System.out.print("\n");
+                }*/
+                ok = true;
+                return;
+            }
+            p = new Pair<>(y, x);
+            for (int i = 0; i <= 3; i++) {
+                int newX = x + c[i];
+                int newY = y + d[i];
+                if (newX < 0 || newX >= PvB_GamePlay.map.numberOfColumn || newY < 0 || newY > PvB_GamePlay.map.numberOfRow) {
+                    continue;
+                }
+                if (!PvB_GamePlay.map.isBlockCell(newY, newX) && !dx[newY][newX]) {
+                    dx[newY][newX] = true;
+                    tr[newY][newX] = p;
+                    Pair <Integer, Integer> pp = new Pair<>(newY, newX);
+                    q.add(pp);
+                }
+            }
+        }
+        ok = false;
     }
 }

@@ -121,6 +121,7 @@ public class PvB_GamePlay {
         for (int i = flames.size() - 1; i >= 0; i--) {
             flames.get(i).draw();
         }
+
     }
 
     /**
@@ -271,5 +272,6 @@ public class PvB_GamePlay {
         player.checkEatItems();
 
         render();
+
     }
 }
