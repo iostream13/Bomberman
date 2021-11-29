@@ -132,8 +132,8 @@ public abstract class GameObject {
      * @return có hoặc không
      */
     public boolean checkIntersect(GameObject other) {
-        return !(x > other.getX() + other.getWidth()) &&
-                !(y > other.getY() + other.getLength()) &&
+        return !(x > other.getX() + other.getWidth() - 1) &&
+                !(y > other.getY() + other.getLength() - 1) &&
                 !(x + width < other.getX()) &&
                 !(y + length < other.getY());
     }

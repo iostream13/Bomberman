@@ -14,6 +14,10 @@ public class Enemy extends MovingObject {
      * Trạng thái đường đi của object.
      */
     private int[][] state = new int[50][50];
+    /**
+     * Trạng thái bomb.
+     */
+    private int[][] stateBomb = new int[50][50];
     public boolean ok = false;
     public boolean toRight = false;
     public boolean toLeft = false;
@@ -58,6 +62,27 @@ public class Enemy extends MovingObject {
         this.state = state;
     }
 
+    public int[][] getStateBomb() {
+        return stateBomb;
+    }
+
+    public void setStateBomb(int[][] stateBomb) {
+        this.stateBomb = stateBomb;
+    }
+
+    public void markBomb() {
+        for (int i = 1; i < PvB_GamePlay.map.numberOfRow; i++) {
+            for (int j = 1; j < PvB_GamePlay.map.numberOfColumn; j++) {
+                stateBomb[i][j] = 0;
+            }
+        }
+        for (int i = 0; i < PvB_GamePlay.bombs.size(); i++) {
+            int X = (int)((PvB_GamePlay.bombs.get(i).getX() + 1) / PvB_GamePlay.map.cellLength);
+            int Y = (int)((PvB_GamePlay.bombs.get(i).getY() + 1) / PvB_GamePlay.map.cellLength);
+            stateBomb[Y][X] = 1;
+        }
+    }
+
     public void findBestWay(int xEnemy, int yEnemy, int xPlayer, int yPlayer) {
         boolean[][] dx = new boolean[110][110];
         Pair<Integer, Integer>[][] tr = new Pair[110][110];
@@ -68,6 +93,7 @@ public class Enemy extends MovingObject {
         p = new Pair<>(yEnemy, xEnemy);
         dx[yEnemy][xEnemy] = true;
         q.add(p);
+        markBomb();
         while (q.size() > 0) {
             p = q.element();
             q.remove();
@@ -105,7 +131,7 @@ public class Enemy extends MovingObject {
                 if (newX < 0 || newX >= PvB_GamePlay.map.numberOfColumn || newY < 0 || newY > PvB_GamePlay.map.numberOfRow) {
                     continue;
                 }
-                if (!PvB_GamePlay.map.isBlockCell(newY, newX) && !dx[newY][newX]) {
+                if (!PvB_GamePlay.map.isBlockCell(newY, newX) && stateBomb[newY][newX] == 0 && !dx[newY][newX]) {
                     dx[newY][newX] = true;
                     tr[newY][newX] = p;
                     Pair <Integer, Integer> pp = new Pair<>(newY, newX);
