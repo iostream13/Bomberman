@@ -87,35 +87,6 @@ public class Enemy extends MovingObject {
                     tmpX = p.getValue();
                 }
                 state[tmpY][tmpX] = 1;
-                /*for (int i = 0; i <= 3; i++) {
-                    int newX = xEnemy + c[i];
-                    int newY = yEnemy + d[i];
-                    if (newX < 1 || newX >= PvB_GamePlay.map.numberOfColumn || newY < 1 || newY > PvB_GamePlay.map.numberOfRow) {
-                        continue;
-                    }
-                    if (state[newY][newX] == 1) {
-                        if (i == 0) {
-                            toDown = true;
-                            toUp = false;
-                        }
-                        else {
-                            if (i == 1) {
-                                toUp = true;
-                                toDown = false;
-                            }
-                        }
-                        if (i == 2) {
-                            toLeft = true;
-                            toRight = false;
-                        }
-                        else {
-                            if (i == 3) {
-                                toRight = true;
-                                toLeft = false;
-                            }
-                        }
-                    }
-                }*/
                 /*for (int i = 0; i < PvB_GamePlay.map.numberOfRow; i++) {
                     for (int j = 0; j < PvB_GamePlay.map.numberOfColumn; j++) {
                         System.out.print(state[i][j]);
@@ -144,53 +115,15 @@ public class Enemy extends MovingObject {
         ok = false;
     }
 
-    public void setWay(int xEnemy, int yEnemy) {
-        int[] c = {0, 0, -1, 1};
-        int[] d = {1, -1, 0, 0};
-        for (int i = 0; i <= 3; i++) {
-            int newX = xEnemy + c[i];
-            int newY = yEnemy + d[i];
-            if (newX < 1 || newX >= PvB_GamePlay.map.numberOfColumn || newY < 1 || newY > PvB_GamePlay.map.numberOfRow) {
-                continue;
-            }
-            if (state[newY][newX] == 1) {
-                if (i == 0) {
-                    toDown = true;
-                    toUp = false;
-                    toLeft = false;
-                    toRight = false;
-                }
-                else {
-                    if (i == 1) {
-                        toUp = true;
-                        toDown = false;
-                        toLeft = false;
-                        toRight = false;
-                    } else if (i == 2) {
-                        toUp = false;
-                        toDown = false;
-                        toLeft = true;
-                        toRight = false;
-                    } else {
-                            toUp = false;
-                            toDown = false;
-                            toRight = true;
-                            toLeft = false;
-                    }
-                }
-
-
-            }
-        }
-    }
     @Override
     public void move() {
         if (System.nanoTime() - startTime >= duration) {
-            int xPlayer = ((int)PvB_GamePlay.player.getX())/(int)PvB_GamePlay.map.cellLength;
-            int yPlayer = ((int)PvB_GamePlay.player.getY())/(int)PvB_GamePlay.map.cellLength;
-            int xEnemy = ((int)this.getX()+36)/(int)PvB_GamePlay.map.cellLength;
-            int yEnemy = ((int)this.getY()+36)/(int)PvB_GamePlay.map.cellLength;
-            if (toLeft) {
+
+            int xPlayer = ((int)PvB_GamePlay.player.getCenterX())/(int)PvB_GamePlay.map.cellLength;
+            int yPlayer = ((int)PvB_GamePlay.player.getCenterY())/(int)PvB_GamePlay.map.cellLength;
+            int xEnemy = ((int)this.getCenterX())/(int)PvB_GamePlay.map.cellLength;
+            int yEnemy = ((int)this.getCenterY())/(int)PvB_GamePlay.map.cellLength;
+            /*if (toLeft) {
                 xEnemy = ((int)this.getX()+36)/(int)PvB_GamePlay.map.cellLength;
             }
             else if (toRight){
@@ -201,7 +134,7 @@ public class Enemy extends MovingObject {
             }
             else if (toDown){
                 yEnemy = ((int)this.getY()-36)/(int)PvB_GamePlay.map.cellLength;
-            }
+            }*/
 
 
             this.findBestWay(xEnemy, yEnemy, xPlayer, yPlayer);
