@@ -47,6 +47,7 @@ public class Enemy extends MovingObject {
      */
     public Enemy(double x, double y) {
         super(x, y, 35, 35); // Kích thước mặc định
+        setSpeed(2);
     }
 
     public int[][] getState() {
@@ -126,20 +127,10 @@ public class Enemy extends MovingObject {
             this.findBestWay(xEnemy, yEnemy, xPlayer, yPlayer);
             System.out.println(ok);
             if (this.ok) {
-                int[][] state = this.getState();
-                for (int i = 0; i < PvB_GamePlay.map.numberOfRow; i++) {
-                    for (int j = 0; j < PvB_GamePlay.map.numberOfColumn; j++) {
-                        System.out.print(state[i][j]);
-                        System.out.print(' ');
-                    }
-                    System.out.print("\n");
-                }
-                System.out.print(xEnemy);
-                System.out.print(' ');
-                System.out.println(yEnemy);
-                System.out.println(state[xEnemy][yEnemy]);
-                System.out.print("\n");
-
+                toDown = false;
+                toUp = false;
+                toLeft = false;
+                toRight = false;
                 int[] c = {0, 0, -1, 1};
                 int[] d = {1, -1, 0, 0};
                 for (int i = 0; i <= 3; i++) {
@@ -151,27 +142,15 @@ public class Enemy extends MovingObject {
                     if (state[newY][newX] == 1) {
                         if (i == 0) {
                             toDown = true;
-                            toUp = false;
-                            toLeft = false;
-                            toRight = false;
                         }
                         else {
                             if (i == 1) {
                                 toUp = true;
-                                toDown = false;
-                                toLeft = false;
-                                toRight = false;
                             } else if (i == 2) {
-                                toUp = false;
-                                toDown = false;
                                 toLeft = true;
-                                toRight = false;
                             }
                             else {
-                                toUp = false;
-                                toDown = false;
                                 toRight = true;
-                                toLeft = false;
 
                             }
                         }
