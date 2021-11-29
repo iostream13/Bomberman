@@ -123,23 +123,9 @@ public class Enemy extends MovingObject {
             int yPlayer = ((int)PvB_GamePlay.player.getCenterY())/(int)PvB_GamePlay.map.cellLength;
             int xEnemy = ((int)this.getCenterX())/(int)PvB_GamePlay.map.cellLength;
             int yEnemy = ((int)this.getCenterY())/(int)PvB_GamePlay.map.cellLength;
-            /*if (toLeft) {
-                xEnemy = ((int)this.getX()+36)/(int)PvB_GamePlay.map.cellLength;
-            }
-            else if (toRight){
-                xEnemy = ((int)this.getX()-36)/(int)PvB_GamePlay.map.cellLength;
-            }
-            if (toUp) {
-                yEnemy = ((int)this.getY()+36)/(int)PvB_GamePlay.map.cellLength;
-            }
-            else if (toDown){
-                yEnemy = ((int)this.getY()-36)/(int)PvB_GamePlay.map.cellLength;
-            }*/
-
-
             this.findBestWay(xEnemy, yEnemy, xPlayer, yPlayer);
             System.out.println(ok);
-            if (this.ok == true) {
+            if (this.ok) {
                 int[][] state = this.getState();
                 for (int i = 0; i < PvB_GamePlay.map.numberOfRow; i++) {
                     for (int j = 0; j < PvB_GamePlay.map.numberOfColumn; j++) {
@@ -166,25 +152,33 @@ public class Enemy extends MovingObject {
                         if (i == 0) {
                             toDown = true;
                             toUp = false;
+                            toLeft = false;
+                            toRight = false;
                         }
                         else {
                             if (i == 1) {
                                 toUp = true;
                                 toDown = false;
+                                toLeft = false;
+                                toRight = false;
+                            } else if (i == 2) {
+                                toUp = false;
+                                toDown = false;
+                                toLeft = true;
+                                toRight = false;
                             }
-                        }
-                        if (i == 2) {
-                            toLeft = true;
-                            toRight = false;
-                        }
-                        else {
-                            if (i == 3) {
+                            else {
+                                toUp = false;
+                                toDown = false;
                                 toRight = true;
                                 toLeft = false;
+
                             }
                         }
+
                     }
                 }
+                state[yEnemy][xEnemy] = 0;
                 setObjectDirection(MovingObject.ObjectDirection.RIGHT_, toRight);
                 setObjectDirection(MovingObject.ObjectDirection.LEFT_, toLeft);
                 setObjectDirection(MovingObject.ObjectDirection.UP_, toUp);
@@ -195,7 +189,6 @@ public class Enemy extends MovingObject {
                 System.out.println(toUp);
             }
             else {
-                System.out.println("ddddddd");
                 boolean toUp, toRight, toDown, toLeft;
                 toRight = ThreadLocalRandom.current().nextBoolean();
                 if (toRight) {
