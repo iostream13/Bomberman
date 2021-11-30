@@ -1,6 +1,6 @@
 package bomberman.Object.NonMovingObject;
 
-import bomberman.GlobalVariable.ImagesPath;
+import bomberman.GlobalVariable.FilesPath;
 
 public class Portal extends Block {
     /**
@@ -17,6 +17,12 @@ public class Portal extends Block {
 
     @Override
     public void setFinalStateImageInfo() {
-        FINAL_STATE_IMAGE = ImagesPath.Portal;
+        FINAL_STATE_IMAGE = FilesPath.Portal;
+    }
+
+    @Override
+    public void setGraphicData() {
+        setNumberOfFrame(8);
+        setNumberOfGameFramePerFrame(3);
     }
 }

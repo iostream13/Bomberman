@@ -16,8 +16,8 @@ module com.example.bomberman {
     opens bomberman.Object.MovingObject to javafx.fxml;
     exports bomberman.Object.MovingObject.Threats;
     opens bomberman.Object.MovingObject.Threats to javafx.fxml;
-    exports bomberman.Object.Map;
-    opens bomberman.Object.Map to javafx.fxml;
+    exports bomberman.Map;
+    opens bomberman.Map to javafx.fxml;
     exports bomberman.Object.MovingObject.Bomber;
     opens bomberman.Object.MovingObject.Bomber to javafx.fxml;
 }

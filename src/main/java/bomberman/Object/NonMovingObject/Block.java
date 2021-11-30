@@ -2,7 +2,7 @@ package bomberman.Object.NonMovingObject;
 
 import javafx.scene.image.Image;
 
-import bomberman.GlobalVariable.ImagesPath;
+import bomberman.GlobalVariable.FilesPath;
 
 import bomberman.Object.GameObject;
 
@@ -28,8 +28,8 @@ public abstract class Block extends GameObject {
     protected BlockState blockState;
 
     // Image object
-    protected Image INITIAL_STATE_IMAGE = ImagesPath.Brick;
-    protected Image EXPLODING_STATE_IMAGE = ImagesPath.BrickExploded;
+    protected Image INITIAL_STATE_IMAGE = FilesPath.Brick;
+    protected Image EXPLODING_STATE_IMAGE = FilesPath.BrickExploded;
     protected Image FINAL_STATE_IMAGE;
 
     /**

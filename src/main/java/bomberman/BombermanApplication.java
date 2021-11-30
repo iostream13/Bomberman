@@ -5,7 +5,6 @@ import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -23,23 +22,25 @@ public class BombermanApplication extends Application {
         Canvas canvas = RenderVariable.canvas;
         Scene scene = RenderVariable.scene;
 
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-
         root.getChildren().add(canvas);
         scene.setRoot(root);
-
-        PvB_GamePlay.render();
 
         stage.setTitle("Bomberman");
         stage.setScene(scene);
 
+        // ********************** HANDLE GAME **********************************************************
+
+        PvB_GamePlay.createGame();
+
+        PvB_GamePlay.render();
+
         scene.setOnKeyPressed(PvB_GamePlay::inputKeyPress);
         scene.setOnKeyReleased(PvB_GamePlay::inputKeyRelease);
 
+        PvB_GamePlay.setGameStatus(PvB_GamePlay.gameStatusType.PLAYING_);
+
         final long startNanoTime = System.nanoTime();
         final long[] lastNanoTime = {System.nanoTime()};
-
-        PvB_GamePlay.gameStatus = PvB_GamePlay.gameStatusType.PLAYING_;
 
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
@@ -47,11 +48,13 @@ public class BombermanApplication extends Application {
 
                 lastNanoTime[0] = currentNanoTime;
 
-                if (PvB_GamePlay.gameStatus == PvB_GamePlay.gameStatusType.PLAYING_) {
+                if (PvB_GamePlay.getGameStatus() == PvB_GamePlay.gameStatusType.PLAYING_) {
                     PvB_GamePlay.play();
                 }
             }
         }.start();
+
+        // *********************************************************************************************
 
         stage.show();
     }

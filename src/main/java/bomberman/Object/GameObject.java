@@ -1,45 +1,18 @@
 package bomberman.Object;
 
+import bomberman.GlobalVariable.GameVariables;
 import javafx.scene.image.Image;
 
 import bomberman.GlobalVariable.RenderVariable;
-import bomberman.GlobalVariable.ImagesPath;
 
 /**
  * Object của game.
  */
 public abstract class GameObject {
-    // Tọa độ x, y và kích thước của object.
-
     /**
      * Tọa độ x.
      */
     private double x;
-
-    /**
-     * Tọa độ y.
-     */
-    private double y;
-
-    /**
-     * Chiều rộng của object.
-     */
-    private double width;
-
-    /**
-     * Chiều dài của object.
-     */
-    private double length;
-
-    /**
-     * Tọa độ x của tâm object.
-     */
-    private double centerX;
-
-    /**
-     * Tọa độ y của tâm object.
-     */
-    private double centerY;
 
     public double getX() {
         return x;
@@ -49,6 +22,11 @@ public abstract class GameObject {
         this.x = x;
         calculateCenterPoint();
     }
+
+    /**
+     * Tọa độ y.
+     */
+    private double y;
 
     public double getY() {
         return y;
@@ -60,6 +38,11 @@ public abstract class GameObject {
         calculateCenterPoint();
     }
 
+    /**
+     * Chiều rộng của object.
+     */
+    private double width;
+
     public double getWidth() {
         return width;
     }
@@ -69,6 +52,11 @@ public abstract class GameObject {
 
         calculateCenterPoint();
     }
+
+    /**
+     * Chiều dài của object.
+     */
+    private double length;
 
     public double getLength() {
         return length;
@@ -80,12 +68,81 @@ public abstract class GameObject {
         calculateCenterPoint();
     }
 
+    /**
+     * Tọa độ x của tâm object.
+     */
+    private double centerX;
+
     public double getCenterX() {
         return centerX;
     }
 
+    /**
+     * Tọa độ y của tâm object.
+     */
+    private double centerY;
+
     public double getCenterY() {
         return centerY;
+    }
+
+    /**
+     * Số lượng frame của object này.
+     */
+    private int numberOfFrame;
+
+    public int getNumberOfFrame() {
+        return numberOfFrame;
+    }
+
+    public void setNumberOfFrame(int numberOfFrame) {
+        this.numberOfFrame = numberOfFrame;
+    }
+
+    /**
+     * Chỉ số frame hiện tại.
+     * (Đánh số từ 0 đến numberOfFrame - 1)
+     */
+    private int currentFrame;
+
+    public int getCurrentFrame() {
+        return currentFrame;
+    }
+
+    public void setCurrentFrame(int currentFrame) {
+        this.currentFrame = currentFrame;
+    }
+
+    /**
+     * Số lượng frame của game chạy để hiển thị 1 frame của object.
+     * Giải thích : Chương trình mặc định chạy 60 frame/1 giây (60fps),
+     * để kéo dài thời gian 1 frame của object hiển thị ra
+     * thì cứ mỗi 1 hoặc 1 vài frame của chương trình thì hiển thị
+     * 1 frame của object.
+     * Ví dụ numberOfGameFramePerFrame là 2, thì vòng lặp play() của game
+     * chạy 2 lần thì Object đổi 1 frame.
+     */
+    private int numberOfGameFramePerFrame;
+
+    public int getNumberOfGameFramePerFrame() {
+        return numberOfGameFramePerFrame;
+    }
+
+    public void setNumberOfGameFramePerFrame(int numberOfGameFramePerFrame) {
+        this.numberOfGameFramePerFrame = numberOfGameFramePerFrame;
+    }
+
+    /**
+     * Biến đếm game frame để tính toán currentFrame.
+     */
+    private int gameFrameCount;
+
+    public int getGameFrameCount() {
+        return gameFrameCount;
+    }
+
+    public void setGameFrameCount(int gameFrameCount) {
+        this.gameFrameCount = gameFrameCount;
     }
 
     /**
@@ -104,6 +161,11 @@ public abstract class GameObject {
         this.length = length;
 
         calculateCenterPoint();
+
+        currentFrame = 0;
+        gameFrameCount = 0;
+
+        setGraphicData();
     }
 
     /**
@@ -132,10 +194,10 @@ public abstract class GameObject {
      * @return có hoặc không
      */
     public boolean checkIntersect(GameObject other) {
-        return !(x > other.getX() + other.getWidth() - 1) &&
-                !(y > other.getY() + other.getLength() - 1) &&
-                !(x + width < other.getX()) &&
-                !(y + length < other.getY());
+        return !(x >= other.getX() + other.getWidth()) &&
+                !(y >= other.getY() + other.getLength()) &&
+                !(x + width <= other.getX()) &&
+                !(y + length <= other.getY());
     }
 
     /**
@@ -148,24 +210,42 @@ public abstract class GameObject {
      * @return có hoặc không
      */
     public boolean checkIntersect(double temp_x_1, double temp_x_2, double temp_y_1, double temp_y_2) {
-        return !(x > temp_x_2) &&
-                !(y > temp_y_2) &&
-                !(x + width < temp_x_1) &&
-                !(y + length < temp_y_1);
+        return !(x >= temp_x_2) &&
+                !(y >= temp_y_2) &&
+                !(x + width <= temp_x_1) &&
+                !(y + length <= temp_y_1);
     }
 
     /**
      * Trả về image hiện tại của object.
      */
-    public Image getImage() {
-        return ImagesPath.Brick;
-    }
+    public abstract Image getImage();
+
+    /**
+     * Set thông tin về frame và hình ảnh(với MovingObject) cho mỗi object riêng biệt.
+     */
+    public abstract void setGraphicData();
 
     /**
      * Vẽ object.
      */
     public void draw() {
-        RenderVariable.gc.drawImage(getImage(), x, y, width, length);
+        // Tính toán currentFrame
+        if (gameFrameCount >= (numberOfFrame * numberOfGameFramePerFrame)) {
+            gameFrameCount = gameFrameCount % (numberOfFrame * numberOfGameFramePerFrame);
+        }
+
+        currentFrame = gameFrameCount / numberOfGameFramePerFrame;
+
+        gameFrameCount++;
+
+        // Vị trí frame hiện tại trong ảnh
+        double imageX = currentFrame * GameVariables.imageSize;
+        double imageY = 0;
+        double imageWidth = GameVariables.imageSize;
+        double imageLength = GameVariables.imageSize;
+
+        RenderVariable.gc.drawImage(getImage(), imageX, imageY, imageWidth, imageLength, x, y, width, length);
     }
 }
 

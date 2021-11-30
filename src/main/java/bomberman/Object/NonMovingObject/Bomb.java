@@ -1,17 +1,18 @@
 package bomberman.Object.NonMovingObject;
 
-import bomberman.Object.MovingObject.MovingObject;
-import bomberman.Object.MovingObject.Threats.Enemy;
 import javafx.scene.image.Image;
 
-import bomberman.GlobalVariable.ImagesPath;
+import java.util.ArrayList;
+
+import bomberman.GlobalVariable.FilesPath;
+import bomberman.GlobalVariable.GameVariables;
 
 import bomberman.PvB_GamePlay;
 
-import bomberman.Object.MovingObject.Bomber.Bomber;
 import bomberman.Object.GameObject;
-
-import java.util.ArrayList;
+import bomberman.Object.MovingObject.Bomber.Bomber;
+import bomberman.Object.MovingObject.MovingObject;
+import bomberman.Object.MovingObject.Threats.Enemy;
 
 public class Bomb extends GameObject {
     /**
@@ -46,35 +47,24 @@ public class Bomb extends GameObject {
     public Bomb(double x, double y, double width, double length) {
         super(x, y, width, length);
 
-        for (Bomber X : PvB_GamePlay.players) {
+        this.startTime = System.nanoTime();
+
+        for (Bomber X : PvB_GamePlay.map.players) {
             if (X.checkIntersect(this)) {
                 unblockObject.add(X);
             }
         }
 
-        for (Enemy X : PvB_GamePlay.enemies) {
+        for (Enemy X : PvB_GamePlay.map.enemies) {
             if (X.checkIntersect(this)) {
                 unblockObject.add(X);
             }
         }
-    }
 
-    public void updateUnblockList() {
-        for (int i = 0; i < PvB_GamePlay.players.size(); i++) {
-            MovingObject X = PvB_GamePlay.players.get(i);
-            if (unblockObject.contains(X) && !X.checkIntersect(this)) {
-                unblockObject.remove(X);
-                i--;
-            }
-        }
+        int tempX = GameVariables.calculateCellIndex(x);
+        int tempY = GameVariables.calculateCellIndex(y);
 
-        for (int i = 0; i < PvB_GamePlay.enemies.size(); i++) {
-            MovingObject X = PvB_GamePlay.enemies.get(i);
-            if (unblockObject.contains(X) && !X.checkIntersect(this)) {
-                unblockObject.remove(X);
-                i--;
-            }
-        }
+        PvB_GamePlay.map.stateBomb[tempY][tempX] = true;
     }
 
     /**
@@ -92,22 +82,50 @@ public class Bomb extends GameObject {
         this.owner = owner;
         this.startTime = System.nanoTime();
 
-        for (Bomber X : PvB_GamePlay.players) {
+        for (Bomber X : PvB_GamePlay.map.players) {
             if (X.checkIntersect(this)) {
                 unblockObject.add(X);
             }
         }
 
-        for (Enemy X : PvB_GamePlay.enemies) {
+        for (Enemy X : PvB_GamePlay.map.enemies) {
             if (X.checkIntersect(this)) {
                 unblockObject.add(X);
+            }
+        }
+
+        int tempX = GameVariables.calculateCellIndex(x);
+        int tempY = GameVariables.calculateCellIndex(y);
+
+        PvB_GamePlay.map.stateBomb[tempY][tempX] = true;
+    }
+
+    /**
+     * Update lại unblock list.
+     */
+    public void updateUnblockList() {
+        for (int i = 0; i < PvB_GamePlay.map.players.size(); i++) {
+            MovingObject X = PvB_GamePlay.map.players.get(i);
+            if (unblockObject.contains(X) && !X.checkIntersect(this)) {
+                unblockObject.remove(X);
+
+                i--;
+            }
+        }
+
+        for (int i = 0; i < PvB_GamePlay.map.enemies.size(); i++) {
+            MovingObject X = PvB_GamePlay.map.enemies.get(i);
+            if (unblockObject.contains(X) && !X.checkIntersect(this)) {
+                unblockObject.remove(X);
+
+                i--;
             }
         }
     }
 
     @Override
     public Image getImage() {
-        return ImagesPath.Bomb;
+        return FilesPath.Bomb;
     }
 
     /**
@@ -129,80 +147,89 @@ public class Bomb extends GameObject {
     }
 
     /**
-     * Sinh ra các flame.
+     * Kích nổ quả bom.
      */
-    public void createFlame() {
-        int x = (int) ((int) this.getX() / PvB_GamePlay.map.cellLength);
-        int y = (int) ((int) this.getY() / PvB_GamePlay.map.cellLength);
+    public void detonateBomb() {
+        int tempX = GameVariables.calculateCellIndex(this.getX());
+        int tempY = GameVariables.calculateCellIndex(this.getY());
 
-        int len = owner.flameLength;
-        int side = (int) PvB_GamePlay.map.cellLength;
+        // Xóa bomb state
+        PvB_GamePlay.map.stateBomb[tempY][tempX] = false;
+
+        int len = owner.getFlameLength();
+        int side = (int) GameVariables.cellLength;
 
         // sinh flame ra bên trái bom
-        for (int i = x - 1; i >= 0 && i >= x - len; i--) {
+        for (int i = tempX - 1; i >= 0 && i >= tempX - len; i--) {
             // gặp cô cản, ngừng sinh flame
-            if (PvB_GamePlay.map.isBlockCell(y, i)) {
-                Flame.handleIntersectCell(PvB_GamePlay.map.cells[y][i]);
+            if (PvB_GamePlay.map.isBlockCell(tempY, i)) {
+                Flame.handleIntersectCell(PvB_GamePlay.map.cells[tempY][i]);
 
                 break;
             }
 
-            if (i == x - len) {
-                PvB_GamePlay.flames.add(new Flame(i * side, y * side, side, side, Flame.FlameType.LEFT_));
+            if (i == tempX - len) {
+                PvB_GamePlay.map.flames.add(new Flame(i * side, tempY * side, side, side, Flame.FlameType.LEFT_));
             } else {
-                PvB_GamePlay.flames.add(new Flame(i * side, y * side, side, side, Flame.FlameType.HORIZONTAL_));
+                PvB_GamePlay.map.flames.add(new Flame(i * side, tempY * side, side, side, Flame.FlameType.HORIZONTAL_));
             }
         }
 
         // sinh flame ra bên phải bom
-        for (int i = x + 1; i <= PvB_GamePlay.map.numberOfColumn && i <= x + len; i++) {
+        for (int i = tempX + 1; i <= PvB_GamePlay.map.numberOfColumn && i <= tempX + len; i++) {
             // gặp cô cản, ngừng sinh flame
-            if (PvB_GamePlay.map.isBlockCell(y, i)) {
-                Flame.handleIntersectCell(PvB_GamePlay.map.cells[y][i]);
+            if (PvB_GamePlay.map.isBlockCell(tempY, i)) {
+                Flame.handleIntersectCell(PvB_GamePlay.map.cells[tempY][i]);
 
                 break;
             }
 
-            if (i == x + len) {
-                PvB_GamePlay.flames.add(new Flame(i * side, y * side, side, side, Flame.FlameType.RIGHT_));
+            if (i == tempX + len) {
+                PvB_GamePlay.map.flames.add(new Flame(i * side, tempY * side, side, side, Flame.FlameType.RIGHT_));
             } else {
-                PvB_GamePlay.flames.add(new Flame(i * side, y * side, side, side, Flame.FlameType.HORIZONTAL_));
+                PvB_GamePlay.map.flames.add(new Flame(i * side, tempY * side, side, side, Flame.FlameType.HORIZONTAL_));
             }
         }
 
         // sinh flame ra bên trên bom
-        for (int i = y - 1; i >= 0 && i >= y - len; i--) {
+        for (int i = tempY - 1; i >= 0 && i >= tempY - len; i--) {
             // gặp cô cản, ngừng sinh flame
-            if (PvB_GamePlay.map.isBlockCell(i, x)) {
-                Flame.handleIntersectCell(PvB_GamePlay.map.cells[i][x]);
+            if (PvB_GamePlay.map.isBlockCell(i, tempX)) {
+                Flame.handleIntersectCell(PvB_GamePlay.map.cells[i][tempX]);
 
                 break;
             }
 
-            if (i == y - len) {
-                PvB_GamePlay.flames.add(new Flame(x * side, i * side, side, side, Flame.FlameType.UP_));
+            if (i == tempY - len) {
+                PvB_GamePlay.map.flames.add(new Flame(tempX * side, i * side, side, side, Flame.FlameType.UP_));
             } else {
-                PvB_GamePlay.flames.add(new Flame(x * side, i * side, side, side, Flame.FlameType.VERTICAL_));
+                PvB_GamePlay.map.flames.add(new Flame(tempX * side, i * side, side, side, Flame.FlameType.VERTICAL_));
             }
         }
 
         // sinh flame ra bên dưới bom
-        for (int i = y + 1; i <= PvB_GamePlay.map.numberOfRow && i <= y + len; i++) {
+        for (int i = tempY + 1; i <= PvB_GamePlay.map.numberOfRow && i <= tempY + len; i++) {
             // gặp cô cản, ngừng sinh flame
-            if (PvB_GamePlay.map.isBlockCell(i, x)) {
-                Flame.handleIntersectCell(PvB_GamePlay.map.cells[i][x]);
+            if (PvB_GamePlay.map.isBlockCell(i, tempX)) {
+                Flame.handleIntersectCell(PvB_GamePlay.map.cells[i][tempX]);
 
                 break;
             }
 
-            if (i == y + len) {
-                PvB_GamePlay.flames.add(new Flame(x * side, i * side, side, side, Flame.FlameType.DOWN_));
+            if (i == tempY + len) {
+                PvB_GamePlay.map.flames.add(new Flame(tempX * side, i * side, side, side, Flame.FlameType.DOWN_));
             } else {
-                PvB_GamePlay.flames.add(new Flame(x * side, i * side, side, side, Flame.FlameType.VERTICAL_));
+                PvB_GamePlay.map.flames.add(new Flame(tempX * side, i * side, side, side, Flame.FlameType.VERTICAL_));
             }
         }
 
         //sinh flame ở chính giữa
-        PvB_GamePlay.flames.add(new Flame(x * side, y * side, side, side, Flame.FlameType.CENTER_));
+        PvB_GamePlay.map.flames.add(new Flame(tempX * side, tempY * side, side, side, Flame.FlameType.CENTER_));
+    }
+
+    @Override
+    public void setGraphicData() {
+        setNumberOfFrame(8);
+        setNumberOfGameFramePerFrame(3);
     }
 }

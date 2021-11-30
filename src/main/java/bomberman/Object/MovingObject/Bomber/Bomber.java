@@ -1,9 +1,7 @@
 package bomberman.Object.MovingObject.Bomber;
 
-import bomberman.Object.NonMovingObject.Portal;
-import javafx.scene.image.Image;
-
-import bomberman.GlobalVariable.ImagesPath;
+import bomberman.GlobalVariable.FilesPath;
+import bomberman.GlobalVariable.GameVariables;
 
 import bomberman.PvB_GamePlay;
 
@@ -11,22 +9,47 @@ import bomberman.Object.GameObject;
 import bomberman.Object.MovingObject.MovingObject;
 import bomberman.Object.NonMovingObject.Bomb;
 import bomberman.Object.NonMovingObject.Item;
+import bomberman.Object.NonMovingObject.Portal;
 
 public class Bomber extends MovingObject {
     /**
      * Số bomb có thể đặt được.
      */
-    public int maxBomb = 1;
+    private int maxBomb = 1;
 
-    /**
-     * Số lượng bomb đang đặt.
-     */
-    public int currentBomb = 0;
+    public int getMaxBomb() {
+        return maxBomb;
+    }
+
+    public void changeMaxBomb(int value) {
+        this.maxBomb += value;
+    }
 
     /**
      * Số ô mà flame do nhân vật tạo ra, ăn buff thì tăng 1.
      */
-    public int flameLength = 1;
+    private int flameLength = 1;
+
+    public int getFlameLength() {
+        return flameLength;
+    }
+
+    public void changeFlameLength(int value) {
+        this.flameLength += value;
+    }
+
+    /**
+     * Số lượng bomb đang đặt.
+     */
+    private int currentBomb = 0;
+
+    public int getCurrentBomb() {
+        return currentBomb;
+    }
+
+    public void changeCurrentBomb(int value) {
+        this.currentBomb += value;
+    }
 
     /**
      * Constructor cho Bomber.
@@ -36,6 +59,8 @@ public class Bomber extends MovingObject {
      */
     public Bomber(double x, double y) {
         super(x, y, 35, 35); // Kích thước mặc định
+
+        setSpeed(3);
     }
 
     /**
@@ -48,8 +73,13 @@ public class Bomber extends MovingObject {
      */
     public Bomber(double x, double y, double width, double length) {
         super(x, y, width, length);
+
+        setSpeed(3);
     }
 
+    /**
+     * Constructor cho Bomber.
+     */
     public Bomber() {
         super(0, 0, 0, 0);
     }
@@ -67,28 +97,25 @@ public class Bomber extends MovingObject {
      * Tạo bomb.
      */
     public void createBomb() {
-        int x =
-                (int)
-                        ((int) ((this.getX() + this.getWidth() / 2) / PvB_GamePlay.map.cellLength)
-                                * PvB_GamePlay.map.cellLength);
-        int y =
-                (int)
-                        ((int) ((this.getY() + this.getLength() / 2) / PvB_GamePlay.map.cellLength)
-                                * PvB_GamePlay.map.cellLength);
+        int tempX = (int) ((GameVariables.calculateCellIndex(this.getX() + this.getWidth() / 2))
+                * GameVariables.cellLength);
+
+        int tempY = (int) ((GameVariables.calculateCellIndex(this.getY() + this.getLength() / 2))
+                * GameVariables.cellLength);
 
         currentBomb++;
 
-        PvB_GamePlay.bombs.add(new Bomb(x, y, PvB_GamePlay.map.cellLength, PvB_GamePlay.map.cellLength, this));
+        PvB_GamePlay.map.bombs.add(new Bomb(tempX, tempY, GameVariables.cellLength, GameVariables.cellLength, this));
     }
 
     /**
      * Kiểm tra trên phạm vi đang đứng có item không, nếu có thì thực hiện ăn.
      */
     public void checkEatItems() {
-        int x1 = (int) (this.getX() / PvB_GamePlay.map.cellLength);
-        int x2 = (int) ((this.getX() + this.getWidth() - 1) / PvB_GamePlay.map.cellLength);
-        int y1 = (int) (this.getY() / PvB_GamePlay.map.cellLength);
-        int y2 = (int) ((this.getY() + this.getLength() - 1) / PvB_GamePlay.map.cellLength);
+        int x1 = GameVariables.calculateCellIndex(this.getX());
+        int x2 = GameVariables.calculateCellIndex(this.getX() + this.getWidth() - 1);
+        int y1 = GameVariables.calculateCellIndex(this.getY());
+        int y2 = GameVariables.calculateCellIndex(this.getY() + this.getLength() - 1);
 
         for (int i = y1; i <= y2; i++)
             for (int j = x1; j <= x2; j++) {
@@ -124,10 +151,10 @@ public class Bomber extends MovingObject {
      * @return có đứng trên hoặc không
      */
     public boolean checkOnPortal() {
-        int x1 = (int) (this.getX() / PvB_GamePlay.map.cellLength);
-        int x2 = (int) ((this.getX() + this.getWidth() - 1) / PvB_GamePlay.map.cellLength);
-        int y1 = (int) (this.getY() / PvB_GamePlay.map.cellLength);
-        int y2 = (int) ((this.getY() + this.getLength() - 1) / PvB_GamePlay.map.cellLength);
+        int x1 = GameVariables.calculateCellIndex(this.getX());
+        int x2 = GameVariables.calculateCellIndex(this.getX() + this.getWidth() - 1);
+        int y1 = GameVariables.calculateCellIndex(this.getY());
+        int y2 = GameVariables.calculateCellIndex(this.getY() + this.getLength() - 1);
 
         for (int i = y1; i <= y2; i++)
             for (int j = x1; j <= x2; j++) {
@@ -144,7 +171,10 @@ public class Bomber extends MovingObject {
     }
 
     @Override
-    public Image getImage() {
-        return ImagesPath.Player;
+    public void setGraphicData() {
+        setNumberOfFrame(8);
+        setNumberOfGameFramePerFrame(3);
+
+        setImageData(FilesPath.BomberUp, FilesPath.BomberDown, FilesPath.BomberLeft, FilesPath.BomberRight);
     }
 }

@@ -1,6 +1,6 @@
 package bomberman.Object.NonMovingObject;
 
-import bomberman.GlobalVariable.ImagesPath;
+import bomberman.GlobalVariable.FilesPath;
 
 public class Brick extends Block {
     /**
@@ -17,6 +17,12 @@ public class Brick extends Block {
 
     @Override
     public void setFinalStateImageInfo() {
-        FINAL_STATE_IMAGE = ImagesPath.Grass;
+        FINAL_STATE_IMAGE = FilesPath.Grass;
+    }
+
+    @Override
+    public void setGraphicData() {
+        setNumberOfFrame(8);
+        setNumberOfGameFramePerFrame(3);
     }
 }

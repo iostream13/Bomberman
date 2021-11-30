@@ -1,16 +1,14 @@
 package bomberman.Object.MovingObject;
 
+import java.util.ArrayList;
+
+import bomberman.GlobalVariable.GameVariables;
+
 import bomberman.PvB_GamePlay;
 
 import bomberman.Object.NonMovingObject.Bomb;
 import bomberman.Object.GameObject;
-import bomberman.Object.Map.PlayGround;
-import javafx.scene.SubScene;
-import javafx.util.Pair;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
+import javafx.scene.image.Image;
 
 public abstract class MovingObject extends GameObject {
 
@@ -89,6 +87,14 @@ public abstract class MovingObject extends GameObject {
      */
     private double speed = 3; // DEFAULT SPEED
 
+    public double getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
+
     /**
      * Độ lệch x giữa điểm cần di chuyển tới và điểm hiện tại.
      */
@@ -98,14 +104,6 @@ public abstract class MovingObject extends GameObject {
      * Độ lệch y giữa điểm cần di chuyển tới và điểm hiện tại.
      */
     private double deltaY;
-
-    public double getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(double speed) {
-        this.speed = speed;
-    }
 
     /**
      * Tính khoảng cách tối đa có thể di chuyển.
@@ -138,13 +136,13 @@ public abstract class MovingObject extends GameObject {
      * @return có hoặc không đứng được
      */
     boolean checkCanMove(double temp_x, double temp_y) {
-        int x1 = (int) (temp_x / PvB_GamePlay.map.cellLength);
-        int x2 = (int) ((temp_x + this.getWidth() - 1) / PvB_GamePlay.map.cellLength);
-        int y1 = (int) (temp_y / PvB_GamePlay.map.cellLength);
-        int y2 = (int) ((temp_y + this.getLength() - 1) / PvB_GamePlay.map.cellLength);
+        int x1 = GameVariables.calculateCellIndex(temp_x);
+        int x2 = GameVariables.calculateCellIndex(temp_x + this.getWidth() - 1);
+        int y1 = GameVariables.calculateCellIndex(temp_y);
+        int y2 = GameVariables.calculateCellIndex(temp_y + this.getLength() - 1);
 
         //gặp bomb
-        for (Bomb bomb : PvB_GamePlay.bombs) {
+        for (Bomb bomb : PvB_GamePlay.map.bombs) {
             if (bomb.checkIntersect(temp_x, temp_x + this.getWidth() - 1,
                     temp_y, temp_y + this.getLength() - 1) &&
                     bomb.checkBlockStatusWithObject(this)) {
@@ -169,7 +167,7 @@ public abstract class MovingObject extends GameObject {
             return;
         }
 
-        double cellLength = PvB_GamePlay.map.cellLength;
+        double cellLength = GameVariables.cellLength;
 
         double nowX = getX();
         double nowY = getY();
@@ -183,7 +181,7 @@ public abstract class MovingObject extends GameObject {
                     setX(nowX + deltaX);
                 }
             } else if (currentDirection == ObjectDirection.UP_ || currentDirection == ObjectDirection.DOWN_) {
-                int temp_x = (int) (this.getCenterX() / cellLength);
+                int temp_x = GameVariables.calculateCellIndex(this.getCenterX());
 
                 double newPositionX = temp_x * cellLength + adjustPosition;
 
@@ -200,7 +198,7 @@ public abstract class MovingObject extends GameObject {
                     setY(nowY + deltaY);
                 }
             } else if (currentDirection == ObjectDirection.LEFT_ || currentDirection == ObjectDirection.RIGHT_) {
-                int temp_y = (int) (this.getCenterY() / cellLength);
+                int temp_y = GameVariables.calculateCellIndex(this.getCenterY());
 
                 double newPositionY = temp_y * cellLength + adjustPosition;
 
@@ -214,4 +212,52 @@ public abstract class MovingObject extends GameObject {
         }
     }
 
+    // *************************** GRAPHIC **********************************************************
+
+    // Các biến hình ảnh (Cần được cấp thông tin trong setGraphicInformation
+    protected Image leftImage;
+    protected Image rightImage;
+    protected Image upImage;
+    protected Image downImage;
+    protected Image lastImage;
+
+    /**
+     * Nhập ảnh. (Phải được sử dụng trong setGraphicData)
+     */
+    public void setImageData(Image tempUp, Image tempDown, Image tempLeft, Image tempRight) {
+        upImage = tempUp;
+        downImage = tempDown;
+        leftImage = tempLeft;
+        rightImage = tempRight;
+        lastImage = leftImage;
+    }
+
+    @Override
+    public Image getImage() {
+        switch (currentDirection) {
+            case LEFT_:
+                lastImage = leftImage;
+                break;
+            case RIGHT_:
+                lastImage = rightImage;
+                break;
+            case UP_:
+                lastImage = upImage;
+                break;
+            case DOWN_:
+                lastImage = downImage;
+                break;
+        }
+
+        return lastImage;
+    }
+
+    @Override
+    public void draw() {
+        if (currentDirection == ObjectDirection.NONE_) {
+            this.setGameFrameCount(0);
+        }
+
+        super.draw();
+    }
 }

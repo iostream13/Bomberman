@@ -1,6 +1,6 @@
 package bomberman.Object.NonMovingObject;
 
-import bomberman.GlobalVariable.ImagesPath;
+import bomberman.GlobalVariable.FilesPath;
 
 public class Item extends Block {
     /**
@@ -64,13 +64,19 @@ public class Item extends Block {
     @Override
     public void setFinalStateImageInfo() {
         if (ateStatus) {
-            FINAL_STATE_IMAGE = ImagesPath.Grass;
+            FINAL_STATE_IMAGE = FilesPath.Grass;
         } else if (type == typeOfItems.BOMB_ITEM_) {
-            FINAL_STATE_IMAGE = ImagesPath.PowerUpBomb;
+            FINAL_STATE_IMAGE = FilesPath.PowerUpBomb;
         } else if (type == typeOfItems.FLAME_ITEM_) {
-            FINAL_STATE_IMAGE = ImagesPath.PowerUpFlame;
+            FINAL_STATE_IMAGE = FilesPath.PowerUpFlame;
         } else {
-            FINAL_STATE_IMAGE = ImagesPath.PowerUpSpeed;
+            FINAL_STATE_IMAGE = FilesPath.PowerUpSpeed;
         }
+    }
+
+    @Override
+    public void setGraphicData() {
+        setNumberOfFrame(8);
+        setNumberOfGameFramePerFrame(3);
     }
 }

@@ -2,7 +2,8 @@ package bomberman.Object.NonMovingObject;
 
 import javafx.scene.image.Image;
 
-import bomberman.GlobalVariable.ImagesPath;
+import bomberman.GlobalVariable.FilesPath;
+import bomberman.GlobalVariable.GameVariables;
 
 import bomberman.PvB_GamePlay;
 
@@ -96,10 +97,10 @@ public class Flame extends GameObject {
      * Check xem ô nào bị nổ.
      */
     public void checkIntersectCells() {
-        int x1 = (int) (this.getX() / PvB_GamePlay.map.cellLength);
-        int x2 = (int) ((this.getX() + this.getWidth() - 1) / PvB_GamePlay.map.cellLength);
-        int y1 = (int) (this.getY() / PvB_GamePlay.map.cellLength);
-        int y2 = (int) ((this.getY() + this.getLength() - 1) / PvB_GamePlay.map.cellLength);
+        int x1 = GameVariables.calculateCellIndex(this.getX());
+        int x2 = GameVariables.calculateCellIndex(this.getX() + this.getWidth() - 1);
+        int y1 = GameVariables.calculateCellIndex(this.getY());
+        int y2 = GameVariables.calculateCellIndex(this.getY() + this.getLength() - 1);
 
         for (int i = y1; i <= y2; i++)
             for (int j = x1; j <= x2; j++) {
@@ -120,21 +121,27 @@ public class Flame extends GameObject {
     public Image getImage() {
         switch (type) {
             case LEFT_:
-                return ImagesPath.FlameLeft;
+                return FilesPath.FlameLeft;
             case RIGHT_:
-                return ImagesPath.FlameRight;
+                return FilesPath.FlameRight;
             case UP_:
-                return ImagesPath.FlameUp;
+                return FilesPath.FlameUp;
             case DOWN_:
-                return ImagesPath.FlameDown;
+                return FilesPath.FlameDown;
             case CENTER_:
-                return ImagesPath.FlameMid;
+                return FilesPath.FlameMid;
             case VERTICAL_:
-                return ImagesPath.FlameVertical;
+                return FilesPath.FlameVertical;
             case HORIZONTAL_:
-                return ImagesPath.FlameHorizontal;
+                return FilesPath.FlameHorizontal;
         }
 
-        return ImagesPath.Brick;
+        return FilesPath.Brick;
+    }
+
+    @Override
+    public void setGraphicData() {
+        setNumberOfFrame(8);
+        setNumberOfGameFramePerFrame(3);
     }
 }

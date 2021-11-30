@@ -2,7 +2,7 @@ package bomberman.Object.NonMovingObject;
 
 import javafx.scene.image.Image;
 
-import bomberman.GlobalVariable.ImagesPath;
+import bomberman.GlobalVariable.FilesPath;
 
 import bomberman.Object.GameObject;
 
@@ -21,6 +21,12 @@ public class Grass extends GameObject {
 
     @Override
     public Image getImage() {
-        return ImagesPath.Grass;
+        return FilesPath.Grass;
+    }
+
+    @Override
+    public void setGraphicData() {
+        setNumberOfFrame(8);
+        setNumberOfGameFramePerFrame(3);
     }
 }

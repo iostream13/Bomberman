@@ -1,7 +1,6 @@
 package bomberman.Object.MovingObject.Threats;
 
-import bomberman.GlobalVariable.ImagesPath;
-import javafx.scene.image.Image;
+import bomberman.GlobalVariable.FilesPath;
 
 public class Oneal extends Enemy {
     /**
@@ -27,7 +26,10 @@ public class Oneal extends Enemy {
     }
 
     @Override
-    public Image getImage() {
-        return ImagesPath.Oneal;
+    public void setGraphicData() {
+        setNumberOfFrame(8);
+        setNumberOfGameFramePerFrame(3);
+
+        setImageData(FilesPath.OnealUp, FilesPath.OnealDown, FilesPath.OnealLeft, FilesPath.OnealRight);
     }
 }
