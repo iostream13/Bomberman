@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import bomberman.GlobalVariable.GameVariables;
 
-import bomberman.PvB_GamePlay;
+import bomberman.Map.PlayGround;
 
 import bomberman.Object.NonMovingObject.Bomb;
 import bomberman.Object.GameObject;
@@ -15,13 +15,14 @@ public abstract class MovingObject extends GameObject {
     /**
      * Constructor cho Moving Object.
      *
-     * @param x      tọa độ x
-     * @param y      tọa độ y
-     * @param width  chiều rộng
-     * @param length chiều dài
+     * @param belongTo tham chiếu tới PlayGround
+     * @param x        tọa độ x
+     * @param y        tọa độ y
+     * @param width    chiều rộng
+     * @param length   chiều dài
      */
-    public MovingObject(double x, double y, double width, double length) {
-        super(x, y, width, length);
+    public MovingObject(PlayGround belongTo, double x, double y, double width, double length) {
+        super(belongTo, x, y, width, length);
 
         setObjectDirection(ObjectDirection.NONE_, true);
 
@@ -142,7 +143,7 @@ public abstract class MovingObject extends GameObject {
         int y2 = GameVariables.calculateCellIndex(temp_y + this.getLength() - 1);
 
         //gặp bomb
-        for (Bomb bomb : PvB_GamePlay.map.bombs) {
+        for (Bomb bomb : this.getBelongTo().getBombs()) {
             if (bomb.checkIntersect(temp_x, temp_x + this.getWidth() - 1,
                     temp_y, temp_y + this.getLength() - 1) &&
                     bomb.checkBlockStatusWithObject(this)) {
@@ -151,10 +152,10 @@ public abstract class MovingObject extends GameObject {
         }
 
         //đứng ở ô không cho phép
-        return !PvB_GamePlay.map.isBlockCell(y1, x1) &&
-                !PvB_GamePlay.map.isBlockCell(y1, x2) &&
-                !PvB_GamePlay.map.isBlockCell(y2, x1) &&
-                !PvB_GamePlay.map.isBlockCell(y2, x2);
+        return !this.getBelongTo().isBlockCell(y1, x1) &&
+                !this.getBelongTo().isBlockCell(y1, x2) &&
+                !this.getBelongTo().isBlockCell(y2, x1) &&
+                !this.getBelongTo().isBlockCell(y2, x2);
     }
 
     /**

@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 import bomberman.GlobalVariable.FilesPath;
 import bomberman.GlobalVariable.GameVariables;
 
-import bomberman.PvB_GamePlay;
+import bomberman.Map.PlayGround;
 
 import bomberman.Object.GameObject;
 
@@ -41,26 +41,28 @@ public class Flame extends GameObject {
     /**
      * Constructor cho flame.
      *
-     * @param x      tọa độ x
-     * @param y      tọa độ y
-     * @param width  chiều rộng
-     * @param length chiều dài
+     * @param belongTo tham chiếu tới PlayGround
+     * @param x        tọa độ x
+     * @param y        tọa độ y
+     * @param width    chiều rộng
+     * @param length   chiều dài
      */
-    public Flame(double x, double y, double width, double length) {
-        super(x, y, width, length);
+    public Flame(PlayGround belongTo, double x, double y, double width, double length) {
+        super(belongTo, x, y, width, length);
     }
 
     /**
      * Constructor cho flame.
      *
-     * @param x      tọa độ x
-     * @param y      tọa độ y
-     * @param width  chiều rộng
-     * @param length chiều dài
-     * @param type   loại của flame
+     * @param belongTo tham chiếu tới PlayGround
+     * @param x        tọa độ x
+     * @param y        tọa độ y
+     * @param width    chiều rộng
+     * @param length   chiều dài
+     * @param type     loại của flame
      */
-    public Flame(double x, double y, double width, double length, FlameType type) {
-        super(x, y, width, length);
+    public Flame(PlayGround belongTo, double x, double y, double width, double length, FlameType type) {
+        super(belongTo, x, y, width, length);
 
         this.type = type;
 
@@ -104,7 +106,7 @@ public class Flame extends GameObject {
 
         for (int i = y1; i <= y2; i++)
             for (int j = x1; j <= x2; j++) {
-                handleIntersectCell(PvB_GamePlay.map.cells[i][j]);
+                handleIntersectCell(this.getBelongTo().getCells(i, j));
             }
     }
 

@@ -1,6 +1,7 @@
 package bomberman.Object.NonMovingObject;
 
 import bomberman.GlobalVariable.FilesPath;
+import bomberman.Map.PlayGround;
 
 public class Item extends Block {
     /**
@@ -37,26 +38,28 @@ public class Item extends Block {
     /**
      * Constructor cho Item.
      *
-     * @param x      tọa độ x
-     * @param y      tọa độ y
-     * @param width  chiều rộng
-     * @param length chiều dài
+     * @param belongTo tham chiếu tới PlayGround
+     * @param x        tọa độ x
+     * @param y        tọa độ y
+     * @param width    chiều rộng
+     * @param length   chiều dài
      */
-    public Item(double x, double y, double width, double length) {
-        super(x, y, width, length);
+    public Item(PlayGround belongTo, double x, double y, double width, double length) {
+        super(belongTo, x, y, width, length);
     }
 
     /**
      * Constructor cho Item.
      *
-     * @param x      tọa độ x
-     * @param y      tọa độ y
-     * @param width  chiều rộng
-     * @param length chiều dài
-     * @param type   loại item
+     * @param belongTo tham chiếu tới PlayGround
+     * @param x        tọa độ x
+     * @param y        tọa độ y
+     * @param width    chiều rộng
+     * @param length   chiều dài
+     * @param type     loại item
      */
-    public Item(double x, double y, double width, double length, typeOfItems type) {
-        super(x, y, width, length);
+    public Item(PlayGround belongTo, double x, double y, double width, double length, typeOfItems type) {
+        super(belongTo, x, y, width, length);
 
         this.type = type;
     }
@@ -65,18 +68,28 @@ public class Item extends Block {
     public void setFinalStateImageInfo() {
         if (ateStatus) {
             FINAL_STATE_IMAGE = FilesPath.Grass;
-        } else if (type == typeOfItems.BOMB_ITEM_) {
-            FINAL_STATE_IMAGE = FilesPath.PowerUpBomb;
-        } else if (type == typeOfItems.FLAME_ITEM_) {
-            FINAL_STATE_IMAGE = FilesPath.PowerUpFlame;
+
+            if (isFinalState()) {
+                setNumberOfFrame(1);
+            }
         } else {
-            FINAL_STATE_IMAGE = FilesPath.PowerUpSpeed;
+            if (type == typeOfItems.BOMB_ITEM_) {
+                FINAL_STATE_IMAGE = FilesPath.PowerUpBomb;
+            } else if (type == typeOfItems.FLAME_ITEM_) {
+                FINAL_STATE_IMAGE = FilesPath.PowerUpFlame;
+            } else {
+                FINAL_STATE_IMAGE = FilesPath.PowerUpSpeed;
+            }
+
+            if (isFinalState()) {
+                setNumberOfFrame(8);
+            }
         }
     }
 
     @Override
     public void setGraphicData() {
-        setNumberOfFrame(8);
+        setNumberOfFrame(1);
         setNumberOfGameFramePerFrame(3);
     }
 }

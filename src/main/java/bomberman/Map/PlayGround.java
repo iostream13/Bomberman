@@ -3,7 +3,6 @@ package bomberman.Map;
 import java.io.*;
 import java.util.ArrayList;
 
-import bomberman.GlobalVariable.FilesPath;
 import bomberman.GlobalVariable.GameVariables;
 
 import bomberman.Object.MovingObject.Bomber.Bomber;
@@ -14,62 +13,160 @@ import bomberman.Object.NonMovingObject.*;
 import bomberman.Object.GameObject;
 
 public class PlayGround {
+    // ********** VARIABLES, SETTER, GETTER, VARIABLES OPERATION ********************************
 
     /**
      * số level.
      */
-    public int maxLevel;
+    private int maxLevel;
+
+    public int getMaxLevel() {
+        return maxLevel;
+    }
 
     /**
      * Level hiện tại.
      */
-    public int level;
+    private int level;
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
 
     /**
      * Số lượng hàng.
      */
-    public int numberOfRow = 0;
+    private int numberOfRow;
+
+    public int getNumberOfRow() {
+        return numberOfRow;
+    }
 
     /**
      * Số lượng cột.
      */
-    public int numberOfColumn = 0;
+    private int numberOfColumn;
 
-    /**
-     * Độ dài cạnh của một ô.
-     */
-    public double cellLength = GameVariables.cellLength;
+    public int getNumberOfColumn() {
+        return numberOfColumn;
+    }
 
     /**
      * Các ô trên bản đồ, mỗi ô là 1 object.
      */
-    public GameObject[][] cells = new GameObject[50][50];
+    private GameObject[][] cells = new GameObject[50][50];
+
+    public GameObject getCells(int tempX, int tempY) {
+        return cells[tempX][tempY];
+    }
 
     /**
      * List player.
      */
-    public ArrayList<Bomber> players = new ArrayList<>();
+    private ArrayList<Bomber> players = new ArrayList<>();
+
+    public ArrayList<Bomber> getPlayers() {
+        return players;
+    }
+
+    public void clearPlayers() {
+        players.clear();
+    }
 
     /**
      * Threats.
      */
-    public ArrayList<Enemy> enemies = new ArrayList<>();
+    private ArrayList<Enemy> enemies = new ArrayList<>();
+
+    public ArrayList<Enemy> getEnemies() {
+        return enemies;
+    }
+
+    public void clearEnemies() {
+        enemies.clear();
+    }
+
+    public void removeEnemy(int index) {
+        enemies.remove(index);
+    }
 
     /**
      * List bomb.
      */
-    public ArrayList<Bomb> bombs = new ArrayList<>();
+    private ArrayList<Bomb> bombs = new ArrayList<>();
+
+    public ArrayList<Bomb> getBombs() {
+        return bombs;
+    }
+
+    public void clearBombs() {
+        bombs.clear();
+    }
+
+    public void addBomb(Bomb tempBomb) {
+        bombs.add(tempBomb);
+    }
+
+    public void removeBomb(int index) {
+        bombs.remove(index);
+    }
 
     /**
      * Trạng thái ô đó có bomb hay không.
      * True là có bomb, false là không có bomb.
      */
-    public boolean[][] stateBomb = new boolean[50][50];
+    private boolean[][] stateBomb = new boolean[50][50];
+
+    public boolean getStateBomb(int tempX, int tempY) {
+        return stateBomb[tempX][tempY];
+    }
+
+    public void setStateBomb(int tempX, int tempY, boolean value) {
+        stateBomb[tempX][tempY] = value;
+    }
 
     /**
      * List flame.
      */
-    public ArrayList<Flame> flames = new ArrayList<>();
+    private ArrayList<Flame> flames = new ArrayList<>();
+
+    public ArrayList<Flame> getFlames() {
+        return flames;
+    }
+
+    public void clearFlames() {
+        flames.clear();
+    }
+
+    public void addFlame(Flame tempFlame) {
+        flames.add(tempFlame);
+    }
+
+    public void removeFlame(int index) {
+        flames.remove(index);
+    }
+
+    /**
+     * kích thước bản đồ theo chiều ngang.
+     */
+    private double mapLength;
+
+    public double getMapLength() {
+        return mapLength;
+    }
+
+    /**
+     * kích thước bản đồ theo chiều dọc.
+     */
+    private double mapWidth;
+
+    public double getMapWidth() {
+        return mapWidth;
+    }
 
     /**
      * Lưu tất cả các bản đồ của các level.
@@ -77,24 +174,34 @@ public class PlayGround {
     private char[][][] allLevelMaps = new char[5][50][50];
 
     /**
-     * kích thước bản đồ theo chiều ngang.
+     * Độ dài cạnh của một ô.
      */
-    public double mapLength;
+    private final double cellLength = GameVariables.cellLength;
+
+    // ***********************************************************************************************
 
     /**
-     * kích thước bản đồ theo chiều dọc.
+     * Khởi tạo 1 PlayGround(Map).
+     *
+     * @param mapPath đường dẫn đến map
      */
-    public double mapWidth;
+    public PlayGround(String mapPath) {
+        readMapsFromFile(mapPath);
+
+        createMapAtLevel();
+    }
 
     /**
      * Nhập dữ liệu của map từ file.
+     *
+     * @param mapPath đường dẫn đến map
      */
-    private void readMapsFromFile() {
+    private void readMapsFromFile(String mapPath) {
         FileInputStream fileInputStream = null;
         BufferedReader bufferedReader = null;
 
         try {
-            fileInputStream = new FileInputStream(FilesPath.MAP_PATH);
+            fileInputStream = new FileInputStream(mapPath);
             bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
 
             String[] item;
@@ -134,42 +241,47 @@ public class PlayGround {
      * Tạo tình trạng map của level hiện tại.
      */
     public void createMapAtLevel() {
+        clearPlayers();
+        clearEnemies();
+        clearBombs();
+        clearFlames();
+
         for (int y = 0; y < numberOfRow; y++) {
             for (int i = 0; i < numberOfColumn; i++) {
                 char tmp = allLevelMaps[level][y][i];
                 switch (tmp) {
                     case 'p':
-                        players.add(new Bomber(cellLength * i, cellLength * y));
-                        cells[y][i] = new Grass(cellLength * i, cellLength * y, cellLength, cellLength);
+                        players.add(new Bomber(this, cellLength * i, cellLength * y));
+                        cells[y][i] = new Grass(this, cellLength * i, cellLength * y, cellLength, cellLength);
                         break;
                     case '#':
-                        cells[y][i] = new Wall(cellLength * i, cellLength * y, cellLength, cellLength);
+                        cells[y][i] = new Wall(this, cellLength * i, cellLength * y, cellLength, cellLength);
                         break;
                     case '*':
-                        cells[y][i] = new Brick(cellLength * i, cellLength * y, cellLength, cellLength);
+                        cells[y][i] = new Brick(this, cellLength * i, cellLength * y, cellLength, cellLength);
                         break;
                     case 'x':
-                        cells[y][i] = new Portal(cellLength * i, cellLength * y, cellLength, cellLength);
+                        cells[y][i] = new Portal(this, cellLength * i, cellLength * y, cellLength, cellLength);
                         break;
                     case 'b':
-                        cells[y][i] = new Item(cellLength * i, cellLength * y, cellLength, cellLength, Item.typeOfItems.BOMB_ITEM_);
+                        cells[y][i] = new Item(this, cellLength * i, cellLength * y, cellLength, cellLength, Item.typeOfItems.BOMB_ITEM_);
                         break;
                     case 'f':
-                        cells[y][i] = new Item(cellLength * i, cellLength * y, cellLength, cellLength, Item.typeOfItems.FLAME_ITEM_);
+                        cells[y][i] = new Item(this, cellLength * i, cellLength * y, cellLength, cellLength, Item.typeOfItems.FLAME_ITEM_);
                         break;
                     case 's':
-                        cells[y][i] = new Item(cellLength * i, cellLength * y, cellLength, cellLength, Item.typeOfItems.SPEED_ITEM_);
+                        cells[y][i] = new Item(this, cellLength * i, cellLength * y, cellLength, cellLength, Item.typeOfItems.SPEED_ITEM_);
                         break;
                     case '1':
-                        enemies.add(new Balloom(cellLength * i, cellLength * y));
-                        cells[y][i] = new Grass(cellLength * i, cellLength * y, cellLength, cellLength);
+                        enemies.add(new Balloom(this, cellLength * i, cellLength * y));
+                        cells[y][i] = new Grass(this, cellLength * i, cellLength * y, cellLength, cellLength);
                         break;
                     case '2':
-                        enemies.add(new Oneal(cellLength * i, cellLength * y));
-                        cells[y][i] = new Grass(cellLength * i, cellLength * y, cellLength, cellLength);
+                        enemies.add(new Oneal(this, cellLength * i, cellLength * y));
+                        cells[y][i] = new Grass(this, cellLength * i, cellLength * y, cellLength, cellLength);
                         break;
                     default:
-                        cells[y][i] = new Grass(cellLength * i, cellLength * y, cellLength, cellLength);
+                        cells[y][i] = new Grass(this, cellLength * i, cellLength * y, cellLength, cellLength);
                 }
             }
         }
@@ -179,15 +291,6 @@ public class PlayGround {
                 stateBomb[i][j] = false;
             }
         }
-    }
-
-    /**
-     * Khởi tạo 1 PlayGround(Map).
-     */
-    public PlayGround() {
-        readMapsFromFile();
-
-        createMapAtLevel();
     }
 
     /**

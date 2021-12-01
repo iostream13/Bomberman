@@ -1,15 +1,18 @@
 package bomberman.GlobalVariable;
 
+import bomberman.PvB_GamePlay;
+
 public class GameVariables {
     /**
-     * Độ lớn của một ô ảnh trong resource (đơn vị pixel).
+     * Chế độ chơi PvB.
+     * (Khởi tạo biến này khi chế độ PvB bắt đầu chơi.
      */
-    public static double imageSize = 16;
+    public static PvB_GamePlay PvB_Mode;
 
     /**
      * Độ lớn của một cell trong game.
      */
-    public static double cellLength = 40;
+    public static final double cellLength = 40;
 
     /**
      * Hàm trả về giá trị đầu vào chia cho độ lớn của cell để ra chỉ số ô cần thiết.

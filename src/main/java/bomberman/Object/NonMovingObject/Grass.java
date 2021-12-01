@@ -1,5 +1,6 @@
 package bomberman.Object.NonMovingObject;
 
+import bomberman.Map.PlayGround;
 import javafx.scene.image.Image;
 
 import bomberman.GlobalVariable.FilesPath;
@@ -10,13 +11,14 @@ public class Grass extends GameObject {
     /**
      * Constructor cho Grass.
      *
-     * @param x      tọa độ x
-     * @param y      tọa độ y
-     * @param width  chiều rộng
-     * @param length chiều dài
+     * @param belongTo tham chiếu tới PlayGround
+     * @param x        tọa độ x
+     * @param y        tọa độ y
+     * @param width    chiều rộng
+     * @param length   chiều dài
      */
-    public Grass(double x, double y, double width, double length) {
-        super(x, y, width, length);
+    public Grass(PlayGround belongTo, double x, double y, double width, double length) {
+        super(belongTo, x, y, width, length);
     }
 
     @Override
@@ -26,7 +28,7 @@ public class Grass extends GameObject {
 
     @Override
     public void setGraphicData() {
-        setNumberOfFrame(8);
+        setNumberOfFrame(1);
         setNumberOfGameFramePerFrame(3);
     }
 }

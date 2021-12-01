@@ -56,7 +56,7 @@ public class FilesPath {
     public static final Image BomberRight = createImage("/image/dango_right.png");
 
     // MAP FILE PATH
-    public static final String MAP_PATH = "src/main/java/resources/Map/map.txt";
+    public static final String PVB_MAP_PATH = "src/main/java/resources/Map/map.txt";
 
     public FilesPath() throws URISyntaxException {
     }
