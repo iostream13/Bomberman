@@ -1,14 +1,29 @@
 package bomberman.Object;
 
-import bomberman.GlobalVariable.GameVariables;
 import javafx.scene.image.Image;
 
 import bomberman.GlobalVariable.RenderVariable;
+
+import bomberman.Map.PlayGround;
 
 /**
  * Object của game.
  */
 public abstract class GameObject {
+    /**
+     * Tham chiếu đến PlayGround mà object này thuộc về trong đó.
+     * (Đặt là belongTo để tránh trùng lặp với owner của bomb)
+     */
+    private PlayGround belongTo;
+
+    public void setBelongTo(PlayGround belongTo) {
+        this.belongTo = belongTo;
+    }
+
+    public PlayGround getBelongTo() {
+        return belongTo;
+    }
+
     /**
      * Tọa độ x.
      */
@@ -148,12 +163,15 @@ public abstract class GameObject {
     /**
      * Constructor cho object của game.
      *
-     * @param x      tọa độ x
-     * @param y      tọa độ y
-     * @param width  chiều rộng
-     * @param length chiều dài
+     * @param belongTo tham chiếu tới PlayGround
+     * @param x        tọa độ x
+     * @param y        tọa độ y
+     * @param width    chiều rộng
+     * @param length   chiều dài
      */
-    public GameObject(double x, double y, double width, double length) {
+    public GameObject(PlayGround belongTo, double x, double y, double width, double length) {
+        this.belongTo = belongTo;
+
         this.x = x;
         this.y = y;
 
@@ -240,10 +258,10 @@ public abstract class GameObject {
         gameFrameCount++;
 
         // Vị trí frame hiện tại trong ảnh
-        double imageX = currentFrame * GameVariables.imageSize;
+        double imageX = currentFrame * RenderVariable.imageSize;
         double imageY = 0;
-        double imageWidth = GameVariables.imageSize;
-        double imageLength = GameVariables.imageSize;
+        double imageWidth = RenderVariable.imageSize;
+        double imageLength = RenderVariable.imageSize;
 
         RenderVariable.gc.drawImage(getImage(), imageX, imageY, imageWidth, imageLength, x, y, width, length);
     }

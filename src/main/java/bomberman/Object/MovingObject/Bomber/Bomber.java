@@ -3,7 +3,7 @@ package bomberman.Object.MovingObject.Bomber;
 import bomberman.GlobalVariable.FilesPath;
 import bomberman.GlobalVariable.GameVariables;
 
-import bomberman.PvB_GamePlay;
+import bomberman.Map.PlayGround;
 
 import bomberman.Object.GameObject;
 import bomberman.Object.MovingObject.MovingObject;
@@ -54,11 +54,12 @@ public class Bomber extends MovingObject {
     /**
      * Constructor cho Bomber.
      *
-     * @param x tọa độ x
-     * @param y tọa độ y
+     * @param belongTo tham chiếu tới PlayGround
+     * @param x        tọa độ x
+     * @param y        tọa độ y
      */
-    public Bomber(double x, double y) {
-        super(x, y, 35, 35); // Kích thước mặc định
+    public Bomber(PlayGround belongTo, double x, double y) {
+        super(belongTo, x, y, 35, 35); // Kích thước mặc định
 
         setSpeed(3);
     }
@@ -66,22 +67,16 @@ public class Bomber extends MovingObject {
     /**
      * Constructor cho Bomber.
      *
-     * @param x      tạo độ x
-     * @param y      tọa độ y
-     * @param width  chiều rộng
-     * @param length chiều dài
+     * @param belongTo tham chiếu tới PlayGround
+     * @param x        tạo độ x
+     * @param y        tọa độ y
+     * @param width    chiều rộng
+     * @param length   chiều dài
      */
-    public Bomber(double x, double y, double width, double length) {
-        super(x, y, width, length);
+    public Bomber(PlayGround belongTo, double x, double y, double width, double length) {
+        super(belongTo, x, y, width, length);
 
         setSpeed(3);
-    }
-
-    /**
-     * Constructor cho Bomber.
-     */
-    public Bomber() {
-        super(0, 0, 0, 0);
     }
 
     /**
@@ -105,7 +100,7 @@ public class Bomber extends MovingObject {
 
         currentBomb++;
 
-        PvB_GamePlay.map.bombs.add(new Bomb(tempX, tempY, GameVariables.cellLength, GameVariables.cellLength, this));
+        this.getBelongTo().addBomb(new Bomb(this.getBelongTo(), tempX, tempY, GameVariables.cellLength, GameVariables.cellLength, this));
     }
 
     /**
@@ -119,7 +114,7 @@ public class Bomber extends MovingObject {
 
         for (int i = y1; i <= y2; i++)
             for (int j = x1; j <= x2; j++) {
-                GameObject now = PvB_GamePlay.map.cells[i][j];
+                GameObject now = this.getBelongTo().getCells(i, j);
 
                 if (!(now instanceof Item)) {
                     continue;
@@ -158,7 +153,7 @@ public class Bomber extends MovingObject {
 
         for (int i = y1; i <= y2; i++)
             for (int j = x1; j <= x2; j++) {
-                GameObject now = PvB_GamePlay.map.cells[i][j];
+                GameObject now = this.getBelongTo().getCells(i, j);
 
                 if (!(now instanceof Portal)) {
                     return false;

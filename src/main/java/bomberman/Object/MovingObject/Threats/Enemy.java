@@ -8,8 +8,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import bomberman.GlobalVariable.GameVariables;
 
+import bomberman.Map.PlayGround;
+
 import bomberman.Object.MovingObject.MovingObject;
-import bomberman.PvB_GamePlay;
 
 public abstract class Enemy extends MovingObject {
 
@@ -37,13 +38,14 @@ public abstract class Enemy extends MovingObject {
     /**
      * Constructor cho Enemy.
      *
-     * @param x      tọa độ x
-     * @param y      tọa độ y
-     * @param width  chiều rộng
-     * @param length chiều dài
+     * @param belongTo tham chiếu tới PlayGround
+     * @param x        tọa độ x
+     * @param y        tọa độ y
+     * @param width    chiều rộng
+     * @param length   chiều dài
      */
-    public Enemy(double x, double y, double width, double length) {
-        super(x, y, width, length);
+    public Enemy(PlayGround belongTo, double x, double y, double width, double length) {
+        super(belongTo, x, y, width, length);
 
         setSpeed(2);
     }
@@ -51,11 +53,12 @@ public abstract class Enemy extends MovingObject {
     /**
      * Constructor cho Enemy.
      *
-     * @param x tọa độ x
-     * @param y tọa độ y
+     * @param belongTo tham chiếu tới PlayGround
+     * @param x        tọa độ x
+     * @param y        tọa độ y
      */
-    public Enemy(double x, double y) {
-        super(x, y, 35, 35); // Kích thước mặc định
+    public Enemy(PlayGround belongTo, double x, double y) {
+        super(belongTo, x, y, 35, 35); // Kích thước mặc định
 
         setSpeed(2);
     }
@@ -96,8 +99,8 @@ public abstract class Enemy extends MovingObject {
             int x = p.getValue();
 
             if (x == xPlayer && y == yPlayer) {
-                for (int i = 1; i < PvB_GamePlay.map.numberOfRow; i++) {
-                    for (int j = 1; j < PvB_GamePlay.map.numberOfColumn; j++) {
+                for (int i = 1; i < this.getBelongTo().getNumberOfRow(); i++) {
+                    for (int j = 1; j < this.getBelongTo().getNumberOfColumn(); j++) {
                         state[i][j] = 0;
                     }
                 }
@@ -127,11 +130,13 @@ public abstract class Enemy extends MovingObject {
                 int newX = x + c[i];
                 int newY = y + d[i];
 
-                if (newX < 0 || newX >= PvB_GamePlay.map.numberOfColumn || newY < 0 || newY >= PvB_GamePlay.map.numberOfRow) {
+                if (newX < 0 || newX >= this.getBelongTo().getNumberOfColumn() ||
+                        newY < 0 || newY >= this.getBelongTo().getNumberOfRow()) {
                     continue;
                 }
 
-                if (!PvB_GamePlay.map.isBlockCell(newY, newX) && !PvB_GamePlay.map.stateBomb[newY][newX] && !dx[newY][newX]) {
+                if (!this.getBelongTo().isBlockCell(newY, newX) &&
+                        !this.getBelongTo().getStateBomb(newY, newX) && !dx[newY][newX]) {
                     dx[newY][newX] = true;
                     tr[newY][newX] = p;
 
@@ -148,8 +153,8 @@ public abstract class Enemy extends MovingObject {
     @Override
     public void move() {
         if (System.nanoTime() - startTime >= duration) {
-            int xPlayer = GameVariables.calculateCellIndex(PvB_GamePlay.player.getCenterX());
-            int yPlayer = GameVariables.calculateCellIndex(PvB_GamePlay.player.getCenterY());
+            int xPlayer = GameVariables.calculateCellIndex(this.getBelongTo().getPlayers().get(0).getCenterX());
+            int yPlayer = GameVariables.calculateCellIndex(this.getBelongTo().getPlayers().get(0).getCenterY());
             int xEnemy = GameVariables.calculateCellIndex(this.getCenterX());
             int yEnemy = GameVariables.calculateCellIndex(this.getCenterY());
 
@@ -168,7 +173,8 @@ public abstract class Enemy extends MovingObject {
                     int newX = xEnemy + c[i];
                     int newY = yEnemy + d[i];
 
-                    if (newX < 1 || newX >= PvB_GamePlay.map.numberOfColumn || newY < 1 || newY > PvB_GamePlay.map.numberOfRow) {
+                    if (newX < 1 || newX >= this.getBelongTo().getNumberOfColumn() ||
+                            newY < 1 || newY > this.getBelongTo().getNumberOfRow()) {
                         continue;
                     }
 

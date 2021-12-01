@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import bomberman.GlobalVariable.RenderVariable;
+import bomberman.GlobalVariable.GameVariables;
 
 /**
  * Chương trình chính.
@@ -30,14 +31,14 @@ public class BombermanApplication extends Application {
 
         // ********************** HANDLE GAME **********************************************************
 
-        PvB_GamePlay.createGame();
+        GameVariables.PvB_Mode = new PvB_GamePlay();
 
-        PvB_GamePlay.render();
+        GameVariables.PvB_Mode.render();
 
-        scene.setOnKeyPressed(PvB_GamePlay::inputKeyPress);
-        scene.setOnKeyReleased(PvB_GamePlay::inputKeyRelease);
+        scene.setOnKeyPressed(GameVariables.PvB_Mode::inputKeyPress);
+        scene.setOnKeyReleased(GameVariables.PvB_Mode::inputKeyRelease);
 
-        PvB_GamePlay.setGameStatus(PvB_GamePlay.gameStatusType.PLAYING_);
+        GameVariables.PvB_Mode.setGameStatus(PvB_GamePlay.gameStatusType.PLAYING_);
 
         final long startNanoTime = System.nanoTime();
         final long[] lastNanoTime = {System.nanoTime()};
@@ -48,8 +49,8 @@ public class BombermanApplication extends Application {
 
                 lastNanoTime[0] = currentNanoTime;
 
-                if (PvB_GamePlay.getGameStatus() == PvB_GamePlay.gameStatusType.PLAYING_) {
-                    PvB_GamePlay.play();
+                if (GameVariables.PvB_Mode.getGameStatus() == PvB_GamePlay.gameStatusType.PLAYING_) {
+                    GameVariables.PvB_Mode.play();
                 }
             }
         }.start();

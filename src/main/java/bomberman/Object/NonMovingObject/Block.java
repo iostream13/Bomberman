@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import bomberman.GlobalVariable.FilesPath;
 
 import bomberman.Object.GameObject;
+import bomberman.Map.PlayGround;
 
 /**
  * Block là các vật thể brick hoặc những vật thể xuất hiện sau khi brick phát nổ.
@@ -69,13 +70,14 @@ public abstract class Block extends GameObject {
     /**
      * Constructor cho block.
      *
-     * @param x      tọa độ x
-     * @param y      tọa độ y
-     * @param width  chiều rộng
-     * @param length chiều dài
+     * @param belongTo tham chiếu tới PlayGround
+     * @param x        tọa độ x
+     * @param y        tọa độ y
+     * @param width    chiều rộng
+     * @param length   chiều dài
      */
-    public Block(double x, double y, double width, double length) {
-        super(x, y, width, length);
+    public Block(PlayGround belongTo, double x, double y, double width, double length) {
+        super(belongTo, x, y, width, length);
 
         blockState = BlockState.INITIAL_STATE_;
     }
