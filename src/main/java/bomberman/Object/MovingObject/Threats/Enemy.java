@@ -232,4 +232,7 @@ public abstract class Enemy extends MovingObject {
 
         super.move();
     }
+
+    public void die() {
+    }
 }

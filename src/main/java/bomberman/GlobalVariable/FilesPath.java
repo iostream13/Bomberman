@@ -2,7 +2,9 @@ package bomberman.GlobalVariable;
 
 import javafx.scene.image.Image;
 
+import java.io.File;
 import java.net.URISyntaxException;
+import javax.sound.sampled.*;
 
 public class FilesPath {
     /**
@@ -13,6 +15,20 @@ public class FilesPath {
      */
     private static Image createImage(String path) {
         return new Image(String.valueOf(FilesPath.class.getResource(path)));
+    }
+
+    public static Clip createClip(String filePath) {
+        filePath = "src/main/java/resources/sound/" + filePath;
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            return clip;
+        } catch(Exception ex) {
+            System.out.println("Error with playing sound.");
+            ex.printStackTrace();
+        }
+        return null;
     }
 
     // IMAGE FILE PATH
@@ -57,6 +73,22 @@ public class FilesPath {
 
     // MAP FILE PATH
     public static final String PVB_MAP_PATH = "src/main/java/resources/Map/map.txt";
+
+    // AUDIO CLIP FILE PATH
+    public static Clip PlayGroundAudio = createClip("PlayGround.wav");
+
+    public static Clip BomberDieAudio = createClip("Bomberdie.wav");
+    public static Clip BalloomDieAudio = createClip("balloomDie.wav");
+    public static Clip OnealDieAudio = createClip("OnealDie.wav");
+
+    public static Clip ExplosionAudio = createClip("Explosion.wav");
+    public static Clip PlaceBombAudio = createClip("PlaceBomb.wav");
+    public static Clip ItemAppearsAudio = createClip("ItemAppears.wav");
+    public static Clip PowerUpAudio = createClip("PowerUp.wav");
+
+    public static Clip LevelUpAudio = createClip("LevelUp.wav");
+    public static Clip YouWonAudio = createClip("YouWon.wav");
+    public static Clip YouLoseAudio = createClip("YouLose.wav");
 
     public FilesPath() throws URISyntaxException {
     }

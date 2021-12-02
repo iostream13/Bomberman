@@ -1,6 +1,7 @@
 package bomberman.Object.MovingObject.Threats;
 
 import bomberman.GlobalVariable.FilesPath;
+import bomberman.GlobalVariable.SoundVariable;
 import bomberman.Map.PlayGround;
 
 public class Oneal extends Enemy {
@@ -34,5 +35,9 @@ public class Oneal extends Enemy {
         setNumberOfGameFramePerFrame(3);
 
         setImageData(FilesPath.OnealUp, FilesPath.OnealDown, FilesPath.OnealLeft, FilesPath.OnealRight);
+    }
+
+    public void die() {
+        SoundVariable.playSound(FilesPath.OnealDieAudio);
     }
 }
