@@ -3,6 +3,7 @@ package bomberman.Object.MovingObject.Bomber;
 import bomberman.GlobalVariable.FilesPath;
 import bomberman.GlobalVariable.GameVariables;
 
+import bomberman.GlobalVariable.SoundVariable;
 import bomberman.Map.PlayGround;
 
 import bomberman.Object.GameObject;
@@ -92,6 +93,7 @@ public class Bomber extends MovingObject {
      * Tạo bomb.
      */
     public void createBomb() {
+        SoundVariable.playSound(FilesPath.PlaceBombAudio);
         int tempX = (int) ((GameVariables.calculateCellIndex(this.getX() + this.getWidth() / 2))
                 * GameVariables.cellLength);
 
@@ -135,7 +137,7 @@ public class Bomber extends MovingObject {
                         flameLength++;
                         break;
                 }
-
+                SoundVariable.playSound(FilesPath.PowerUpAudio);
                 ((Item) now).setAteStatus(true);
             }
     }
@@ -171,5 +173,9 @@ public class Bomber extends MovingObject {
         setNumberOfGameFramePerFrame(3);
 
         setImageData(FilesPath.BomberUp, FilesPath.BomberDown, FilesPath.BomberLeft, FilesPath.BomberRight);
+    }
+
+    public void die() {
+        SoundVariable.playSound(FilesPath.BomberDieAudio);
     }
 }

@@ -2,6 +2,11 @@ package bomberman.GlobalVariable;
 
 import bomberman.PvB_GamePlay;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.File;
+
 public class GameVariables {
     /**
      * Chế độ chơi PvB.
@@ -22,5 +27,22 @@ public class GameVariables {
      */
     public static int calculateCellIndex(double inputValue) {
         return (int) (inputValue / cellLength);
+    }
+
+    /**
+     * âm thanh.
+     * @param filePath đường dẫn
+     */
+    public static void playSound(String filePath) {
+        filePath = "src/main/java/resources/sound/" + filePath;
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+        } catch(Exception ex) {
+            System.out.println("Error with playing sound.");
+            ex.printStackTrace();
+        }
     }
 }

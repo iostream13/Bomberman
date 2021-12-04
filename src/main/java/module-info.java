@@ -3,6 +3,8 @@ module com.example.bomberman {
     requires javafx.fxml;
 
     requires org.controlsfx.controls;
+    requires javafx.media;
+    requires java.desktop;
 
     opens bomberman to javafx.fxml;
     exports bomberman;

@@ -1,17 +1,25 @@
 package bomberman;
 
+import bomberman.GlobalVariable.FilesPath;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import bomberman.GlobalVariable.RenderVariable;
 import bomberman.GlobalVariable.GameVariables;
+
+import javax.sound.sampled.Clip;
 
 /**
  * Chương trình chính.
@@ -34,6 +42,7 @@ public class BombermanApplication extends Application {
         GameVariables.PvB_Mode = new PvB_GamePlay();
 
         GameVariables.PvB_Mode.render();
+        GameVariables.PvB_Mode.playPlayGroundAudio();
 
         scene.setOnKeyPressed(GameVariables.PvB_Mode::inputKeyPress);
         scene.setOnKeyReleased(GameVariables.PvB_Mode::inputKeyRelease);

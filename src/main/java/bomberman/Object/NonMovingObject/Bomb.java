@@ -227,6 +227,8 @@ public class Bomb extends GameObject {
 
         //sinh flame ở chính giữa
         this.getBelongTo().addFlame(new Flame(this.getBelongTo(), tempX * side, tempY * side, side, side, Flame.FlameType.CENTER_));
+        FilesPath.ExplosionAudio.start();
+        FilesPath.ExplosionAudio.setMicrosecondPosition(0);
     }
 
     @Override

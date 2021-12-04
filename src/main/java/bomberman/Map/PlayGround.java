@@ -11,6 +11,11 @@ import bomberman.Object.MovingObject.Threats.Balloom;
 import bomberman.Object.MovingObject.Threats.Oneal;
 import bomberman.Object.NonMovingObject.*;
 import bomberman.Object.GameObject;
+import javafx.scene.media.AudioClip;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 public class PlayGround {
     // ********** VARIABLES, SETTER, GETTER, VARIABLES OPERATION ********************************

@@ -1,5 +1,6 @@
 package bomberman;
 
+import bomberman.GlobalVariable.SoundVariable;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.KeyCode;
 
@@ -70,6 +71,10 @@ public class PvB_GamePlay {
         map.render();
     }
 
+    public void playPlayGroundAudio() {
+        SoundVariable.loopSound(FilesPath.PlayGroundAudio, 1000);
+    }
+
     /**
      * Lên level.
      */
@@ -87,7 +92,8 @@ public class PvB_GamePlay {
                 400, 400);
 
         needToWait = true;
-
+        SoundVariable.endAllSounds();
+        SoundVariable.playSound(FilesPath.LevelUpAudio);
         player = null;
 
         map.clearPlayers();
@@ -109,7 +115,12 @@ public class PvB_GamePlay {
                 400, 400);
 
         needToWait = true;
+        long startTime = System.nanoTime();
+        do {
 
+        } while (System.nanoTime() - startTime <= 750000000);
+        SoundVariable.endAllSounds();
+        SoundVariable.playSound(FilesPath.YouLoseAudio);
         gameStatus = gameStatusType.LOSE_;
     }
 
@@ -122,7 +133,12 @@ public class PvB_GamePlay {
                 400, 400);
 
         needToWait = true;
+        long startTime = System.nanoTime();
+        do {
 
+        } while (System.nanoTime() - startTime <= 750000000);
+        SoundVariable.endAllSounds();
+        SoundVariable.playSound(FilesPath.YouWonAudio);
         gameStatus = gameStatusType.WON_;
     }
 
@@ -136,13 +152,15 @@ public class PvB_GamePlay {
             do {
 
             } while (System.nanoTime() - startTime <= 2000000000);
-
+            SoundVariable.endAllSounds();
+            playPlayGroundAudio();
             needToWait = false;
         }
 
         for (Flame flame : map.getFlames()) {
             // nếu flame chạm nhân vật
             if (flame.checkIntersect(player)) {
+                player.die();
                 gameOver();
 
                 return;
@@ -151,6 +169,7 @@ public class PvB_GamePlay {
             // nếu flame chạm quái
             for (int j = 0; j < map.getEnemies().size(); j++) {
                 if (flame.checkIntersect(map.getEnemies().get(j))) {
+                    map.getEnemies().get(j).die();
                     map.removeEnemy(j);
 
                     j--;
@@ -161,6 +180,7 @@ public class PvB_GamePlay {
         for (Enemy enemy : map.getEnemies()) {
             // quái chạm nhân vật
             if (enemy.checkIntersect(player)) {
+                player.die();
                 gameOver();
 
                 return;
@@ -188,6 +208,7 @@ public class PvB_GamePlay {
                 //hủy những ô item đã hết thời gian nổ
                 if (now instanceof Item) {
                     if (((Item) now).checkExplodingExpired()) {
+                        SoundVariable.playSound(FilesPath.ItemAppearsAudio);
                         ((Item) now).setBlockState(Block.BlockState.FINAL_STATE_);
                     }
                 }

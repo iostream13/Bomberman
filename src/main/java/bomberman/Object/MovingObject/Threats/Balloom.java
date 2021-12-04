@@ -1,6 +1,7 @@
 package bomberman.Object.MovingObject.Threats;
 
 import bomberman.GlobalVariable.FilesPath;
+import bomberman.GlobalVariable.SoundVariable;
 import bomberman.Map.PlayGround;
 
 public class Balloom extends Enemy {
@@ -34,5 +35,9 @@ public class Balloom extends Enemy {
         setNumberOfGameFramePerFrame(3);
 
         setImageData(FilesPath.BalloomUp, FilesPath.BalloomDown, FilesPath.BalloomLeft, FilesPath.BalloomRight);
+    }
+
+    public void die() {
+        SoundVariable.playSound(FilesPath.BalloomDieAudio);
     }
 }

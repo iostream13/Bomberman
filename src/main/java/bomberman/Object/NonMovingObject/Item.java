@@ -1,6 +1,7 @@
 package bomberman.Object.NonMovingObject;
 
 import bomberman.GlobalVariable.FilesPath;
+import bomberman.GlobalVariable.SoundVariable;
 import bomberman.Map.PlayGround;
 
 public class Item extends Block {
@@ -28,6 +29,7 @@ public class Item extends Block {
     }
 
     public void setAteStatus(boolean ateStatus) {
+
         this.ateStatus = ateStatus;
     }
 
@@ -73,6 +75,7 @@ public class Item extends Block {
                 setNumberOfFrame(1);
             }
         } else {
+
             if (type == typeOfItems.BOMB_ITEM_) {
                 FINAL_STATE_IMAGE = FilesPath.PowerUpBomb;
             } else if (type == typeOfItems.FLAME_ITEM_) {
