@@ -1,10 +1,16 @@
 package bomberman.Object;
 
+import bomberman.GlobalVariable.FilesPath;
+import bomberman.GlobalVariable.GameVariables;
 import javafx.scene.image.Image;
 
 import bomberman.GlobalVariable.RenderVariable;
 
 import bomberman.Map.PlayGround;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
 
 /**
  * Object của game.
@@ -263,7 +269,25 @@ public abstract class GameObject {
         double imageWidth = RenderVariable.imageSize;
         double imageLength = RenderVariable.imageSize;
 
-        RenderVariable.gc.drawImage(getImage(), imageX, imageY, imageWidth, imageLength, x, y, width, length);
+        if (GameVariables.playerRole == GameVariables.role.PLAYER_1) {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("Image", FilesPath.encodeImageName(getImage()));
+                jsonObject.put("imageX", "" + imageX);
+                jsonObject.put("imageY", ""+ imageY);
+                jsonObject.put("imageWidth", "" + imageWidth);
+                jsonObject.put("imageLength", "" + imageLength);
+                jsonObject.put("x", ""+ x);
+                jsonObject.put("y", "" + y);
+                jsonObject.put("width", "" + width);
+                jsonObject.put("length", "" + length);
+                GameVariables.commandList.put(jsonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            RenderVariable.gc.drawImage(getImage(), imageX, imageY, imageWidth, imageLength, x, y, width, length);
+        }
     }
 }
 

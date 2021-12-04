@@ -1,30 +1,29 @@
 package bomberman;
 
-import bomberman.GlobalVariable.FilesPath;
+import bomberman.GlobalVariable.*;
+import bomberman.Server_Client.Client;
+import bomberman.Server_Client.EchoThread;
+import bomberman.Server_Client.Server;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
+import java.net.Socket;
 import java.net.URISyntaxException;
-import java.net.URL;
-
-import bomberman.GlobalVariable.RenderVariable;
-import bomberman.GlobalVariable.GameVariables;
-
-import javax.sound.sampled.Clip;
 
 /**
  * Chương trình chính.
  */
 public class BombermanApplication extends Application {
+    private enum runningMode {
+        MENU,  //TODO: code this
+        PvP,
+        PvB,
+    }
     @Override
     public void start(Stage stage) throws IOException, URISyntaxException {
         Group root = RenderVariable.root;
@@ -37,36 +36,86 @@ public class BombermanApplication extends Application {
         stage.setTitle("Bomberman");
         stage.setScene(scene);
 
-        // ********************** HANDLE GAME **********************************************************
+        runningMode runMode = runningMode.PvP;
 
-        GameVariables.PvB_Mode = new PvB_GamePlay();
+        if (runMode == runningMode.PvB) {
+            // ********************** HANDLE GAME **********************************************************
 
-        GameVariables.PvB_Mode.render();
-        GameVariables.PvB_Mode.playPlayGroundAudio();
+            GameVariables.PvB_Mode = new PvB_GamePlay();
 
-        scene.setOnKeyPressed(GameVariables.PvB_Mode::inputKeyPress);
-        scene.setOnKeyReleased(GameVariables.PvB_Mode::inputKeyRelease);
+            GameVariables.PvB_Mode.render();
+            GameVariables.PvB_Mode.playPlayGroundAudio();
 
-        GameVariables.PvB_Mode.setGameStatus(PvB_GamePlay.gameStatusType.PLAYING_);
+            scene.setOnKeyPressed(GameVariables.PvB_Mode::inputKeyPress);
+            scene.setOnKeyReleased(GameVariables.PvB_Mode::inputKeyRelease);
 
-        final long startNanoTime = System.nanoTime();
-        final long[] lastNanoTime = {System.nanoTime()};
+            GameVariables.PvB_Mode.setGameStatus(PvB_GamePlay.gameStatusType.PLAYING_);
 
-        new AnimationTimer() {
-            public void handle(long currentNanoTime) {
-                double elapseTime = (currentNanoTime - lastNanoTime[0]) / 1000000000.0;
+            final long startNanoTime = System.nanoTime();
+            final long[] lastNanoTime = {System.nanoTime()};
 
-                lastNanoTime[0] = currentNanoTime;
+            new AnimationTimer() {
+                public void handle(long currentNanoTime) {
+                    double elapseTime = (currentNanoTime - lastNanoTime[0]) / 1000000000.0;
 
-                if (GameVariables.PvB_Mode.getGameStatus() == PvB_GamePlay.gameStatusType.PLAYING_) {
-                    GameVariables.PvB_Mode.play();
+                    lastNanoTime[0] = currentNanoTime;
+
+                    if (GameVariables.PvB_Mode.getGameStatus() == PvB_GamePlay.gameStatusType.PLAYING_) {
+                        GameVariables.PvB_Mode.play();
+                    }
                 }
+            }.start();
+
+            // *********************************************************************************************
+
+            stage.show();
+        } else {
+
+            // thử cho 1 client kết nối tới server
+            LANVariables.client = new Client();
+            Socket socket = null;
+
+            if (LANVariables.client.socket == null || LANVariables.client.socket == null) {
+                //nếu không kết nối được, tức là chưa có server
+
+                //tạo server mới ở máy mình
+                LANVariables.server = new Server();
+                LANVariables.client = new Client();
+                try {
+                    socket = LANVariables.server.serverSocket.accept();
+                } catch (IOException e) {
+                    System.out.println("I/O error: " + e);
+                }
+                // luồng giao tiếp giữa server và client 1
+                new EchoThread(socket).start();
+                GameVariables.PvP_Mode = new PvP_GamePlay();
+                GameVariables.playerRole = GameVariables.role.PLAYER_1;
+                GameVariables.PvP_Mode.setGameStatus(PvP_GamePlay.gameStatusType.PLAYING_);
+            } else {
+                GameVariables.playerRole = GameVariables.role.PLAYER_2;
+                try {
+                    socket = LANVariables.server.serverSocket.accept();
+                } catch (IOException e) {
+                    System.out.println("I/O error: " + e);
+                }
+                // luồng giao tiếp giữa server và client 2
+                new EchoThread(socket).start();
             }
-        }.start();
 
-        // *********************************************************************************************
+            scene.setOnKeyPressed(Client::inputKeyPress);
+            scene.setOnKeyReleased(Client::inputKeyRelease);
 
-        stage.show();
+            new AnimationTimer() {
+                public void handle(long currentNanoTime) {
+
+                    if (GameVariables.PvP_Mode.getGameStatus() == PvP_GamePlay.gameStatusType.PLAYING_) {
+                        GameVariables.PvP_Mode.play();
+                    }
+                }
+            }.start();
+
+            stage.show();
+        }
     }
 
     public static void main(String[] args) {

@@ -1,11 +1,15 @@
 package bomberman.GlobalVariable;
 
 import bomberman.PvB_GamePlay;
+import bomberman.PvP_GamePlay;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
+import java.util.ArrayList;
 
 public class GameVariables {
     /**
@@ -13,6 +17,11 @@ public class GameVariables {
      * (Khởi tạo biến này khi chế độ PvB bắt đầu chơi.
      */
     public static PvB_GamePlay PvB_Mode;
+
+    /**
+     * Chế độ PvP trên 2 máy thông qua LAN
+     */
+    public static PvP_GamePlay PvP_Mode;
 
     /**
      * Độ lớn của một cell trong game.
@@ -45,4 +54,14 @@ public class GameVariables {
             ex.printStackTrace();
         }
     }
+
+    public static enum role {
+        PLAYER_1,
+        PLAYER_2,
+        NOT,
+    }
+
+    public static role playerRole;
+
+    public static JSONArray commandList = new JSONArray();
 }

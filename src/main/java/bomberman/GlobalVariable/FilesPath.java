@@ -73,6 +73,7 @@ public class FilesPath {
 
     // MAP FILE PATH
     public static final String PVB_MAP_PATH = "src/main/java/resources/Map/map.txt";
+    public static final String PVP_MAP_PATH = "src/main/java/resources/Map/PvPmap.txt";
 
     // AUDIO CLIP FILE PATH
     public static Clip PlayGroundAudio = createClip("PlayGround.wav");
@@ -91,5 +92,89 @@ public class FilesPath {
     public static Clip YouLoseAudio = createClip("YouLose.wav");
 
     public FilesPath() throws URISyntaxException {
+    }
+
+    // TODO: optimize this
+    public static String encodeImageName(Image tmp) {
+        if (Grass.equals(tmp)) {
+            return "Grass";
+        } else if (Wall.equals(tmp)) {
+            return "Wall";
+        } else if (Bomb.equals(tmp)) {
+            return "Bomb";
+        } else if (Portal.equals(tmp)) {
+            return "Portal";
+        } else if (Brick.equals(tmp)) {
+            return "Brick";
+        } else if (BrickExploded.equals(tmp)) {
+            return "BrickExploded";
+        } else if (FlameMid.equals(tmp)) {
+            return "FlameMid";
+        } else if (FlameLeft.equals(tmp)) {
+            return "FlameLeft";
+        } else if (FlameRight.equals(tmp)) {
+            return "FlameRight";
+        } else if (FlameUp.equals(tmp)) {
+            return "FlameUp";
+        } else if (FlameDown.equals(tmp)) {
+            return "FlameDown";
+        } else if (FlameVertical.equals(tmp)) {
+            return "FlameVertical";
+        } else if (FlameHorizontal.equals(tmp)) {
+            return "FlameHorizontal";
+        } else if (PowerUpBomb.equals(tmp)) {
+            return "PowerUpBomb";
+        } else if (PowerUpFlame.equals(tmp)) {
+            return "PowerUpFlame";
+        } else if (PowerUpSpeed.equals(tmp)) {
+            return "PowerUpSpeed";
+        } else if (LevelUp.equals(tmp)) {
+            return "LevelUp";
+        } else if (YouWon.equals(tmp)) {
+            return "YouWon";
+        } else if (YouLose.equals(tmp)) {
+            return "YouLose";
+        } else if (BomberUp.equals(tmp)) {
+            return "BomberUp";
+        } else if (BomberDown.equals(tmp)) {
+            return "BomberDown";
+        } else if (BomberLeft.equals(tmp)) {
+            return "BomberLeft";
+        } else if (BomberRight.equals(tmp)) {
+            return "BomberRight";
+        }
+        return "UNKNOWN";
+    }
+
+    public static Image decodeImageName(String name) {
+        switch (name) {
+            case "BomberUp": return BomberUp;
+            case "BomberDown": return BomberDown;
+            case "BomberLeft": return BomberLeft;
+            case "BomberRight": return BomberRight;
+            case "Grass": return Grass;
+            case "Wall": return Wall;
+            case "Bomb": return Bomb;
+            case "Portal": return Portal;
+            case "Brick": return Brick;
+            case "BrickExploded": return BrickExploded;
+
+            case "FlameMid": return FlameMid;
+            case "FlameLeft": return FlameLeft;
+            case "FlameRight": return FlameRight;
+            case "FlameUp": return FlameUp;
+            case "FlameDown": return FlameDown;
+
+            case "FlameVertical": return FlameVertical;
+            case "FlameHorizontal": return FlameHorizontal;
+
+            case "PowerUpBomb": return PowerUpBomb;
+            case "PowerUpFlame": return PowerUpFlame;
+            case "PowerUpSpeed": return PowerUpSpeed;
+
+            case "YouWon": return YouWon;
+            case "YouLose": return YouLose;
+        }
+        return Grass;
     }
 }
