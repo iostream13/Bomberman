@@ -6,6 +6,7 @@ import bomberman.Server_Client.EchoThread;
 import bomberman.Server_Client.Server;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -75,31 +76,43 @@ public class BombermanApplication extends Application {
             LANVariables.client = new Client();
             Socket socket = null;
 
-            if (LANVariables.client.socket == null || LANVariables.client.socket == null) {
+            if (LANVariables.client == null || LANVariables.client.socket == null) {
                 //nếu không kết nối được, tức là chưa có server
 
                 //tạo server mới ở máy mình
                 LANVariables.server = new Server();
+
+                // khởi tạo bản thân như client 1
                 LANVariables.client = new Client();
+
+                // tạo luồng giao tiếp giữa server và client 1
                 try {
                     socket = LANVariables.server.serverSocket.accept();
                 } catch (IOException e) {
                     System.out.println("I/O error: " + e);
                 }
-                // luồng giao tiếp giữa server và client 1
                 new EchoThread(socket).start();
+
                 GameVariables.PvP_Mode = new PvP_GamePlay();
+                GameVariables.PvP_Mode.play();
+
+                // đợi client 2 kết nối
+                while (true) {
+                    // thử tạo luồng giao tiếp cho client 2, nếu thành công thì không đợi nữa
+                    try {
+                        Socket socket_2 = LANVariables.server.serverSocket.accept();
+                        new EchoThread(socket_2).start();
+                        break;
+                    } catch (IOException e) {
+                        continue;
+                    }
+                }
+
                 GameVariables.playerRole = GameVariables.role.PLAYER_1;
                 GameVariables.PvP_Mode.setGameStatus(PvP_GamePlay.gameStatusType.PLAYING_);
             } else {
+                // kết nối thành công tức là mình là client 2
                 GameVariables.playerRole = GameVariables.role.PLAYER_2;
-                try {
-                    socket = LANVariables.server.serverSocket.accept();
-                } catch (IOException e) {
-                    System.out.println("I/O error: " + e);
-                }
-                // luồng giao tiếp giữa server và client 2
-                new EchoThread(socket).start();
             }
 
             scene.setOnKeyPressed(Client::inputKeyPress);
@@ -108,13 +121,37 @@ public class BombermanApplication extends Application {
             new AnimationTimer() {
                 public void handle(long currentNanoTime) {
 
-                    if (GameVariables.PvP_Mode.getGameStatus() == PvP_GamePlay.gameStatusType.PLAYING_) {
-                        GameVariables.PvP_Mode.play();
+                    if (GameVariables.playerRole == GameVariables.role.PLAYER_1) {
+                        if (GameVariables.PvP_Mode.getGameStatus() == PvP_GamePlay.gameStatusType.PLAYING_) {
+                            GameVariables.PvP_Mode.play();
+                        }
+                    }
+
+                    LANVariables.client.sendDataToServer("GET");
+                    //gọi client nhận dữ liệu và xử lý dữ liệu từ server
+                    GameVariables.commandListString = LANVariables.client.readDataFromServer();
+                    Client.decodeRenderCommand(GameVariables.commandListString);
+
+                    if (!(stage.isShowing())) {
+                        try {
+                            if(GameVariables.playerRole == GameVariables.role.PLAYER_1) {
+                                LANVariables.server.serverSocket.close();
+                            }
+                            LANVariables.client.socket.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        this.stop();
                     }
                 }
             }.start();
 
             stage.show();
+
+            if (!(stage.isShowing())) {
+                System.out.println("ahihi");
+                return;
+            }
         }
     }
 

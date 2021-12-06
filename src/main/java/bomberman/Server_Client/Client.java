@@ -5,12 +5,15 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import bomberman.GlobalVariable.FilesPath;
 import bomberman.GlobalVariable.GameVariables;
 import bomberman.GlobalVariable.LANVariables;
+import bomberman.GlobalVariable.RenderVariable;
 import bomberman.Object.MovingObject.MovingObject;
 import bomberman.Server_Client.Server;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -66,12 +69,10 @@ public class Client{
     // nhận data từ server
     public String readDataFromServer() {
         try {
-            is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String command = is.readLine();
             if ((command == null) || (command.length() == 0) || (command.charAt(0) != '[')) {
                 return "NOT COMMAND";
             } else {
-                //System.out.println(command);
                 return command;
             }
         } catch (IOException e) {
@@ -175,5 +176,37 @@ public class Client{
 
         // gửi lệnh đến server
         LANVariables.client.sendDataToServer(jsonObject);
+    }
+
+    // giải mã các lệnh in từ server
+    public static void decodeRenderCommand(String command) {
+        if (command == "NOT COMMAND") return;
+        try {
+            JSONArray commandList = new JSONArray(command);
+            for (int i = 0; i < commandList.length(); i++) {
+                JSONObject object = (JSONObject) commandList.get(i);
+                double imageX = Double.parseDouble((String) object.get("imageX"));
+                double imageY = Double.parseDouble((String) object.get("imageY"));
+                double imageWidth = Double.parseDouble((String) object.get("imageWidth"));
+                double imageLength = Double.parseDouble((String) object.get("imageLength"));
+                double x = Double.parseDouble((String) object.get("x"));
+                double y = Double.parseDouble((String) object.get("y"));
+                double width = Double.parseDouble((String) object.get("width"));
+                double length = Double.parseDouble((String) object.get("length"));
+                RenderVariable.gc.drawImage(
+                        FilesPath.decodeImageName((String) object.get("Image")),
+                        imageX,
+                        imageY,
+                        imageWidth,
+                        imageLength,
+                        x,
+                        y,
+                        width,
+                        length
+                );
+            }
+        } catch (JSONException e) {
+            return;
+        }
     }
 }

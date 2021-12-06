@@ -120,141 +120,104 @@ public class PvP_GamePlay {
      * Chạy game.
      */
     public void play() {
-        if (GameVariables.playerRole == GameVariables.role.PLAYER_1) {
-            if (needToWait) {
-                long startTime = System.nanoTime();
+        if (needToWait) {
+            long startTime = System.nanoTime();
 
-                do {
+            do {
 
-                } while (System.nanoTime() - startTime <= 2000000000);
-                SoundVariable.endAllSounds();
-                playPlayGroundAudio();
-                needToWait = false;
+            } while (System.nanoTime() - startTime <= 2000000000);
+            SoundVariable.endAllSounds();
+            playPlayGroundAudio();
+            needToWait = false;
+        }
+
+        for (Flame flame : map.getFlames()) {
+            // nếu flame chạm nhân vật 1
+            if (flame.checkIntersect(player1)) {
+                player1.die();
+                gameOver();
+                return;
             }
-
-            for (Flame flame : map.getFlames()) {
-                // nếu flame chạm nhân vật 1
-                if (flame.checkIntersect(player1)) {
-                    player1.die();
-                    gameOver();
-                    return;
-                }
-                //nếu flame chạm nhân vật 2
-                if (flame.checkIntersect(player2)) {
-                    player2.die();
-                    gameOver();
-                    return;
-                }
+            //nếu flame chạm nhân vật 2
+            if (flame.checkIntersect(player2)) {
+                player2.die();
+                gameOver();
+                return;
             }
+        }
 
-            //cập nhật trạng thái của bản đồ
-            for (int i = 0; i < map.getNumberOfRow(); i++) {
-                for (int j = 0; j < map.getNumberOfColumn(); j++) {
-                    GameObject now = map.getCells(i, j);
+        //cập nhật trạng thái của bản đồ
+        for (int i = 0; i < map.getNumberOfRow(); i++) {
+            for (int j = 0; j < map.getNumberOfColumn(); j++) {
+                GameObject now = map.getCells(i, j);
 
-                    //hủy những ô brick đã hết thời gian nổ
-                    if (now instanceof Brick) {
-                        if (((Brick) now).checkExplodingExpired()) {
-                            ((Brick) now).setBlockState(Block.BlockState.FINAL_STATE_);
-                        }
+                //hủy những ô brick đã hết thời gian nổ
+                if (now instanceof Brick) {
+                    if (((Brick) now).checkExplodingExpired()) {
+                        ((Brick) now).setBlockState(Block.BlockState.FINAL_STATE_);
                     }
+                }
 
-                    //hủy những ô item đã hết thời gian nổ
-                    if (now instanceof Item) {
-                        if (((Item) now).checkExplodingExpired()) {
-                            SoundVariable.playSound(FilesPath.ItemAppearsAudio);
-                            ((Item) now).setBlockState(Block.BlockState.FINAL_STATE_);
-                        }
+                //hủy những ô item đã hết thời gian nổ
+                if (now instanceof Item) {
+                    if (((Item) now).checkExplodingExpired()) {
+                        SoundVariable.playSound(FilesPath.ItemAppearsAudio);
+                        ((Item) now).setBlockState(Block.BlockState.FINAL_STATE_);
                     }
                 }
             }
-
-            //kiểm tra xem bom đã đến lúc nổ chưa, nếu đến thì cho nổ, tạo flame và xóa bom
-            for (int i = 0; i < map.getBombs().size(); i++) {
-                if (map.getBombs().get(i).checkExplode()) {
-                    map.getBombs().get(i).detonateBomb();
-
-                    map.getBombs().get(i).getOwner().changeCurrentBomb(-1);
-
-                    map.removeBomb(i);
-
-                    i--;
-                } else {
-                    map.getBombs().get(i).updateUnblockList();
-                }
-            }
-
-            for (int i = 0; i < map.getFlames().size(); i++) {
-                //kiểm tra flame đã hết thời gian chưa, nếu có thì xóa
-                if (map.getFlames().get(i).checkExpired()) {
-                    map.removeFlame(i);
-
-                    i--;
-                } else {
-                    // nếu flame chạm bom, kích nổ bom đó luôn
-                    for (int j = 0; j < map.getBombs().size(); j++)
-                        if (map.getFlames().get(i).checkIntersect(map.getBombs().get(j))) {
-                            map.getBombs().get(j).detonateBomb();
-
-                            map.getBombs().get(j).getOwner().changeCurrentBomb(-1);
-
-                            map.removeBomb(j);
-
-                            j--;
-                        }
-                }
-            }
-
-            // Player luôn di chuyển (đứng im tại chỗ tốc độ bằng 0)
-            player1.move();
-            player2.move();
-
-            player1.checkEatItems();
-            player2.checkEatItems();
-
-            // Tạo ra các lệnh render
-            createRenderCommand();
         }
 
-        // Gửi yêu cầu lấy các lệnh cần render đến server
-        LANVariables.client.sendDataToServer("GET");
-    }
+        //kiểm tra xem bom đã đến lúc nổ chưa, nếu đến thì cho nổ, tạo flame và xóa bom
+        for (int i = 0; i < map.getBombs().size(); i++) {
+            if (map.getBombs().get(i).checkExplode()) {
+                map.getBombs().get(i).detonateBomb();
 
-    // giải mã các lệnh in từ server
-    public void decodeRenderCommand(String command) {
-        if (command == "NOT COMMAND") return;
-        try {
-            JSONArray commandList = new JSONArray(command);
-            for (int i = 0; i < commandList.length(); i++) {
-                JSONObject object = (JSONObject) commandList.get(i);
-                double imageX = Double.parseDouble((String) object.get("imageX"));
-                double imageY = Double.parseDouble((String) object.get("imageY"));
-                double imageWidth = Double.parseDouble((String) object.get("imageWidth"));
-                double imageLength = Double.parseDouble((String) object.get("imageLength"));
-                double x = Double.parseDouble((String) object.get("x"));
-                double y = Double.parseDouble((String) object.get("y"));
-                double width = Double.parseDouble((String) object.get("width"));
-                double length = Double.parseDouble((String) object.get("length"));
-                RenderVariable.gc.drawImage(
-                        FilesPath.decodeImageName((String) object.get("Image")),
-                        imageX,
-                        imageY,
-                        imageWidth,
-                        imageLength,
-                        x,
-                        y,
-                        width,
-                        length
-                );
+                map.getBombs().get(i).getOwner().changeCurrentBomb(-1);
+
+                map.removeBomb(i);
+
+                i--;
+            } else {
+                map.getBombs().get(i).updateUnblockList();
             }
-        } catch (JSONException e) {
-            return;
         }
+
+        for (int i = 0; i < map.getFlames().size(); i++) {
+            //kiểm tra flame đã hết thời gian chưa, nếu có thì xóa
+            if (map.getFlames().get(i).checkExpired()) {
+                map.removeFlame(i);
+
+                i--;
+            } else {
+                // nếu flame chạm bom, kích nổ bom đó luôn
+                for (int j = 0; j < map.getBombs().size(); j++)
+                    if (map.getFlames().get(i).checkIntersect(map.getBombs().get(j))) {
+                        map.getBombs().get(j).detonateBomb();
+
+                        map.getBombs().get(j).getOwner().changeCurrentBomb(-1);
+
+                        map.removeBomb(j);
+
+                        j--;
+                    }
+            }
+        }
+
+        // Player luôn di chuyển (đứng im tại chỗ tốc độ bằng 0)
+        player1.move();
+        player2.move();
+
+        player1.checkEatItems();
+        player2.checkEatItems();
+
+        // Tạo ra các lệnh render
+        createRenderCommand();
     }
 
     // giải mã các lệnh thao tác nhân vật từ client
     public void decodePlayerCommand(String s) {
-        if (s==null || s.length()==0 || s.charAt(0) != '{') return;
+        if (s == null || s.length() == 0 || s.charAt(0) != '{') return;
         Bomber player;
         try {
             JSONObject command = new JSONObject(s);
