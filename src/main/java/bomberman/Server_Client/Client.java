@@ -17,7 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Client{
+public class Client {
 
     // địa chỉ máy chủ
     InetAddress host = null;
@@ -179,12 +179,43 @@ public class Client{
     }
 
     // giải mã các lệnh in từ server
-    public static void decodeRenderCommand(String command) {
-        if (command == "NOT COMMAND") return;
+    public static boolean decodeRenderCommand(String command) {
+        if (command == "NOT COMMAND") return false;
         try {
             JSONArray commandList = new JSONArray(command);
             for (int i = 0; i < commandList.length(); i++) {
                 JSONObject object = (JSONObject) commandList.get(i);
+
+                if (object.has("player") && object.get("player").equals("PLAYER_1") && GameVariables.playerRole == GameVariables.role.PLAYER_1) {
+                    double x = Double.parseDouble((String) object.get("x"));
+                    double y = Double.parseDouble((String) object.get("y"));
+                    double width = Double.parseDouble((String) object.get("width"));
+                    double length = Double.parseDouble((String) object.get("length"));
+                    RenderVariable.gc.drawImage(
+                            FilesPath.decodeImageName((String) object.get("Image")),
+                            x,
+                            y,
+                            width,
+                            length
+                    );
+                    return true;
+                } else if (object.has("player") && object.get("player").equals("PLAYER_2") && GameVariables.playerRole == GameVariables.role.PLAYER_2) {
+                    double x = Double.parseDouble((String) object.get("x"));
+                    double y = Double.parseDouble((String) object.get("y"));
+                    double width = Double.parseDouble((String) object.get("width"));
+                    double length = Double.parseDouble((String) object.get("length"));
+                    RenderVariable.gc.drawImage(
+                            FilesPath.decodeImageName((String) object.get("Image")),
+                            x,
+                            y,
+                            width,
+                            length
+                    );
+                    return true;
+                }
+
+                if (object.has("player")) continue;
+
                 double imageX = Double.parseDouble((String) object.get("imageX"));
                 double imageY = Double.parseDouble((String) object.get("imageY"));
                 double imageWidth = Double.parseDouble((String) object.get("imageWidth"));
@@ -205,8 +236,9 @@ public class Client{
                         length
                 );
             }
+            return false;
         } catch (JSONException e) {
-            return;
+            return false;
         }
     }
 }

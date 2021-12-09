@@ -118,7 +118,10 @@ public class BombermanApplication extends Application {
             scene.setOnKeyPressed(Client::inputKeyPress);
             scene.setOnKeyReleased(Client::inputKeyRelease);
 
+
+
             new AnimationTimer() {
+                boolean stopped = false;
                 public void handle(long currentNanoTime) {
 
                     if (GameVariables.playerRole == GameVariables.role.PLAYER_1) {
@@ -127,10 +130,21 @@ public class BombermanApplication extends Application {
                         }
                     }
 
+                    if (stopped) {
+                        try {
+                            Thread.sleep(4000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        stage.hide();
+                    }
+
                     LANVariables.client.sendDataToServer("GET");
+
                     //gọi client nhận dữ liệu và xử lý dữ liệu từ server
                     GameVariables.commandListString = LANVariables.client.readDataFromServer();
-                    Client.decodeRenderCommand(GameVariables.commandListString);
+
+                    stopped = Client.decodeRenderCommand(GameVariables.commandListString);
 
                     if (!(stage.isShowing())) {
                         try {
@@ -148,10 +162,6 @@ public class BombermanApplication extends Application {
 
             stage.show();
 
-            if (!(stage.isShowing())) {
-                System.out.println("ahihi");
-                return;
-            }
         }
     }
 

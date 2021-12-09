@@ -45,6 +45,10 @@ public class EchoThread extends Thread {
                         String s = GameVariables.commandList.toString() + '\n';
                         out.write(s);
                         out.flush();
+                    } else {
+                        String s = "NO COMMAND\n";
+                        out.write(s);
+                        out.flush();
                     }
                 } else {
                     // Nếu là yêu cầu thao tác nhân vật, xử lý yêu cầu đó

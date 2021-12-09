@@ -17,8 +17,7 @@ public class PvP_GamePlay {
      */
     public enum gameStatusType {
         PLAYING_,
-        WON_,
-        LOSE_
+        NOTPLAYING_,
     }
 
     /**
@@ -72,8 +71,9 @@ public class PvP_GamePlay {
      * Render screen.
      */
     public void createRenderCommand() {
-        GameVariables.commandList = new JSONArray();
+        GameVariables.tempCommandList = new JSONArray();
         map.render();
+        GameVariables.commandList = GameVariables.tempCommandList;
     }
 
     public void playPlayGroundAudio() {
@@ -81,39 +81,84 @@ public class PvP_GamePlay {
     }
 
     /**
-     * Xử lí thua game.
+     * Xử lý game player 1 thắng.
      */
-    public void gameOver() {
-//        RenderVariable.gc.drawImage(FilesPath.YouLose,
-//                RenderVariable.SCREEN_LENGTH / 2 - 200, RenderVariable.SCREEN_WIDTH / 2 - 200,
-//                400, 400);
-//
-//        needToWait = true;
-//        long startTime = System.nanoTime();
-//        do {
-//
-//        } while (System.nanoTime() - startTime <= 750000000);
-//        SoundVariable.endAllSounds();
-//        SoundVariable.playSound(FilesPath.YouLoseAudio);
-//        gameStatus = PvB_GamePlay.gameStatusType.LOSE_;
+    public void gamePlayer1Won() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("Image", "YouWon");
+            jsonObject.put("x", "" + (RenderVariable.SCREEN_LENGTH / 2 - 200));
+            jsonObject.put("y", "" + (RenderVariable.SCREEN_WIDTH / 2 - 200));
+            jsonObject.put("width", "" + 400);
+            jsonObject.put("length", "" + 400);
+            jsonObject.put("player", "PLAYER_1");
+            GameVariables.tempCommandList.put(jsonObject);
+
+            jsonObject = new JSONObject();
+            jsonObject.put("Image", "YouLose");
+            jsonObject.put("x", "" + (RenderVariable.SCREEN_LENGTH / 2 - 200));
+            jsonObject.put("y", "" + (RenderVariable.SCREEN_WIDTH / 2 - 200));
+            jsonObject.put("width", "" + 400);
+            jsonObject.put("length", "" + 400);
+            jsonObject.put("player", "PLAYER_2");
+            GameVariables.tempCommandList.put(jsonObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        GameVariables.commandList = GameVariables.tempCommandList;
+        gameStatus = gameStatusType.NOTPLAYING_;
     }
 
     /**
-     * Xử lý thắng game.
+     * Xử lý game player 2 thắng.
      */
-    public void gameWon() {
-//        RenderVariable.gc.drawImage(FilesPath.YouWon,
-//                RenderVariable.SCREEN_LENGTH / 2 - 200, RenderVariable.SCREEN_WIDTH / 2 - 200,
-//                400, 400);
-//
-//        needToWait = true;
-//        long startTime = System.nanoTime();
-//        do {
-//
-//        } while (System.nanoTime() - startTime <= 750000000);
-//        SoundVariable.endAllSounds();
-//        SoundVariable.playSound(FilesPath.YouWonAudio);
-//        gameStatus = PvB_GamePlay.gameStatusType.WON_;
+    public void gamePlayer2Won() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("Image", "YouWon");
+            jsonObject.put("x", "" + (RenderVariable.SCREEN_LENGTH / 2 - 200));
+            jsonObject.put("y", "" + (RenderVariable.SCREEN_WIDTH / 2 - 200));
+            jsonObject.put("width", "" + 400);
+            jsonObject.put("length", "" + 400);
+            jsonObject.put("player", "PLAYER_2");
+            GameVariables.tempCommandList.put(jsonObject);
+
+            jsonObject = new JSONObject();
+            jsonObject.put("Image", "YouLose");
+            jsonObject.put("x", "" + (RenderVariable.SCREEN_LENGTH / 2 - 200));
+            jsonObject.put("y", "" + (RenderVariable.SCREEN_WIDTH / 2 - 200));
+            jsonObject.put("width", "" + 400);
+            jsonObject.put("length", "" + 400);
+            jsonObject.put("player", "PLAYER_1");
+            GameVariables.tempCommandList.put(jsonObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        GameVariables.commandList = GameVariables.tempCommandList;
+        gameStatus = gameStatusType.NOTPLAYING_;
+    }
+
+    /**
+     * Xử lý game hòa.
+     */
+    public void gameDraw() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("Image", "YouDraw");
+            jsonObject.put("x", "" + (RenderVariable.SCREEN_LENGTH / 2 - 200));
+            jsonObject.put("y", "" + (RenderVariable.SCREEN_WIDTH / 2 - 200));
+            double sizeOfImage = 400.0;
+            jsonObject.put("width", "" + sizeOfImage);
+            jsonObject.put("length", "" + sizeOfImage);
+            GameVariables.tempCommandList.put(jsonObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        GameVariables.commandList = GameVariables.tempCommandList;
+        gameStatus = gameStatusType.NOTPLAYING_;
     }
 
     /**
@@ -131,19 +176,31 @@ public class PvP_GamePlay {
             needToWait = false;
         }
 
+        boolean player1_die = false;
+        boolean player2_die = false;
+
         for (Flame flame : map.getFlames()) {
+
             // nếu flame chạm nhân vật 1
             if (flame.checkIntersect(player1)) {
-                player1.die();
-                gameOver();
-                return;
+                player1_die = true;
             }
+
             //nếu flame chạm nhân vật 2
             if (flame.checkIntersect(player2)) {
-                player2.die();
-                gameOver();
-                return;
+                player2_die = true;
             }
+        }
+
+        if (player1_die == true && player2_die == true) {
+            gameDraw();
+            return;
+        } else if (player1_die == true) {
+            gamePlayer2Won();
+            return;
+        } else if (player2_die == true) {
+            gamePlayer1Won();
+            return;
         }
 
         //cập nhật trạng thái của bản đồ

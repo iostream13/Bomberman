@@ -281,7 +281,7 @@ public abstract class GameObject {
                 jsonObject.put("y", "" + y);
                 jsonObject.put("width", "" + width);
                 jsonObject.put("length", "" + length);
-                GameVariables.commandList.put(jsonObject);
+                GameVariables.tempCommandList.put(jsonObject);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
