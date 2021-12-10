@@ -144,14 +144,23 @@ public class PvP_GamePlay {
      * Xử lý game hòa.
      */
     public void gameDraw() {
-        JSONObject jsonObject = new JSONObject();
         try {
+            JSONObject jsonObject = new JSONObject();
             jsonObject.put("Image", "YouDraw");
             jsonObject.put("x", "" + (RenderVariable.SCREEN_LENGTH / 2 - 200));
             jsonObject.put("y", "" + (RenderVariable.SCREEN_WIDTH / 2 - 200));
-            double sizeOfImage = 400.0;
-            jsonObject.put("width", "" + sizeOfImage);
-            jsonObject.put("length", "" + sizeOfImage);
+            jsonObject.put("width", "" + 400);
+            jsonObject.put("length", "" + 400);
+            jsonObject.put("player", "PLAYER_1");
+            GameVariables.tempCommandList.put(jsonObject);
+
+            jsonObject = new JSONObject();
+            jsonObject.put("Image", "YouDraw");
+            jsonObject.put("x", "" + (RenderVariable.SCREEN_LENGTH / 2 - 200));
+            jsonObject.put("y", "" + (RenderVariable.SCREEN_WIDTH / 2 - 200));
+            jsonObject.put("width", "" + 400);
+            jsonObject.put("length", "" + 400);
+            jsonObject.put("player", "PLAYER_2");
             GameVariables.tempCommandList.put(jsonObject);
         } catch (JSONException e) {
             e.printStackTrace();

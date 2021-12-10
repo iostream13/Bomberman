@@ -11,6 +11,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.stage.Stage;
+import org.json.JSONArray;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -37,7 +38,7 @@ public class BombermanApplication extends Application {
         stage.setTitle("Bomberman");
         stage.setScene(scene);
 
-        runningMode runMode = runningMode.PvP;
+        runningMode runMode = runningMode.PvB;
 
         if (runMode == runningMode.PvB) {
             // ********************** HANDLE GAME **********************************************************
@@ -52,17 +53,29 @@ public class BombermanApplication extends Application {
 
             GameVariables.PvB_Mode.setGameStatus(PvB_GamePlay.gameStatusType.PLAYING_);
 
-            final long startNanoTime = System.nanoTime();
-            final long[] lastNanoTime = {System.nanoTime()};
 
             new AnimationTimer() {
+                boolean stopped =false;
                 public void handle(long currentNanoTime) {
-                    double elapseTime = (currentNanoTime - lastNanoTime[0]) / 1000000000.0;
 
-                    lastNanoTime[0] = currentNanoTime;
+                    if (stopped) {
+                        try {
+                            Thread.sleep(4000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        stage.hide();
+                    }
 
                     if (GameVariables.PvB_Mode.getGameStatus() == PvB_GamePlay.gameStatusType.PLAYING_) {
                         GameVariables.PvB_Mode.play();
+                    } else {
+                        stopped = true;
+                    }
+
+                    if (!(stage.isShowing())) {
+                        GameVariables.PvB_Mode=null;
+                        this.stop();
                     }
                 }
             }.start();
@@ -72,53 +85,8 @@ public class BombermanApplication extends Application {
             stage.show();
         } else {
 
-            // thử cho 1 client kết nối tới server
-            LANVariables.client = new Client();
-            Socket socket = null;
-
-            if (LANVariables.client == null || LANVariables.client.socket == null) {
-                //nếu không kết nối được, tức là chưa có server
-
-                //tạo server mới ở máy mình
-                LANVariables.server = new Server();
-
-                // khởi tạo bản thân như client 1
-                LANVariables.client = new Client();
-
-                // tạo luồng giao tiếp giữa server và client 1
-                try {
-                    socket = LANVariables.server.serverSocket.accept();
-                } catch (IOException e) {
-                    System.out.println("I/O error: " + e);
-                }
-                new EchoThread(socket).start();
-
-                GameVariables.PvP_Mode = new PvP_GamePlay();
-                GameVariables.PvP_Mode.play();
-
-                // đợi client 2 kết nối
-                while (true) {
-                    // thử tạo luồng giao tiếp cho client 2, nếu thành công thì không đợi nữa
-                    try {
-                        Socket socket_2 = LANVariables.server.serverSocket.accept();
-                        new EchoThread(socket_2).start();
-                        break;
-                    } catch (IOException e) {
-                        continue;
-                    }
-                }
-
-                GameVariables.playerRole = GameVariables.role.PLAYER_1;
-                GameVariables.PvP_Mode.setGameStatus(PvP_GamePlay.gameStatusType.PLAYING_);
-            } else {
-                // kết nối thành công tức là mình là client 2
-                GameVariables.playerRole = GameVariables.role.PLAYER_2;
-            }
-
             scene.setOnKeyPressed(Client::inputKeyPress);
             scene.setOnKeyReleased(Client::inputKeyRelease);
-
-
 
             new AnimationTimer() {
                 boolean stopped = false;
@@ -155,6 +123,13 @@ public class BombermanApplication extends Application {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                        LANVariables.client=null;
+                        LANVariables.server=null;
+                        GameVariables.playerRole=null;
+                        GameVariables.commandList = new JSONArray();
+                        GameVariables.tempCommandList = new JSONArray();
+                        GameVariables.commandListString = new String();
+                        GameVariables.PvP_Mode=null;
                         this.stop();
                     }
                 }

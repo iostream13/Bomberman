@@ -1,16 +1,13 @@
 package bomberman.Server_Client;
 
 import java.io.*;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 
 import bomberman.GlobalVariable.FilesPath;
 import bomberman.GlobalVariable.GameVariables;
 import bomberman.GlobalVariable.LANVariables;
 import bomberman.GlobalVariable.RenderVariable;
 import bomberman.Object.MovingObject.MovingObject;
-import bomberman.Server_Client.Server;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.json.JSONArray;
@@ -41,6 +38,27 @@ public class Client {
         } catch (IOException e) {
             socket = null;
         }
+    }
+
+    public Client(String IP) {
+        try {
+            host = InetAddress.getByName(IP);
+            socket = new Socket(host.getHostName(), LANVariables.PORT);
+            is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            os = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            socket.setTcpNoDelay(true);
+        } catch (UnknownHostException e) {
+            socket = null;
+        } catch (IOException e) {
+            socket = null;
+        }
+    }
+
+    public static boolean createClientWithIP(String IP) {
+        LANVariables.client = new Client(IP);
+        if (LANVariables.client == null || LANVariables.client.socket == null) return false;
+        GameVariables.playerRole = GameVariables.role.PLAYER_2;
+        return true;
     }
 
     // gửi dữ liệu tới server
