@@ -55,7 +55,6 @@ public class FilesPath {
     public static final Image LevelUp = createImage("/image/level_up.png");
     public static final Image YouWon = createImage("/image/you_won.png");
     public static final Image YouLose = createImage("/image/you_lose.png");
-    public static final Image YouDraw= createImage("/image/you_draw.png");
 
     public static final Image OnealUp = createImage("/image/oneal_up.png");
     public static final Image OnealDown = createImage("/image/oneal_down.png");
@@ -143,8 +142,6 @@ public class FilesPath {
             return "BomberLeft";
         } else if (BomberRight.equals(tmp)) {
             return "BomberRight";
-        } else if (YouDraw.equals(tmp)) {
-            return "YouDraw";
         }
         return "UNKNOWN";
     }
@@ -177,7 +174,6 @@ public class FilesPath {
 
             case "YouWon": return YouWon;
             case "YouLose": return YouLose;
-            case "YouDraw": return YouDraw;
         }
         return Grass;
     }
