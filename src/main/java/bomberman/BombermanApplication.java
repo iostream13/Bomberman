@@ -68,9 +68,8 @@ public class BombermanApplication extends Application {
             scene.setOnKeyReleased(GameVariables.PvB_Mode::inputKeyRelease);
 
             GameVariables.PvB_Mode.setGameStatus(PvB_GamePlay.gameStatusType.PLAYING_);
-
             new AnimationTimer() {
-                boolean stopped =false;
+                boolean stopped = false;
                 public void handle(long currentNanoTime) {
 
                     if (stopped) {
@@ -212,6 +211,57 @@ public class BombermanApplication extends Application {
                     else {
                         // kết nối thành công tức là mình là client 2
                         GameVariables.playerRole = GameVariables.role.PLAYER_2;
+                        scene.setOnKeyPressed(Client::inputKeyPress);
+                        scene.setOnKeyReleased(Client::inputKeyRelease);
+
+                        new AnimationTimer() {
+                            boolean stopped = false;
+                            public void handle(long currentNanoTime) {
+
+                                if (GameVariables.playerRole == GameVariables.role.PLAYER_2) {
+                                    if (GameVariables.PvP_Mode.getGameStatus() == PvP_GamePlay.gameStatusType.PLAYING_) {
+                                        GameVariables.PvP_Mode.play();
+                                    }
+                                }
+
+                                if (stopped) {
+                                    try {
+                                        Thread.sleep(4000);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    stage.hide();
+                                }
+
+                                LANVariables.client.sendDataToServer("GET");
+
+                                //gọi client nhận dữ liệu và xử lý dữ liệu từ server
+                                GameVariables.commandListString = LANVariables.client.readDataFromServer();
+
+                                stopped = Client.decodeRenderCommand(GameVariables.commandListString);
+
+                                if (!(stage.isShowing())) {
+                                    try {
+                                        if(GameVariables.playerRole == GameVariables.role.PLAYER_2) {
+                                            LANVariables.server.serverSocket.close();
+                                        }
+                                        LANVariables.client.socket.close();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    LANVariables.client=null;
+                                    LANVariables.server=null;
+                                    GameVariables.playerRole=null;
+                                    GameVariables.commandList = new JSONArray();
+                                    GameVariables.tempCommandList = new JSONArray();
+                                    GameVariables.commandListString = new String();
+                                    GameVariables.PvP_Mode=null;
+                                    this.stop();
+                                }
+                            }
+                        }.start();
+                        stage.setScene(scene);
+                        stage.show();
                     }
                 });
 

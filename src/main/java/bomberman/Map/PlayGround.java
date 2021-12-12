@@ -9,6 +9,7 @@ import bomberman.Object.MovingObject.Bomber.Bomber;
 import bomberman.Object.MovingObject.Threats.Enemy;
 import bomberman.Object.MovingObject.Threats.Balloom;
 import bomberman.Object.MovingObject.Threats.Oneal;
+import bomberman.Object.MovingObject.Threats.Teleport;
 import bomberman.Object.NonMovingObject.*;
 import bomberman.Object.GameObject;
 import javafx.scene.media.AudioClip;
@@ -283,6 +284,10 @@ public class PlayGround {
                         break;
                     case '2':
                         enemies.add(new Oneal(this, cellLength * i, cellLength * y));
+                        cells[y][i] = new Grass(this, cellLength * i, cellLength * y, cellLength, cellLength);
+                        break;
+                    case '3':
+                        enemies.add(new Teleport(this, cellLength * i, cellLength * y));
                         cells[y][i] = new Grass(this, cellLength * i, cellLength * y, cellLength, cellLength);
                         break;
                     default:

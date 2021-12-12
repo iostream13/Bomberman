@@ -40,7 +40,8 @@ public class PvB_GamePlay {
     /**
      * Map.
      */
-    public PlayGround map;
+    public static PlayGround map;
+
 
     /**
      * Player của màn chơi này.
@@ -179,7 +180,7 @@ public class PvB_GamePlay {
 
         for (Enemy enemy : map.getEnemies()) {
             // quái chạm nhân vật
-            if (enemy.checkIntersect(player)) {
+            if (enemy.checkIntersect(player) && enemy.getType() == 1) {
                 player.die();
                 gameOver();
 
