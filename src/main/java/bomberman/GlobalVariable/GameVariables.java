@@ -38,23 +38,6 @@ public class GameVariables {
         return (int) (inputValue / cellLength);
     }
 
-    /**
-     * âm thanh.
-     * @param filePath đường dẫn
-     */
-    public static void playSound(String filePath) {
-        filePath = "src/main/java/resources/sound/" + filePath;
-        try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioInputStream);
-            clip.start();
-        } catch(Exception ex) {
-            System.out.println("Error with playing sound.");
-            ex.printStackTrace();
-        }
-    }
-
     public static enum role {
         PLAYER_1,
         PLAYER_2,

@@ -1,9 +1,13 @@
 package bomberman.GlobalVariable;
 
+import bomberman.BombermanApplication;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+
+import java.io.IOException;
 
 public class RenderVariable {
     //************************ CÁC THÔNG SỐ RENDER ************************************************
@@ -24,4 +28,19 @@ public class RenderVariable {
     public static GraphicsContext gc = canvas.getGraphicsContext2D();
 
     public static Scene scene = new Scene(root);
+
+    static FXMLLoader loaderScene1 = new FXMLLoader(BombermanApplication.class.getResource("/start.fxml"));
+
+    public static Scene menuScene;
+
+    static {
+        try {
+            menuScene = new Scene(loaderScene1.load(), 1240, 520);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public RenderVariable() throws IOException {
+    }
 }
