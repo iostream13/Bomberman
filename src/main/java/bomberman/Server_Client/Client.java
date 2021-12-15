@@ -94,7 +94,7 @@ public class Client {
                 return command;
             }
         } catch (IOException e) {
-            System.out.println("can not read data from server");
+            System.out.println("Can not read data from server");
             return "NOT COMMAND";
         }
     }
@@ -198,7 +198,10 @@ public class Client {
 
     // giải mã các lệnh in từ server
     public static boolean decodeRenderCommand(String command) {
-        if (command == "NOT COMMAND") return false;
+        if (command.equals("NOT COMMAND")) {
+            return false;
+        }
+        
         try {
             JSONArray commandList = new JSONArray(command);
             for (int i = 0; i < commandList.length(); i++) {

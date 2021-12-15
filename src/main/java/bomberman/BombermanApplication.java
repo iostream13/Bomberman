@@ -6,16 +6,12 @@ import bomberman.Server_Client.EchoThread;
 import bomberman.Server_Client.Server;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
 import javafx.scene.control.TextArea;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.json.JSONArray;
@@ -25,7 +21,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
-import java.nio.channels.IllegalBlockingModeException;
 
 /**
  * Chương trình chính.
@@ -185,6 +180,9 @@ public class BombermanApplication extends Application {
         showS1.toFront();
         ImageView imgCreate = (ImageView) menuScene.lookup("#createSV");
         ImageView imgJoin = (ImageView) menuScene.lookup("#joinSV");
+
+        imgCreate.setDisable(false);
+        imgJoin.setDisable(false);
 
         imgCreate.setOnMouseClicked(mouseEvent1 -> {
             createSv.toFront();

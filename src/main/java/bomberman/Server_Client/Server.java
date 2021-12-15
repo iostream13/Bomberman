@@ -1,6 +1,5 @@
 package bomberman.Server_Client;
 
-import bomberman.BombermanApplication;
 import bomberman.GlobalVariable.GameVariables;
 import bomberman.GlobalVariable.LANVariables;
 import bomberman.PvP_GamePlay;

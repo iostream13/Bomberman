@@ -5,11 +5,11 @@ import bomberman.GlobalVariable.GameVariables;
 import bomberman.GlobalVariable.SoundVariable;
 import bomberman.Map.PlayGround;
 import bomberman.Object.MovingObject.MovingObject;
+import javafx.scene.image.Image;
 import javafx.util.Pair;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Oneal extends Enemy {
     /**
@@ -58,11 +58,13 @@ public class Oneal extends Enemy {
     }
 
     @Override
-    public void setGraphicData() {
-        setNumberOfFrame(8);
-        setNumberOfGameFramePerFrame(3);
+    public Image getImage() {
+        return FilesPath.Oneal;
+    }
 
-        setImageData(FilesPath.OnealUp, FilesPath.OnealDown, FilesPath.OnealLeft, FilesPath.OnealRight);
+    @Override
+    public void setGraphicSetting() {
+        setNumberOfFramePerSprite(3);
     }
 
     /**
@@ -203,7 +205,7 @@ public class Oneal extends Enemy {
                         }
                     }
                 }
-                System.out.println("oneal ne");
+
                 state[yEnemy][xEnemy] = 0;
 
                 setObjectDirection(MovingObject.ObjectDirection.RIGHT_, toRight);

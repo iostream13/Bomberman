@@ -20,15 +20,10 @@ public class Portal extends Block {
     @Override
     public void setFinalStateImageInfo() {
         FINAL_STATE_IMAGE = FilesPath.Portal;
-
-        if (isFinalState()) {
-            setNumberOfFrame(8);
-        }
     }
 
     @Override
-    public void setGraphicData() {
-        setNumberOfFrame(1);
-        setNumberOfGameFramePerFrame(3);
+    public void setGraphicSetting() {
+        setNumberOfFramePerSprite(3);
     }
 }

@@ -5,6 +5,7 @@ import bomberman.GlobalVariable.GameVariables;
 import bomberman.GlobalVariable.SoundVariable;
 import bomberman.Map.PlayGround;
 import bomberman.PvB_GamePlay;
+import javafx.scene.image.Image;
 import javafx.util.Pair;
 
 import java.util.HashMap;
@@ -37,15 +38,14 @@ public class Teleport extends Enemy {
         this.setType(2);
     }
 
-    /**
-     * Để tạm hình ảnh balloom.
-     */
     @Override
-    public void setGraphicData() {
-        setNumberOfFrame(8);
-        setNumberOfGameFramePerFrame(3);
+    public Image getImage() {
+        return FilesPath.Teleport;
+    }
 
-        setImageData(FilesPath.BalloomUp, FilesPath.BalloomDown, FilesPath.BalloomLeft, FilesPath.BalloomRight);
+    @Override
+    public void setGraphicSetting() {
+        setNumberOfFramePerSprite(3);
     }
 
     public void die() {

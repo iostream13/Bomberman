@@ -121,29 +121,61 @@ public class Flame extends GameObject {
 
     @Override
     public Image getImage() {
-        switch (type) {
-            case LEFT_:
-                return FilesPath.FlameLeft;
-            case RIGHT_:
-                return FilesPath.FlameRight;
-            case UP_:
-                return FilesPath.FlameUp;
-            case DOWN_:
-                return FilesPath.FlameDown;
-            case CENTER_:
-                return FilesPath.FlameMid;
-            case VERTICAL_:
-                return FilesPath.FlameVertical;
-            case HORIZONTAL_:
-                return FilesPath.FlameHorizontal;
-        }
-
-        return FilesPath.Brick;
+        return FilesPath.Flame;
     }
 
     @Override
-    public void setGraphicData() {
-        setNumberOfFrame(8);
-        setNumberOfGameFramePerFrame(3);
+    public void setGraphicSetting() {
+        setNumberOfFramePerSprite(4);
+    }
+
+    public void draw() {
+        // Image hiện tại
+        Image currentImage = getImage();
+
+        // Tính toán thông tin image hiện tại
+        double imageWidth = currentImage.getHeight();
+        double imageLength = currentImage.getWidth();
+
+        double spriteSize = imageWidth / 5;
+
+        numberOfSprite = (int) (imageLength / spriteSize);
+
+        // Tính toán currentFrame
+        if (gameFrameCount >= (numberOfSprite * numberOfFramePerSprite)) {
+            gameFrameCount = gameFrameCount % (numberOfSprite * numberOfFramePerSprite);
+        }
+
+        currentSprite = gameFrameCount / numberOfFramePerSprite;
+
+        gameFrameCount++;
+
+        // Render
+        setPosRender(0, 0, 0, 0);
+
+        double renderX = currentSprite * spriteSize;
+        double renderY;
+
+        switch (type) {
+            case UP_:
+                renderY = 1;
+                break;
+            case DOWN_:
+                renderY = 2;
+                break;
+            case LEFT_:
+                renderY = 3;
+                break;
+            case RIGHT_:
+                renderY = 4;
+                break;
+            default:
+                renderY = 0;
+                break;
+        }
+
+        renderY *= spriteSize;
+
+        render(currentImage, renderX, renderY, spriteSize, spriteSize);
     }
 }

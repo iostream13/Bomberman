@@ -15,11 +15,6 @@ public class RenderVariable {
     public static double SCREEN_WIDTH = 520;
     public static double SCREEN_LENGTH = 1240;
 
-    /**
-     * Độ lớn của một ô ảnh trong resource (đơn vị pixel).
-     */
-    public static final double imageSize = 16;
-
     // *********************** BIẾN ĐƯỢC SỬ DỤNG GLOBAL ĐỂ RENDER *********************************
     public static Group root = new Group();
 

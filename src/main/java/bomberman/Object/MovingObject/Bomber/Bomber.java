@@ -11,6 +11,7 @@ import bomberman.Object.MovingObject.MovingObject;
 import bomberman.Object.NonMovingObject.Bomb;
 import bomberman.Object.NonMovingObject.Item;
 import bomberman.Object.NonMovingObject.Portal;
+import javafx.scene.image.Image;
 
 public class Bomber extends MovingObject {
     /**
@@ -167,15 +168,24 @@ public class Bomber extends MovingObject {
         return false;
     }
 
-    @Override
-    public void setGraphicData() {
-        setNumberOfFrame(8);
-        setNumberOfGameFramePerFrame(3);
-
-        setImageData(FilesPath.BomberUp, FilesPath.BomberDown, FilesPath.BomberLeft, FilesPath.BomberRight);
-    }
-
     public void die() {
         SoundVariable.playSound(FilesPath.BomberDieAudio);
+    }
+
+    @Override
+    public Image getImage() {
+        return FilesPath.Bomber;
+    }
+
+    @Override
+    public void setGraphicSetting() {
+        setNumberOfFramePerSprite(4);
+    }
+
+    @Override
+    protected void render(Image currentImage, double renderX, double renderY, double renderWidth, double renderLength) {
+        setPosRender(-15, -25, 30, 30);
+
+        super.render(currentImage, renderX, renderY, renderWidth, renderLength);
     }
 }

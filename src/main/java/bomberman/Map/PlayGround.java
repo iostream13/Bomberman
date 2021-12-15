@@ -12,11 +12,6 @@ import bomberman.Object.MovingObject.Threats.Oneal;
 import bomberman.Object.MovingObject.Threats.Teleport;
 import bomberman.Object.NonMovingObject.*;
 import bomberman.Object.GameObject;
-import javafx.scene.media.AudioClip;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 
 public class PlayGround {
     // ********** VARIABLES, SETTER, GETTER, VARIABLES OPERATION ********************************
@@ -60,6 +55,11 @@ public class PlayGround {
     public int getNumberOfColumn() {
         return numberOfColumn;
     }
+
+    /**
+     * BackGround của màn game.
+     */
+    private BackGround backGround = new BackGround(this);
 
     /**
      * Các ô trên bản đồ, mỗi ô là 1 object.
@@ -345,6 +345,8 @@ public class PlayGround {
      * Render map ra screen.
      */
     public void render() {
+        backGround.draw();
+
         for (int i = 0; i < numberOfRow; i++) {
             for (int j = 0; j < numberOfColumn; j++) {
                 cells[i][j].draw();

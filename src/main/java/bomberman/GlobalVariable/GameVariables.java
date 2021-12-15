@@ -3,13 +3,6 @@ package bomberman.GlobalVariable;
 import bomberman.PvB_GamePlay;
 import bomberman.PvP_GamePlay;
 import org.json.JSONArray;
-import org.json.JSONObject;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import java.io.File;
-import java.util.ArrayList;
 
 public class GameVariables {
     /**
@@ -38,7 +31,7 @@ public class GameVariables {
         return (int) (inputValue / cellLength);
     }
 
-    public static enum role {
+    public enum role {
         PLAYER_1,
         PLAYER_2,
         NOT,

@@ -1,12 +1,6 @@
 package bomberman.Object.MovingObject.Threats;
 
-import javafx.util.Pair;
-
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.concurrent.ThreadLocalRandom;
-
-import bomberman.GlobalVariable.GameVariables;
 
 import bomberman.Map.PlayGround;
 

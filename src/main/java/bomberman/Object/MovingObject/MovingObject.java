@@ -215,50 +215,69 @@ public abstract class MovingObject extends GameObject {
 
     // *************************** GRAPHIC **********************************************************
 
-    // Các biến hình ảnh (Cần được cấp thông tin trong setGraphicInformation
-    protected Image leftImage;
-    protected Image rightImage;
-    protected Image upImage;
-    protected Image downImage;
-    protected Image lastImage;
+    ObjectDirection lastDirection = ObjectDirection.LEFT_;
 
     /**
-     * Nhập ảnh. (Phải được sử dụng trong setGraphicData)
+     * Chỉ số direction để tính được renderY cho image.
      */
-    public void setImageData(Image tempUp, Image tempDown, Image tempLeft, Image tempRight) {
-        upImage = tempUp;
-        downImage = tempDown;
-        leftImage = tempLeft;
-        rightImage = tempRight;
-        lastImage = leftImage;
-    }
-
-    @Override
-    public Image getImage() {
-        switch (currentDirection) {
-            case LEFT_:
-                lastImage = leftImage;
-                break;
-            case RIGHT_:
-                lastImage = rightImage;
-                break;
-            case UP_:
-                lastImage = upImage;
-                break;
-            case DOWN_:
-                lastImage = downImage;
-                break;
+    private int getYByDirection() {
+        if (lastDirection == ObjectDirection.UP_) {
+            return 0;
         }
 
-        return lastImage;
+        if (lastDirection == ObjectDirection.DOWN_) {
+            return 1;
+        }
+
+        if (lastDirection == ObjectDirection.LEFT_) {
+            return 2;
+        }
+
+        return 3;
     }
 
     @Override
     public void draw() {
-        if (currentDirection == ObjectDirection.NONE_) {
-            this.setGameFrameCount(0);
+        // Tính lastDirection
+        if (currentDirection != ObjectDirection.NONE_) {
+            lastDirection = currentDirection;
         }
 
-        super.draw();
+        // Image hiện tại
+        Image currentImage = getImage();
+
+        // Tính toán thông tin image hiện tại
+        double imageWidth = currentImage.getHeight();
+        double imageLength = currentImage.getWidth();
+
+        double spriteSize = imageWidth / 4;
+
+        numberOfSprite = (int) (imageLength / spriteSize) - 1;
+
+        // Tính toán thông tin render
+        double renderX;
+        double renderY = getYByDirection() * spriteSize;
+
+        if (currentDirection == ObjectDirection.NONE_) {
+            renderX = 0;
+
+            resetFrameCount();
+        } else {
+            // Tính toán currentFrame
+            if (gameFrameCount >= (numberOfSprite * numberOfFramePerSprite)) {
+                gameFrameCount = gameFrameCount % (numberOfSprite * numberOfFramePerSprite);
+            }
+
+            currentSprite = gameFrameCount / numberOfFramePerSprite;
+
+            gameFrameCount++;
+
+            renderX = (currentSprite + 1) * spriteSize;
+        }
+
+        // Render
+        setPosRender(0, 0, 0, 0);
+
+        render(currentImage, renderX, renderY, spriteSize, spriteSize);
     }
 }
