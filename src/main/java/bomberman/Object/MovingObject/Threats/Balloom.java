@@ -3,6 +3,7 @@ package bomberman.Object.MovingObject.Threats;
 import bomberman.GlobalVariable.FilesPath;
 import bomberman.GlobalVariable.SoundVariable;
 import bomberman.Map.PlayGround;
+import javafx.scene.image.Image;
 
 public class Balloom extends Enemy {
     /**
@@ -30,11 +31,13 @@ public class Balloom extends Enemy {
     }
 
     @Override
-    public void setGraphicData() {
-        setNumberOfFrame(8);
-        setNumberOfGameFramePerFrame(3);
+    public Image getImage() {
+        return FilesPath.Balloom;
+    }
 
-        setImageData(FilesPath.BalloomUp, FilesPath.BalloomDown, FilesPath.BalloomLeft, FilesPath.BalloomRight);
+    @Override
+    public void setGraphicSetting() {
+        setNumberOfFramePerSprite(3);
     }
 
     public void die() {

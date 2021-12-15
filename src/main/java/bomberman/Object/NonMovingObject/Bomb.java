@@ -125,11 +125,6 @@ public class Bomb extends GameObject {
         }
     }
 
-    @Override
-    public Image getImage() {
-        return FilesPath.Bomb;
-    }
-
     /**
      * Kiểm tra đã đến thời gian nổ chưa.
      */
@@ -163,11 +158,17 @@ public class Bomb extends GameObject {
 
         // sinh flame ra bên trái bom
         for (int i = tempX - 1; i >= 0 && i >= tempX - len; i--) {
+            boolean breakFlame = false;
+
             // gặp cô cản, ngừng sinh flame
             if (this.getBelongTo().isBlockCell(tempY, i)) {
                 Flame.handleIntersectCell(this.getBelongTo().getCells(tempY, i));
 
-                break;
+                breakFlame = true;
+
+                if (!(this.getBelongTo().getCells(tempY, i) instanceof Block))  {
+                    break;
+                }
             }
 
             if (i == tempX - len) {
@@ -175,15 +176,25 @@ public class Bomb extends GameObject {
             } else {
                 this.getBelongTo().addFlame(new Flame(this.getBelongTo(), i * side, tempY * side, side, side, Flame.FlameType.HORIZONTAL_));
             }
+
+            if (breakFlame) {
+                break;
+            }
         }
 
         // sinh flame ra bên phải bom
         for (int i = tempX + 1; i <= this.getBelongTo().getNumberOfColumn() && i <= tempX + len; i++) {
+            boolean breakFlame = false;
+
             // gặp cô cản, ngừng sinh flame
             if (this.getBelongTo().isBlockCell(tempY, i)) {
                 Flame.handleIntersectCell(this.getBelongTo().getCells(tempY, i));
 
-                break;
+                breakFlame = true;
+
+                if (!(this.getBelongTo().getCells(tempY, i) instanceof Block))  {
+                    break;
+                }
             }
 
             if (i == tempX + len) {
@@ -191,15 +202,25 @@ public class Bomb extends GameObject {
             } else {
                 this.getBelongTo().addFlame(new Flame(this.getBelongTo(), i * side, tempY * side, side, side, Flame.FlameType.HORIZONTAL_));
             }
+
+            if (breakFlame) {
+                break;
+            }
         }
 
         // sinh flame ra bên trên bom
         for (int i = tempY - 1; i >= 0 && i >= tempY - len; i--) {
+            boolean breakFlame = false;
+
             // gặp cô cản, ngừng sinh flame
             if (this.getBelongTo().isBlockCell(i, tempX)) {
                 Flame.handleIntersectCell(this.getBelongTo().getCells(i, tempX));
 
-                break;
+                breakFlame = true;
+
+                if (!(this.getBelongTo().getCells(i, tempX) instanceof Block))  {
+                    break;
+                }
             }
 
             if (i == tempY - len) {
@@ -207,21 +228,35 @@ public class Bomb extends GameObject {
             } else {
                 this.getBelongTo().addFlame(new Flame(this.getBelongTo(), tempX * side, i * side, side, side, Flame.FlameType.VERTICAL_));
             }
+
+            if (breakFlame) {
+                break;
+            }
         }
 
         // sinh flame ra bên dưới bom
         for (int i = tempY + 1; i <= this.getBelongTo().getNumberOfRow() && i <= tempY + len; i++) {
+            boolean breakFlame = false;
+
             // gặp cô cản, ngừng sinh flame
             if (this.getBelongTo().isBlockCell(i, tempX)) {
                 Flame.handleIntersectCell(this.getBelongTo().getCells(i, tempX));
 
-                break;
+                breakFlame = true;
+
+                if (!(this.getBelongTo().getCells(i, tempX) instanceof Block))  {
+                    break;
+                }
             }
 
             if (i == tempY + len) {
                 this.getBelongTo().addFlame(new Flame(this.getBelongTo(), tempX * side, i * side, side, side, Flame.FlameType.DOWN_));
             } else {
                 this.getBelongTo().addFlame(new Flame(this.getBelongTo(), tempX * side, i * side, side, side, Flame.FlameType.VERTICAL_));
+            }
+
+            if (breakFlame) {
+                break;
             }
         }
 
@@ -232,8 +267,19 @@ public class Bomb extends GameObject {
     }
 
     @Override
-    public void setGraphicData() {
-        setNumberOfFrame(8);
-        setNumberOfGameFramePerFrame(3);
+    public Image getImage() {
+        return FilesPath.Bomb;
+    }
+
+    @Override
+    public void setGraphicSetting() {
+        setNumberOfFramePerSprite(5);
+    }
+
+    @Override
+    protected void render(Image currentImage, double renderX, double renderY, double renderWidth, double renderLength) {
+        setPosRender(5, 5, -10, -10);
+
+        super.render(currentImage, renderX, renderY, renderWidth, renderLength);
     }
 }

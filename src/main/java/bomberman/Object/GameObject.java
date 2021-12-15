@@ -1,10 +1,14 @@
 package bomberman.Object;
 
+import bomberman.GlobalVariable.FilesPath;
+import bomberman.GlobalVariable.GameVariables;
 import javafx.scene.image.Image;
 
 import bomberman.GlobalVariable.RenderVariable;
 
 import bomberman.Map.PlayGround;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Object của game.
@@ -102,65 +106,6 @@ public abstract class GameObject {
     }
 
     /**
-     * Số lượng frame của object này.
-     */
-    private int numberOfFrame;
-
-    public int getNumberOfFrame() {
-        return numberOfFrame;
-    }
-
-    public void setNumberOfFrame(int numberOfFrame) {
-        this.numberOfFrame = numberOfFrame;
-    }
-
-    /**
-     * Chỉ số frame hiện tại.
-     * (Đánh số từ 0 đến numberOfFrame - 1)
-     */
-    private int currentFrame;
-
-    public int getCurrentFrame() {
-        return currentFrame;
-    }
-
-    public void setCurrentFrame(int currentFrame) {
-        this.currentFrame = currentFrame;
-    }
-
-    /**
-     * Số lượng frame của game chạy để hiển thị 1 frame của object.
-     * Giải thích : Chương trình mặc định chạy 60 frame/1 giây (60fps),
-     * để kéo dài thời gian 1 frame của object hiển thị ra
-     * thì cứ mỗi 1 hoặc 1 vài frame của chương trình thì hiển thị
-     * 1 frame của object.
-     * Ví dụ numberOfGameFramePerFrame là 2, thì vòng lặp play() của game
-     * chạy 2 lần thì Object đổi 1 frame.
-     */
-    private int numberOfGameFramePerFrame;
-
-    public int getNumberOfGameFramePerFrame() {
-        return numberOfGameFramePerFrame;
-    }
-
-    public void setNumberOfGameFramePerFrame(int numberOfGameFramePerFrame) {
-        this.numberOfGameFramePerFrame = numberOfGameFramePerFrame;
-    }
-
-    /**
-     * Biến đếm game frame để tính toán currentFrame.
-     */
-    private int gameFrameCount;
-
-    public int getGameFrameCount() {
-        return gameFrameCount;
-    }
-
-    public void setGameFrameCount(int gameFrameCount) {
-        this.gameFrameCount = gameFrameCount;
-    }
-
-    /**
      * Constructor cho object của game.
      *
      * @param belongTo tham chiếu tới PlayGround
@@ -180,10 +125,10 @@ public abstract class GameObject {
 
         calculateCenterPoint();
 
-        currentFrame = 0;
+        currentSprite = 0;
         gameFrameCount = 0;
 
-        setGraphicData();
+        setGraphicSetting();
     }
 
     /**
@@ -234,36 +179,129 @@ public abstract class GameObject {
                 !(y + length <= temp_y_1);
     }
 
+    // ****************************************** RENDER *************************************************
+
+    /**
+     * Số lượng sprite của object này.
+     */
+    protected int numberOfSprite;
+
+    /**
+     * Chỉ số sprite hiện tại.
+     * (Đánh số từ 0 đến numberOfSprite - 1)
+     */
+    protected int currentSprite;
+
+    /**
+     * Số lượng frame của game chạy để hiển thị 1 sprite của object.
+     * Giải thích : Chương trình mặc định chạy 60 frame/1 giây (60fps),
+     * để kéo dài thời gian 1 sprite của object hiển thị ra
+     * thì cứ mỗi 1 hoặc 1 vài frame của chương trình thì hiển thị
+     * 1 sprite của object.
+     * Ví dụ numberOfGameFramePerSprite là 2, thì vòng lặp play() của game
+     * chạy 2 lần thì Object đổi 1 sprite.
+     */
+    protected int numberOfFramePerSprite;
+
+    protected void setNumberOfFramePerSprite(int numberOfFramePerSprite) {
+        this.numberOfFramePerSprite = numberOfFramePerSprite;
+    }
+
+    /**
+     * Biến đếm game frame để tính toán currentSprite.
+     */
+    protected int gameFrameCount;
+
+    /**
+     * Reset lại để sprite sheet chạy từ đầu.
+     */
+    protected void resetFrameCount() {
+        gameFrameCount = 0;
+    }
+
     /**
      * Trả về image hiện tại của object.
      */
     public abstract Image getImage();
 
     /**
-     * Set thông tin về frame và hình ảnh(với MovingObject) cho mỗi object riêng biệt.
+     * Set thông tin về Sprite và hình ảnh(với MovingObject) cho mỗi object riêng biệt.
+     * (Set NumberOfFramePerSprite cho từng object)
      */
-    public abstract void setGraphicData();
+    public abstract void setGraphicSetting();
+
+    // Vị trí để render Object trên màn hình.
+    // Bình thường thì nó là kích thước của object.
+    // Dùng trong trường hợp muốn hình render ra khác kích thước của object.
+    private double posRenderX;
+    private double posRenderY;
+    private double posRenderWidth;
+    private double posRenderLength;
+
+    /**
+     * Dùng để thay đổi các posRender dựa trên vị trí thực tế của object.
+     */
+    public void setPosRender(double deltaX, double deltaY, double deltaWidth, double deltaLength) {
+        posRenderX = x + deltaX;
+        posRenderY = y + deltaY;
+        posRenderWidth = width + deltaWidth;
+        posRenderLength = length + deltaLength;
+    }
 
     /**
      * Vẽ object.
      */
     public void draw() {
+        // Image hiện tại
+        Image currentImage = getImage();
+
+        // Tính toán thông tin image hiện tại
+        double imageWidth = currentImage.getHeight();
+        double imageLength = currentImage.getWidth();
+
+        double spriteSize = imageWidth;
+
+        numberOfSprite = (int) (imageLength / spriteSize);
+
         // Tính toán currentFrame
-        if (gameFrameCount >= (numberOfFrame * numberOfGameFramePerFrame)) {
-            gameFrameCount = gameFrameCount % (numberOfFrame * numberOfGameFramePerFrame);
+        if (gameFrameCount >= (numberOfSprite * numberOfFramePerSprite)) {
+            gameFrameCount = gameFrameCount % (numberOfSprite * numberOfFramePerSprite);
         }
 
-        currentFrame = gameFrameCount / numberOfGameFramePerFrame;
+        currentSprite = gameFrameCount / numberOfFramePerSprite;
 
         gameFrameCount++;
 
-        // Vị trí frame hiện tại trong ảnh
-        double imageX = currentFrame * RenderVariable.imageSize;
-        double imageY = 0;
-        double imageWidth = RenderVariable.imageSize;
-        double imageLength = RenderVariable.imageSize;
+        // Render
+        setPosRender(0, 0, 0, 0);
 
-        RenderVariable.gc.drawImage(getImage(), imageX, imageY, imageWidth, imageLength, x, y, width, length);
+        render(currentImage, currentSprite * spriteSize, 0, spriteSize, spriteSize);
+    }
+
+    /**
+     * Gửi thông tin đến server hoặc render ở client
+     */
+    protected void render(Image currentImage, double renderX, double renderY, double renderWidth, double renderLength) {
+        if (GameVariables.playerRole == GameVariables.role.PLAYER_1) {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("Image", FilesPath.encodeImageName(currentImage));
+                jsonObject.put("imageX", "" + renderX);
+                jsonObject.put("imageY", "" + renderY);
+                jsonObject.put("imageWidth", "" + renderWidth);
+                jsonObject.put("imageLength", "" + renderLength);
+                jsonObject.put("x", "" + posRenderX);
+                jsonObject.put("y", "" + posRenderY);
+                jsonObject.put("width", "" + posRenderWidth);
+                jsonObject.put("length", "" + posRenderLength);
+                GameVariables.tempCommandList.put(jsonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            RenderVariable.gc.drawImage(currentImage, renderX, renderY, renderWidth, renderLength,
+                    posRenderX, posRenderY, posRenderWidth, posRenderLength);
+        }
     }
 }
 

@@ -32,6 +32,8 @@ public class FilesPath {
     }
 
     // IMAGE FILE PATH
+    public static final Image BackGroundGame = createImage("/image/backgroundgame.png");
+
     public static final Image Grass = createImage("/image/grass.png");
     public static final Image Wall = createImage("/image/wall.png");
     public static final Image Bomb = createImage("/image/bomb.png");
@@ -39,14 +41,7 @@ public class FilesPath {
     public static final Image Brick = createImage("/image/brick.png");
     public static final Image BrickExploded = createImage("/image/brick_exploded.png");
 
-    public static final Image FlameMid = createImage("/image/flame_mid.png");
-    public static final Image FlameLeft = createImage("/image/flame_left.png");
-    public static final Image FlameRight = createImage("/image/flame_right.png");
-    public static final Image FlameUp = createImage("/image/flame_up.png");
-    public static final Image FlameDown = createImage("/image/flame_down.png");
-
-    public static final Image FlameVertical = createImage("/image/explosion_vertical.png");
-    public static final Image FlameHorizontal = createImage("/image/explosion_horizontal.png");
+    public static final Image Flame = createImage("/image/flame.png");
 
     public static final Image PowerUpBomb = createImage("/image/power_up_bomb.png");
     public static final Image PowerUpFlame = createImage("/image/power_up_flame.png");
@@ -55,24 +50,19 @@ public class FilesPath {
     public static final Image LevelUp = createImage("/image/level_up.png");
     public static final Image YouWon = createImage("/image/you_won.png");
     public static final Image YouLose = createImage("/image/you_lose.png");
+    public static final Image YouDraw= createImage("/image/you_draw.png");
 
-    public static final Image OnealUp = createImage("/image/oneal_up.png");
-    public static final Image OnealDown = createImage("/image/oneal_down.png");
-    public static final Image OnealLeft = createImage("/image/oneal_left.png");
-    public static final Image OnealRight = createImage("/image/oneal_right.png");
+    public static final Image Oneal = createImage("/image/oneal.png");
 
-    public static final Image BalloomUp = createImage("/image/balloom_up.png");
-    public static final Image BalloomDown = createImage("/image/balloom_down.png");
-    public static final Image BalloomLeft = createImage("/image/balloom_left.png");
-    public static final Image BalloomRight = createImage("/image/balloom_right.png");
+    public static final Image Balloom = createImage("/image/balloom.png");
 
-    public static final Image BomberUp = createImage("/image/dango_up.png");
-    public static final Image BomberDown = createImage("/image/dango_down.png");
-    public static final Image BomberLeft = createImage("/image/dango_left.png");
-    public static final Image BomberRight = createImage("/image/dango_right.png");
+    public static final Image Teleport = createImage("/image/teleport.png");
+
+    public static final Image Bomber = createImage("/image/bomber.png");
 
     // MAP FILE PATH
     public static final String PVB_MAP_PATH = "src/main/java/resources/Map/map.txt";
+    public static final String PVP_MAP_PATH = "src/main/java/resources/Map/PvPmap.txt";
 
     // AUDIO CLIP FILE PATH
     public static Clip PlayGroundAudio = createClip("PlayGround.wav");
@@ -91,5 +81,70 @@ public class FilesPath {
     public static Clip YouLoseAudio = createClip("YouLose.wav");
 
     public FilesPath() throws URISyntaxException {
+    }
+
+    // TODO: optimize this
+    public static String encodeImageName(Image tmp) {
+        if (Bomber.equals(tmp)) {
+            return "Bomber";
+        } else if (Grass.equals(tmp)) {
+            return "Grass";
+        } else if (Wall.equals(tmp)) {
+            return "Wall";
+        } else if (Bomb.equals(tmp)) {
+            return "Bomb";
+        } else if (Portal.equals(tmp)) {
+            return "Portal";
+        } else if (Brick.equals(tmp)) {
+            return "Brick";
+        } else if (BrickExploded.equals(tmp)) {
+            return "BrickExploded";
+        } else if (Flame.equals(tmp)) {
+            return "Flame";
+        } else if (PowerUpBomb.equals(tmp)) {
+            return "PowerUpBomb";
+        } else if (PowerUpFlame.equals(tmp)) {
+            return "PowerUpFlame";
+        } else if (PowerUpSpeed.equals(tmp)) {
+            return "PowerUpSpeed";
+        } else if (LevelUp.equals(tmp)) {
+            return "LevelUp";
+        } else if (YouWon.equals(tmp)) {
+            return "YouWon";
+        } else if (YouLose.equals(tmp)) {
+            return "YouLose";
+        } else if (YouDraw.equals(tmp)) {
+            return "YouDraw";
+        } else if (BackGroundGame.equals(tmp)) {
+            return "BackGroundGame";
+        }
+
+        return "UNKNOWN";
+    }
+
+    public static Image decodeImageName(String name) {
+        switch (name) {
+            case "Bomber": return Bomber;
+            case "Grass": return Grass;
+            case "Wall": return Wall;
+            case "Bomb": return Bomb;
+            case "Portal": return Portal;
+            case "Brick": return Brick;
+            case "BrickExploded": return BrickExploded;
+
+            case "Flame": return Flame;
+
+            case "PowerUpBomb": return PowerUpBomb;
+            case "PowerUpFlame": return PowerUpFlame;
+            case "PowerUpSpeed": return PowerUpSpeed;
+
+            case "YouWon": return YouWon;
+            case "YouLose": return YouLose;
+            case "YouDraw": return YouDraw;
+
+            case "BackGroundGame": return BackGroundGame;
+        }
+
+        return Grass;
     }
 }

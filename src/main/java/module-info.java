@@ -5,6 +5,7 @@ module com.example.bomberman {
     requires org.controlsfx.controls;
     requires javafx.media;
     requires java.desktop;
+    requires json;
 
     opens bomberman to javafx.fxml;
     exports bomberman;
@@ -22,4 +23,6 @@ module com.example.bomberman {
     opens bomberman.Map to javafx.fxml;
     exports bomberman.Object.MovingObject.Bomber;
     opens bomberman.Object.MovingObject.Bomber to javafx.fxml;
+    exports bomberman.Server_Client;
+    opens bomberman.Server_Client to javafx.fxml;
 }

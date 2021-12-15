@@ -23,8 +23,7 @@ public class Brick extends Block {
     }
 
     @Override
-    public void setGraphicData() {
-        setNumberOfFrame(1);
-        setNumberOfGameFramePerFrame(3);
+    public void setGraphicSetting() {
+        setNumberOfFramePerSprite(10);
     }
 }
