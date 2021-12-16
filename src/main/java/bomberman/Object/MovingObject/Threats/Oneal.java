@@ -64,7 +64,7 @@ public class Oneal extends Enemy {
 
     @Override
     public void setGraphicSetting() {
-        setNumberOfFramePerSprite(3);
+        setNumberOfFramePerSprite(4);
     }
 
     /**

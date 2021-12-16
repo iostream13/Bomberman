@@ -117,7 +117,7 @@ public abstract class Enemy extends MovingObject {
         gameFrameCount++;
 
         // Render
-        setPosRender(0, 0, 0, 0);
+        setPosRender(-5, -10, 10, 10);
 
         render(currentImage, currentSprite * spriteSize, 0, spriteSize, spriteSize);
     }
