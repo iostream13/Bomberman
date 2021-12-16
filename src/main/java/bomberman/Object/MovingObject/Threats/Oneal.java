@@ -160,7 +160,7 @@ public class Oneal extends Enemy {
             double randomDouble = Math.random();
             randomDouble = randomDouble * 1000 + 1;
             int randomInt = (int) randomDouble;
-            randomInt = (randomInt % 5) + 1;
+            randomInt = (randomInt % 4) + 1;
             this.setSpeed((double) randomInt);
             startTimeSp = System.nanoTime();
         }

@@ -82,6 +82,6 @@ public class Item extends Block {
 
     @Override
     public void setGraphicSetting() {
-        setNumberOfFramePerSprite(3);
+        setNumberOfFramePerSprite(5);
     }
 }
