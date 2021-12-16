@@ -4,13 +4,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 
 public class SoundVariable {
     public static void playSoundOnly(Clip clip) {
+        FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        if (!RenderVariable.stateSound) {
+            volume.setValue(volume.getMinimum());
+        }
+        else {
+            volume.setValue(6);
+        }
         clip.start();
         resetSound(clip);
-
-        System.out.println("Play am thanh " + FilesPath.encodeClipName(clip));
     }
 
     public static void playSound(Clip clip) {
@@ -22,23 +28,26 @@ public class SoundVariable {
                 jsonObject.put("Mode", "Play");
                 GameVariables.tempCommandList.put(jsonObject);
 
-                System.out.println("In lenh am thanh");
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
             return;
         }
-
         playSoundOnly(clip);
     }
 
     public static void loopSoundOnly(Clip clip, int time) {
+        FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        if (!RenderVariable.stateSound) {
+            volume.setValue(volume.getMinimum());
+        }
+        else {
+            volume.setValue(6);
+        }
+
         clip.loop(time);
         resetSound(clip);
-
-        System.out.println("Play am thanh " + FilesPath.encodeClipName(clip));
     }
 
     public static void loopSound(Clip clip, int time) {
@@ -50,8 +59,6 @@ public class SoundVariable {
                 jsonObject.put("Mode", "Loop");
                 jsonObject.put("Time", "" + time);
                 GameVariables.tempCommandList.put(jsonObject);
-
-                System.out.println("In lenh am thanh");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -68,6 +75,14 @@ public class SoundVariable {
     }
 
     public static void resetSound(Clip clip) {
+        FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        if (!RenderVariable.stateSound) {
+            volume.setValue(volume.getMinimum());
+        }
+        else {
+            volume.setValue(6);
+        }
+
         clip.setMicrosecondPosition(0);
     }
 
@@ -83,8 +98,6 @@ public class SoundVariable {
         endSound(FilesPath.ExplosionAudio);
         endSound(FilesPath.PlaceBombAudio);
         endSound(FilesPath.LevelUpAudio);
-
-        System.out.println("Xoa am thanh");
     }
 
     public static void endAllSounds() {
@@ -95,8 +108,6 @@ public class SoundVariable {
                 jsonObject.put("Audio", "Nothing");
                 jsonObject.put("Mode", "EndAllSound");
                 GameVariables.tempCommandList.put(jsonObject);
-
-                System.out.println("In lenh am thanh");
             } catch (JSONException e) {
                 e.printStackTrace();
             }

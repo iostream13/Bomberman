@@ -3,8 +3,10 @@ package bomberman.Map;
 import java.io.*;
 import java.util.ArrayList;
 
+import bomberman.GlobalVariable.FilesPath;
 import bomberman.GlobalVariable.GameVariables;
 
+import bomberman.GlobalVariable.RenderVariable;
 import bomberman.Object.MovingObject.Bomber.Bomber;
 import bomberman.Object.MovingObject.Threats.Enemy;
 import bomberman.Object.MovingObject.Threats.Balloom;
@@ -369,6 +371,12 @@ public class PlayGround {
 
         for (Flame flame : flames) {
             flame.draw();
+        }
+        if (RenderVariable.stateSound) {
+            RenderVariable.gc.drawImage(FilesPath.Sound, 1201, 0, 38, 38);
+        }
+        else {
+            RenderVariable.gc.drawImage(FilesPath.SoundOff, 1201, 0, 38, 38);
         }
     }
 }

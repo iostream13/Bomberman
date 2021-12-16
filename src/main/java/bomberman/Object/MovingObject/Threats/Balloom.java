@@ -5,6 +5,7 @@ import bomberman.GlobalVariable.SoundVariable;
 import bomberman.Map.PlayGround;
 import javafx.scene.image.Image;
 
+
 public class Balloom extends Enemy {
     /**
      * Constructor cho Balloom.

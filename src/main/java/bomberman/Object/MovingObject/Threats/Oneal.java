@@ -223,6 +223,6 @@ public class Oneal extends Enemy {
     }
 
     public void die() {
-        SoundVariable.playSound(FilesPath.OnealDieAudio);
+         SoundVariable.playSound(FilesPath.OnealDieAudio);
     }
 }

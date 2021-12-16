@@ -14,6 +14,7 @@ import bomberman.Object.MovingObject.Threats.Enemy;
 import bomberman.Object.MovingObject.MovingObject;
 import bomberman.Object.NonMovingObject.*;
 
+
 public class PvB_GamePlay {
     /**
      * Trạng thái game (đang chơi, thắng, thua).
@@ -94,7 +95,9 @@ public class PvB_GamePlay {
 
         needToWait = true;
         SoundVariable.endAllSounds();
+
         SoundVariable.playSound(FilesPath.LevelUpAudio);
+
         player = null;
 
         map.clearPlayers();

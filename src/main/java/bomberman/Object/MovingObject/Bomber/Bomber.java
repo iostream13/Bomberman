@@ -13,6 +13,7 @@ import bomberman.Object.NonMovingObject.Item;
 import bomberman.Object.NonMovingObject.Portal;
 import javafx.scene.image.Image;
 
+
 public class Bomber extends MovingObject {
     /**
      * Số bomb có thể đặt được.
@@ -97,7 +98,6 @@ public class Bomber extends MovingObject {
         if (!canCreateBomb()) {
             return;
         }
-
         SoundVariable.playSound(FilesPath.PlaceBombAudio);
         int tempX = (int) ((GameVariables.calculateCellIndex(this.getX() + this.getWidth() / 2))
                 * GameVariables.cellLength);
@@ -142,6 +142,7 @@ public class Bomber extends MovingObject {
                         flameLength++;
                         break;
                 }
+
                 SoundVariable.playSound(FilesPath.PowerUpAudio);
                 ((Item) now).setAteStatus(true);
             }

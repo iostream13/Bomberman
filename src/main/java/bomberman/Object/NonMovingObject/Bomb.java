@@ -1,5 +1,7 @@
 package bomberman.Object.NonMovingObject;
 
+
+import bomberman.GlobalVariable.SoundVariable;
 import javafx.scene.image.Image;
 
 import java.util.ArrayList;
@@ -262,7 +264,8 @@ public class Bomb extends GameObject {
 
         //sinh flame ở chính giữa
         this.getBelongTo().addFlame(new Flame(this.getBelongTo(), tempX * side, tempY * side, side, side, Flame.FlameType.CENTER_));
-        FilesPath.ExplosionAudio.start();
+
+        SoundVariable.playSound(FilesPath.ExplosionAudio);
         FilesPath.ExplosionAudio.setMicrosecondPosition(0);
     }
 

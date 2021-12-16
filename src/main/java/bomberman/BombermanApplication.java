@@ -6,6 +6,7 @@ import bomberman.Server_Client.EchoThread;
 import bomberman.Server_Client.Server;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -13,9 +14,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.json.JSONArray;
 
+import javax.sound.sampled.FloatControl;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -87,7 +90,9 @@ public class BombermanApplication extends Application {
         }.start();
 
         stage.show();
-
+        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setX((primScreenBounds.getWidth() - RenderVariable.SCREEN_LENGTH) / 2);
+        stage.setY((primScreenBounds.getHeight() - RenderVariable.SCREEN_WIDTH) / 2);
     }
 
     public static void main(String[] args) {
@@ -102,6 +107,22 @@ public class BombermanApplication extends Application {
 
         GameVariables.PvB_Mode.render();
         GameVariables.PvB_Mode.playPlayGroundAudio();
+
+        RenderVariable.scene.setOnMouseClicked(mouseEvent -> {
+            double x = mouseEvent.getX();
+            double y = mouseEvent.getY();
+
+            if (x >= 1201 && y <= 39) {
+                RenderVariable.setStateSound();
+                FloatControl volume = (FloatControl) FilesPath.PlayGroundAudio.getControl(FloatControl.Type.MASTER_GAIN);
+                if (!RenderVariable.stateSound) {
+                    volume.setValue(volume.getMinimum());
+                }
+                else {
+                    volume.setValue(6);
+                }
+            }
+        });
 
         RenderVariable.scene.setOnKeyPressed(GameVariables.PvB_Mode::inputKeyPress);
         RenderVariable.scene.setOnKeyReleased(GameVariables.PvB_Mode::inputKeyRelease);
@@ -165,6 +186,17 @@ public class BombermanApplication extends Application {
             runningMode = Mode.PvP;
         });
 
+        ImageView backToMenu = (ImageView) menuScene.lookup("#backMenu");
+        backToMenu.setOnMouseClicked(mouseEvent -> {
+            showS.toFront();
+            showS1.toBack();
+            joinSv.toBack();
+            createSv.toBack();
+
+            TextArea IP = (TextArea) menuScene.lookup("#byIP");
+            IP.setText("");
+        });
+
         stage.setScene(menuScene);
     }
 
@@ -180,15 +212,19 @@ public class BombermanApplication extends Application {
         showS1.toFront();
         ImageView imgCreate = (ImageView) menuScene.lookup("#createSV");
         ImageView imgJoin = (ImageView) menuScene.lookup("#joinSV");
+        ImageView backToMenu = (ImageView) menuScene.lookup("#backMenu");
 
         imgCreate.setDisable(false);
         imgJoin.setDisable(false);
+        backToMenu.setDisable(false);
 
         imgCreate.setOnMouseClicked(mouseEvent1 -> {
             createSv.toFront();
             joinSv.toBack();
             imgCreate.setDisable(true);
             imgJoin.setDisable(true);
+            backToMenu.setDisable(true);
+
             try {
                 TextArea textIP = (TextArea) menuScene.lookup("#textIP");
                 textIP.setText(String.valueOf(InetAddress.getLocalHost().getHostAddress()));
@@ -221,9 +257,12 @@ public class BombermanApplication extends Application {
             createSv.toBack();
             Button join = (Button) menuScene.lookup("#join");
             join.setOnMouseClicked(mouseEvent2 -> {
-                imgCreate.setDisable(true);
-                imgJoin.setDisable(true);
+                //imgCreate.setDisable(true);
+                //imgJoin.setDisable(true);
                 TextArea IP = (TextArea) menuScene.lookup("#byIP");
+                if (IP.getText().equals("")) {
+                    return;
+                }
                 if (!Client.createClientWithIP(IP.getText())) {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     alert.setContentText("IP invalid!");
@@ -235,6 +274,7 @@ public class BombermanApplication extends Application {
                     isChange = true;
                     runningMode = Mode.PvPPLAYING;
                 }
+
             });
 
         });
