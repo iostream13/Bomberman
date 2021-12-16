@@ -2,12 +2,14 @@ package bomberman.Object.MovingObject.Threats;
 
 import bomberman.GlobalVariable.FilesPath;
 import bomberman.GlobalVariable.GameVariables;
+import bomberman.GlobalVariable.RenderVariable;
 import bomberman.GlobalVariable.SoundVariable;
 import bomberman.Map.PlayGround;
 import bomberman.PvB_GamePlay;
 import javafx.scene.image.Image;
 import javafx.util.Pair;
 
+import javax.sound.sampled.FloatControl;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,6 +51,13 @@ public class Teleport extends Enemy {
     }
 
     public void die() {
+        FloatControl volume = (FloatControl) FilesPath.TeleportDieAudio.getControl(FloatControl.Type.MASTER_GAIN);
+        if (!RenderVariable.stateSound) {
+            volume.setValue(volume.getMinimum());
+        }
+        else {
+            volume.setValue(6);
+        }
         SoundVariable.playSound(FilesPath.TeleportDieAudio);
     }
 

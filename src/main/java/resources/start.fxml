@@ -39,6 +39,14 @@
         </Group>
         <Group fx:id="showStart1" layoutX="0" layoutY="0">
            <children>
+               <ImageView fx:id="backMenu" fitHeight="39.0" fitWidth="106.0">
+                   <image>
+                       <Image url="@image/back_menu.png" />
+                   </image>
+                   <cursor>
+                       <Cursor fx:constant="HAND" />
+                   </cursor>
+               </ImageView>
                <ImageView fx:id="createSV" fitHeight="77.0" fitWidth="272.0" layoutX="93.0" layoutY="216.0">
                    <image>
                        <Image url="@image/createSv.png" />

@@ -59,6 +59,10 @@ public class FilesPath {
     public static final Image YouLose = createImage("/image/you_lose.png");
     public static final Image YouDraw = createImage("/image/you_draw.png");
 
+    public static final Image BackMenu = createImage("/image/back_menu.png");
+    public static final Image Sound = createImage("/image/sound.png");
+    public static final Image SoundOff = createImage("/image/sound_off.png");
+
     // MAP FILE PATH
     public static final String PVB_MAP_PATH = "src/main/java/resources/Map/map.txt";
     public static final String PVP_MAP_PATH = "src/main/java/resources/Map/PvPmap.txt";

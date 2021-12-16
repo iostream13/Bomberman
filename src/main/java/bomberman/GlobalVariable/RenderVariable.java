@@ -28,6 +28,8 @@ public class RenderVariable {
 
     public static Scene menuScene;
 
+    public static boolean stateSound = true;
+
     static {
         try {
             menuScene = new Scene(loaderScene1.load(), 1240, 520);
@@ -37,5 +39,9 @@ public class RenderVariable {
     }
 
     public RenderVariable() throws IOException {
+    }
+
+    public static void setStateSound() {
+        stateSound = !stateSound;
     }
 }

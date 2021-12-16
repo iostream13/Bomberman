@@ -4,9 +4,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 
 public class SoundVariable {
     public static void playSoundOnly(Clip clip) {
+        FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        if (!RenderVariable.stateSound) {
+            volume.setValue(volume.getMinimum());
+        }
+        else {
+            volume.setValue(6);
+        }
         clip.start();
         resetSound(clip);
 
@@ -30,11 +38,17 @@ public class SoundVariable {
 
             return;
         }
-
         playSoundOnly(clip);
     }
 
     public static void loopSoundOnly(Clip clip, int time) {
+        FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        if (!RenderVariable.stateSound) {
+            volume.setValue(volume.getMinimum());
+        }
+        else {
+            volume.setValue(6);
+        }
         clip.loop(time);
         resetSound(clip);
 
@@ -58,7 +72,13 @@ public class SoundVariable {
 
             return;
         }
-
+        FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        if (!RenderVariable.stateSound) {
+            volume.setValue(volume.getMinimum());
+        }
+        else {
+            volume.setValue(6);
+        }
         loopSoundOnly(clip, time);
     }
 
@@ -68,6 +88,13 @@ public class SoundVariable {
     }
 
     public static void resetSound(Clip clip) {
+        FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        if (!RenderVariable.stateSound) {
+            volume.setValue(volume.getMinimum());
+        }
+        else {
+            volume.setValue(6);
+        }
         clip.setMicrosecondPosition(0);
     }
 

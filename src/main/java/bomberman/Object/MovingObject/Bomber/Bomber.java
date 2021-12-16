@@ -3,6 +3,7 @@ package bomberman.Object.MovingObject.Bomber;
 import bomberman.GlobalVariable.FilesPath;
 import bomberman.GlobalVariable.GameVariables;
 
+import bomberman.GlobalVariable.RenderVariable;
 import bomberman.GlobalVariable.SoundVariable;
 import bomberman.Map.PlayGround;
 
@@ -12,6 +13,8 @@ import bomberman.Object.NonMovingObject.Bomb;
 import bomberman.Object.NonMovingObject.Item;
 import bomberman.Object.NonMovingObject.Portal;
 import javafx.scene.image.Image;
+
+import javax.sound.sampled.FloatControl;
 
 public class Bomber extends MovingObject {
     /**
@@ -97,7 +100,13 @@ public class Bomber extends MovingObject {
         if (!canCreateBomb()) {
             return;
         }
-
+        FloatControl volume = (FloatControl) FilesPath.PlaceBombAudio.getControl(FloatControl.Type.MASTER_GAIN);
+        if (!RenderVariable.stateSound) {
+            volume.setValue(volume.getMinimum());
+        }
+        else {
+            volume.setValue(6);
+        }
         SoundVariable.playSound(FilesPath.PlaceBombAudio);
         int tempX = (int) ((GameVariables.calculateCellIndex(this.getX() + this.getWidth() / 2))
                 * GameVariables.cellLength);
@@ -142,6 +151,13 @@ public class Bomber extends MovingObject {
                         flameLength++;
                         break;
                 }
+                FloatControl volume = (FloatControl) FilesPath.PowerUpAudio.getControl(FloatControl.Type.MASTER_GAIN);
+                if (!RenderVariable.stateSound) {
+                    volume.setValue(volume.getMinimum());
+                }
+                else {
+                    volume.setValue(6);
+                }
                 SoundVariable.playSound(FilesPath.PowerUpAudio);
                 ((Item) now).setAteStatus(true);
             }
@@ -173,6 +189,13 @@ public class Bomber extends MovingObject {
     }
 
     public void die() {
+        FloatControl volume = (FloatControl) FilesPath.BomberDieAudio.getControl(FloatControl.Type.MASTER_GAIN);
+        if (!RenderVariable.stateSound) {
+            volume.setValue(volume.getMinimum());
+        }
+        else {
+            volume.setValue(6);
+        }
         SoundVariable.playSound(FilesPath.BomberDieAudio);
     }
 

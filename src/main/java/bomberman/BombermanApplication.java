@@ -6,16 +6,21 @@ import bomberman.Server_Client.EchoThread;
 import bomberman.Server_Client.Server;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.effect.Light;
 import javafx.scene.image.ImageView;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.json.JSONArray;
 
+import javax.sound.sampled.FloatControl;
+import java.awt.*;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -87,7 +92,9 @@ public class BombermanApplication extends Application {
         }.start();
 
         stage.show();
-
+        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setX((primScreenBounds.getWidth() - 1240) / 2);
+        stage.setY((primScreenBounds.getHeight() - 520) / 2);
     }
 
     public static void main(String[] args) {
@@ -102,6 +109,22 @@ public class BombermanApplication extends Application {
 
         GameVariables.PvB_Mode.render();
         GameVariables.PvB_Mode.playPlayGroundAudio();
+
+        RenderVariable.scene.setOnMouseClicked(mouseEvent -> {
+            double x = mouseEvent.getX();
+            double y = mouseEvent.getY();
+
+            if (x >= 1201 && y <= 39) {
+                RenderVariable.setStateSound();
+                FloatControl volume = (FloatControl) FilesPath.PlayGroundAudio.getControl(FloatControl.Type.MASTER_GAIN);
+                if (!RenderVariable.stateSound) {
+                    volume.setValue(volume.getMinimum());
+                }
+                else {
+                    volume.setValue(6);
+                }
+            }
+        });
 
         RenderVariable.scene.setOnKeyPressed(GameVariables.PvB_Mode::inputKeyPress);
         RenderVariable.scene.setOnKeyReleased(GameVariables.PvB_Mode::inputKeyRelease);
@@ -165,6 +188,24 @@ public class BombermanApplication extends Application {
             runningMode = Mode.PvP;
         });
 
+        ImageView backToMenu = (ImageView) menuScene.lookup("#backMenu");
+        backToMenu.setOnMouseClicked(mouseEvent -> {
+            showS.toFront();
+            showS1.toBack();
+            joinSv.toBack();
+            createSv.toBack();
+
+            LANVariables.client=null;
+            LANVariables.server=null;
+            GameVariables.playerRole=null;
+            GameVariables.commandList = new JSONArray();
+            GameVariables.tempCommandList = new JSONArray();
+            GameVariables.commandListString = new String();
+            TextArea IP = (TextArea) menuScene.lookup("#byIP");
+            IP.setText("");
+
+        });
+
         stage.setScene(menuScene);
     }
 
@@ -221,9 +262,13 @@ public class BombermanApplication extends Application {
             createSv.toBack();
             Button join = (Button) menuScene.lookup("#join");
             join.setOnMouseClicked(mouseEvent2 -> {
-                imgCreate.setDisable(true);
-                imgJoin.setDisable(true);
+                //không cần set disable 2 thằng này vì khi chưa join mà chỉ nhập linh tinh cũng không ảnh hưởng gì cả
+                //imgCreate.setDisable(true);
+                //imgJoin.setDisable(true);
                 TextArea IP = (TextArea) menuScene.lookup("#byIP");
+                if (IP.getText().equals("")) {
+                    return;
+                }
                 if (!Client.createClientWithIP(IP.getText())) {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     alert.setContentText("IP invalid!");
@@ -234,7 +279,9 @@ public class BombermanApplication extends Application {
                     GameVariables.playerRole = GameVariables.role.PLAYER_2;
                     isChange = true;
                     runningMode = Mode.PvPPLAYING;
+                    System.out.println("sss");
                 }
+
             });
 
         });

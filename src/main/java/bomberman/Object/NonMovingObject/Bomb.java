@@ -1,5 +1,6 @@
 package bomberman.Object.NonMovingObject;
 
+import bomberman.GlobalVariable.RenderVariable;
 import javafx.scene.image.Image;
 
 import java.util.ArrayList;
@@ -13,6 +14,8 @@ import bomberman.Object.GameObject;
 import bomberman.Object.MovingObject.Bomber.Bomber;
 import bomberman.Object.MovingObject.MovingObject;
 import bomberman.Object.MovingObject.Threats.Enemy;
+
+import javax.sound.sampled.FloatControl;
 
 public class Bomb extends GameObject {
     /**
@@ -262,6 +265,13 @@ public class Bomb extends GameObject {
 
         //sinh flame ở chính giữa
         this.getBelongTo().addFlame(new Flame(this.getBelongTo(), tempX * side, tempY * side, side, side, Flame.FlameType.CENTER_));
+        FloatControl volume = (FloatControl) FilesPath.ExplosionAudio.getControl(FloatControl.Type.MASTER_GAIN);
+        if (!RenderVariable.stateSound) {
+            volume.setValue(volume.getMinimum());
+        }
+        else {
+            volume.setValue(6);
+        }
         FilesPath.ExplosionAudio.start();
         FilesPath.ExplosionAudio.setMicrosecondPosition(0);
     }
