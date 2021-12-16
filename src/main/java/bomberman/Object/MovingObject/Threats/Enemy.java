@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import bomberman.Map.PlayGround;
 
 import bomberman.Object.MovingObject.MovingObject;
+import javafx.scene.image.Image;
 
 public abstract class Enemy extends MovingObject {
     private int type = 1;
@@ -91,5 +92,33 @@ public abstract class Enemy extends MovingObject {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    @Override
+    public void draw() {
+        // Image hiện tại
+        Image currentImage = getImage();
+
+        // Tính toán thông tin image hiện tại
+        double imageWidth = currentImage.getHeight();
+        double imageLength = currentImage.getWidth();
+
+        double spriteSize = imageWidth;
+
+        numberOfSprite = (int) (imageLength / spriteSize);
+
+        // Tính toán currentFrame
+        if (gameFrameCount >= (numberOfSprite * numberOfFramePerSprite)) {
+            gameFrameCount = gameFrameCount % (numberOfSprite * numberOfFramePerSprite);
+        }
+
+        currentSprite = gameFrameCount / numberOfFramePerSprite;
+
+        gameFrameCount++;
+
+        // Render
+        setPosRender(0, 0, 0, 0);
+
+        render(currentImage, currentSprite * spriteSize, 0, spriteSize, spriteSize);
     }
 }
