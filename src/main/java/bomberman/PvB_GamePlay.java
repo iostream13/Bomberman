@@ -14,7 +14,6 @@ import bomberman.Object.MovingObject.Threats.Enemy;
 import bomberman.Object.MovingObject.MovingObject;
 import bomberman.Object.NonMovingObject.*;
 
-import javax.sound.sampled.FloatControl;
 
 public class PvB_GamePlay {
     /**
@@ -75,13 +74,6 @@ public class PvB_GamePlay {
     }
 
     public void playPlayGroundAudio() {
-        FloatControl volume = (FloatControl) FilesPath.PlayGroundAudio.getControl(FloatControl.Type.MASTER_GAIN);
-        if (!RenderVariable.stateSound) {
-            volume.setValue(volume.getMinimum());
-        }
-        else {
-            volume.setValue(6);
-        }
         SoundVariable.loopSound(FilesPath.PlayGroundAudio, 1000);
     }
 

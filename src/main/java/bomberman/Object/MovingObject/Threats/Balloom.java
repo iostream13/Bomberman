@@ -1,12 +1,10 @@
 package bomberman.Object.MovingObject.Threats;
 
 import bomberman.GlobalVariable.FilesPath;
-import bomberman.GlobalVariable.RenderVariable;
 import bomberman.GlobalVariable.SoundVariable;
 import bomberman.Map.PlayGround;
 import javafx.scene.image.Image;
 
-import javax.sound.sampled.FloatControl;
 
 public class Balloom extends Enemy {
     /**
@@ -44,13 +42,6 @@ public class Balloom extends Enemy {
     }
 
     public void die() {
-        FloatControl volume = (FloatControl) FilesPath.BalloomDieAudio.getControl(FloatControl.Type.MASTER_GAIN);
-        if (!RenderVariable.stateSound) {
-            volume.setValue(volume.getMinimum());
-        }
-        else {
-            volume.setValue(6);
-        }
         SoundVariable.playSound(FilesPath.BalloomDieAudio);
     }
 }

@@ -2,14 +2,12 @@ package bomberman.Object.MovingObject.Threats;
 
 import bomberman.GlobalVariable.FilesPath;
 import bomberman.GlobalVariable.GameVariables;
-import bomberman.GlobalVariable.RenderVariable;
 import bomberman.GlobalVariable.SoundVariable;
 import bomberman.Map.PlayGround;
 import bomberman.Object.MovingObject.MovingObject;
 import javafx.scene.image.Image;
 import javafx.util.Pair;
 
-import javax.sound.sampled.FloatControl;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -225,13 +223,6 @@ public class Oneal extends Enemy {
     }
 
     public void die() {
-        FloatControl volume = (FloatControl) FilesPath.OnealDieAudio.getControl(FloatControl.Type.MASTER_GAIN);
-        if (!RenderVariable.stateSound) {
-            volume.setValue(volume.getMinimum());
-        }
-        else {
-            volume.setValue(6);
-        }
-        SoundVariable.playSound(FilesPath.OnealDieAudio);
+         SoundVariable.playSound(FilesPath.OnealDieAudio);
     }
 }

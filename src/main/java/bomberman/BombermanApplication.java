@@ -13,14 +13,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-import javafx.scene.effect.Light;
 import javafx.scene.image.ImageView;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.json.JSONArray;
 
 import javax.sound.sampled.FloatControl;
-import java.awt.*;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -93,8 +91,8 @@ public class BombermanApplication extends Application {
 
         stage.show();
         Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-        stage.setX((primScreenBounds.getWidth() - 1240) / 2);
-        stage.setY((primScreenBounds.getHeight() - 520) / 2);
+        stage.setX((primScreenBounds.getWidth() - RenderVariable.SCREEN_LENGTH) / 2);
+        stage.setY((primScreenBounds.getHeight() - RenderVariable.SCREEN_WIDTH) / 2);
     }
 
     public static void main(String[] args) {
@@ -275,7 +273,6 @@ public class BombermanApplication extends Application {
                     GameVariables.playerRole = GameVariables.role.PLAYER_2;
                     isChange = true;
                     runningMode = Mode.PvPPLAYING;
-                    System.out.println("sss");
                 }
 
             });

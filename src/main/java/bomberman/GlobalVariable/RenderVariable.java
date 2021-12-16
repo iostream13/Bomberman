@@ -18,7 +18,7 @@ public class RenderVariable {
     // *********************** BIẾN ĐƯỢC SỬ DỤNG GLOBAL ĐỂ RENDER *********************************
     public static Group root = new Group();
 
-    public static Canvas canvas = new Canvas(1240, 520);
+    public static Canvas canvas = new Canvas(SCREEN_LENGTH, SCREEN_WIDTH);
 
     public static GraphicsContext gc = canvas.getGraphicsContext2D();
 
@@ -32,7 +32,7 @@ public class RenderVariable {
 
     static {
         try {
-            menuScene = new Scene(loaderScene1.load(), 1240, 520);
+            menuScene = new Scene(loaderScene1.load(), SCREEN_LENGTH, SCREEN_WIDTH);
         } catch (IOException e) {
             e.printStackTrace();
         }
