@@ -64,8 +64,8 @@ public class FilesPath {
     public static final String PVP_MAP_PATH = "src/main/java/resources/Map/PvPmap.txt";
 
     // AUDIO CLIP FILE PATH
-    public static Clip BomberDieAudio = createClip("Bomberdie.wav");
-    public static Clip BalloomDieAudio = createClip("balloomDie.wav");
+    public static Clip BomberDieAudio = createClip("BomberDie.wav");
+    public static Clip BalloomDieAudio = createClip("BalloomDie.wav");
     public static Clip OnealDieAudio = createClip("OnealDie.wav");
     public static Clip TeleportDieAudio = createClip("TeleportDie.wav");
 
