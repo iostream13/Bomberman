@@ -195,15 +195,8 @@ public class BombermanApplication extends Application {
             joinSv.toBack();
             createSv.toBack();
 
-            LANVariables.client=null;
-            LANVariables.server=null;
-            GameVariables.playerRole=null;
-            GameVariables.commandList = new JSONArray();
-            GameVariables.tempCommandList = new JSONArray();
-            GameVariables.commandListString = new String();
             TextArea IP = (TextArea) menuScene.lookup("#byIP");
             IP.setText("");
-
         });
 
         stage.setScene(menuScene);
@@ -221,15 +214,19 @@ public class BombermanApplication extends Application {
         showS1.toFront();
         ImageView imgCreate = (ImageView) menuScene.lookup("#createSV");
         ImageView imgJoin = (ImageView) menuScene.lookup("#joinSV");
+        ImageView backToMenu = (ImageView) menuScene.lookup("#backMenu");
 
         imgCreate.setDisable(false);
         imgJoin.setDisable(false);
+        backToMenu.setDisable(false);
 
         imgCreate.setOnMouseClicked(mouseEvent1 -> {
             createSv.toFront();
             joinSv.toBack();
             imgCreate.setDisable(true);
             imgJoin.setDisable(true);
+            backToMenu.setDisable(true);
+
             try {
                 TextArea textIP = (TextArea) menuScene.lookup("#textIP");
                 textIP.setText(String.valueOf(InetAddress.getLocalHost().getHostAddress()));
@@ -262,7 +259,6 @@ public class BombermanApplication extends Application {
             createSv.toBack();
             Button join = (Button) menuScene.lookup("#join");
             join.setOnMouseClicked(mouseEvent2 -> {
-                //không cần set disable 2 thằng này vì khi chưa join mà chỉ nhập linh tinh cũng không ảnh hưởng gì cả
                 //imgCreate.setDisable(true);
                 //imgJoin.setDisable(true);
                 TextArea IP = (TextArea) menuScene.lookup("#byIP");
