@@ -1,16 +1,65 @@
 package bomberman.GlobalVariable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import javax.sound.sampled.Clip;
 
 public class SoundVariable {
-    public static void playSound(Clip clip) {
+    public static void playSoundOnly(Clip clip) {
         clip.start();
         resetSound(clip);
+
+        System.out.println("Play am thanh " + FilesPath.encodeClipName(clip));
+    }
+
+    public static void playSound(Clip clip) {
+        if (GameVariables.playerRole == GameVariables.role.PLAYER_1) {
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+                jsonObject.put("Audio", FilesPath.encodeClipName(clip));
+                jsonObject.put("Mode", "Play");
+                GameVariables.tempCommandList.put(jsonObject);
+
+                System.out.println("In lenh am thanh");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return;
+        }
+
+        playSoundOnly(clip);
+    }
+
+    public static void loopSoundOnly(Clip clip, int time) {
+        clip.loop(time);
+        resetSound(clip);
+
+        System.out.println("Play am thanh " + FilesPath.encodeClipName(clip));
     }
 
     public static void loopSound(Clip clip, int time) {
-        clip.loop(time);
-        resetSound(clip);
+        if (GameVariables.playerRole == GameVariables.role.PLAYER_1) {
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+                jsonObject.put("Audio", FilesPath.encodeClipName(clip));
+                jsonObject.put("Mode", "Loop");
+                jsonObject.put("Time", "" + time);
+                GameVariables.tempCommandList.put(jsonObject);
+
+                System.out.println("In lenh am thanh");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return;
+        }
+
+        loopSoundOnly(clip, time);
     }
 
     public static void endSound(Clip clip) {
@@ -22,7 +71,7 @@ public class SoundVariable {
         clip.setMicrosecondPosition(0);
     }
 
-    public static void endAllSounds() {
+    public static void endAllSoundsOnly() {
         endSound(FilesPath.BalloomDieAudio);
         endSound(FilesPath.BomberDieAudio);
         endSound(FilesPath.YouLoseAudio);
@@ -34,5 +83,27 @@ public class SoundVariable {
         endSound(FilesPath.ExplosionAudio);
         endSound(FilesPath.PlaceBombAudio);
         endSound(FilesPath.LevelUpAudio);
+
+        System.out.println("Xoa am thanh");
+    }
+
+    public static void endAllSounds() {
+        if (GameVariables.playerRole == GameVariables.role.PLAYER_1) {
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+                jsonObject.put("Audio", "Nothing");
+                jsonObject.put("Mode", "EndAllSound");
+                GameVariables.tempCommandList.put(jsonObject);
+
+                System.out.println("In lenh am thanh");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return;
+        }
+
+        endAllSoundsOnly();
     }
 }

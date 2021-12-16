@@ -205,6 +205,9 @@ public class BombermanApplication extends Application {
                         new EchoThread(socket2).start();
                         isChange = true;
                         runningMode = Mode.PvPPLAYING;
+
+                        GameVariables.PvP_Mode.needToWait = true;
+
                         this.stop();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -241,12 +244,26 @@ public class BombermanApplication extends Application {
 
     public static void startPvPGame(Stage stage) {
         isChange = false;
+
         RenderVariable.scene.setOnKeyPressed(Client::inputKeyPress);
         RenderVariable.scene.setOnKeyReleased(Client::inputKeyRelease);
+
+        Client.countCreateBomb = 0;
 
         new AnimationTimer() {
             boolean stopped = false;
             public void handle(long currentNanoTime) {
+                // ****** Xử lí chút đặt bomb *********
+                if (Client.alreadyCreateBombThisTurn) {
+                    Client.countCreateBomb ++;
+                }
+
+                if (Client.countCreateBomb >= 5) {
+                    Client.alreadyCreateBombThisTurn = false;
+                    Client.countCreateBomb = 0;
+                }
+
+                // **************************************
 
                 if (GameVariables.playerRole == GameVariables.role.PLAYER_1) {
                     if (GameVariables.PvP_Mode.getGameStatus() == PvP_GamePlay.gameStatusType.PLAYING_) {
@@ -271,6 +288,8 @@ public class BombermanApplication extends Application {
                 stopped = Client.decodeRenderCommand(GameVariables.commandListString);
 
                 if ((!(stage.isShowing())) || runningMode == Mode.MENU) {
+                    SoundVariable.endAllSoundsOnly();
+
                     try {
                         if(GameVariables.playerRole == GameVariables.role.PLAYER_1) {
                             LANVariables.server.serverSocket.close();
@@ -279,6 +298,7 @@ public class BombermanApplication extends Application {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+
                     LANVariables.client=null;
                     LANVariables.server=null;
                     GameVariables.playerRole=null;

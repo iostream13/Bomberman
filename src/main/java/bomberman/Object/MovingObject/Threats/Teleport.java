@@ -49,7 +49,7 @@ public class Teleport extends Enemy {
     }
 
     public void die() {
-        SoundVariable.playSound(FilesPath.BalloomDieAudio);
+        SoundVariable.playSound(FilesPath.TeleportDieAudio);
     }
 
     @Override

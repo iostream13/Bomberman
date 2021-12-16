@@ -52,7 +52,7 @@ public class PvP_GamePlay {
     /**
      * Biến để kiểm soát game chạy hay dừng.
      */
-    private boolean needToWait;
+    public boolean needToWait;
 
     /**
      * Khởi tạo màn chơi PvP.
@@ -70,10 +70,10 @@ public class PvP_GamePlay {
     /**
      * Render screen.
      */
-    public void createRenderCommand() {
-        GameVariables.tempCommandList = new JSONArray();
+    public void createCommand() {
         map.render();
         GameVariables.commandList = GameVariables.tempCommandList;
+        GameVariables.tempCommandList = new JSONArray();
     }
 
     public void playPlayGroundAudio() {
@@ -106,6 +106,8 @@ public class PvP_GamePlay {
             e.printStackTrace();
         }
 
+        SoundVariable.endAllSounds();
+
         GameVariables.commandList = GameVariables.tempCommandList;
         gameStatus = gameStatusType.NOTPLAYING_;
     }
@@ -135,6 +137,8 @@ public class PvP_GamePlay {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        SoundVariable.endAllSounds();
 
         GameVariables.commandList = GameVariables.tempCommandList;
         gameStatus = gameStatusType.NOTPLAYING_;
@@ -166,6 +170,8 @@ public class PvP_GamePlay {
             e.printStackTrace();
         }
 
+        SoundVariable.endAllSounds();
+
         GameVariables.commandList = GameVariables.tempCommandList;
         gameStatus = gameStatusType.NOTPLAYING_;
     }
@@ -175,13 +181,10 @@ public class PvP_GamePlay {
      */
     public void play() {
         if (needToWait) {
-            long startTime = System.nanoTime();
-
-            do {
-
-            } while (System.nanoTime() - startTime <= 2000000000);
             SoundVariable.endAllSounds();
+
             playPlayGroundAudio();
+
             needToWait = false;
         }
 
@@ -201,13 +204,13 @@ public class PvP_GamePlay {
             }
         }
 
-        if (player1_die == true && player2_die == true) {
+        if (player1_die && player2_die) {
             gameDraw();
             return;
-        } else if (player1_die == true) {
+        } else if (player1_die) {
             gamePlayer2Won();
             return;
-        } else if (player2_die == true) {
+        } else if (player2_die) {
             gamePlayer1Won();
             return;
         }
@@ -278,7 +281,7 @@ public class PvP_GamePlay {
         player2.checkEatItems();
 
         // Tạo ra các lệnh render
-        createRenderCommand();
+        createCommand();
     }
 
     // giải mã các lệnh thao tác nhân vật từ client

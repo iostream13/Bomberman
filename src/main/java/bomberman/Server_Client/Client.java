@@ -3,16 +3,15 @@ package bomberman.Server_Client;
 import java.io.*;
 import java.net.*;
 
-import bomberman.GlobalVariable.FilesPath;
-import bomberman.GlobalVariable.GameVariables;
-import bomberman.GlobalVariable.LANVariables;
-import bomberman.GlobalVariable.RenderVariable;
+import bomberman.GlobalVariable.*;
 import bomberman.Object.MovingObject.MovingObject;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.sound.sampled.Clip;
 
 public class Client {
 
@@ -100,6 +99,15 @@ public class Client {
     }
 
     /**
+     * Dùng để kiểm soát chỉ được gửi 1 lệnh đặt bomb mỗi 30 tick đến server 1 lần.
+     * Tránh bị lặp tiếng.
+     * True là đã đặt, false là chưa.
+     */
+    public static boolean alreadyCreateBombThisTurn = false;
+
+    public static int countCreateBomb = 0;
+
+    /**
      * Xử lí thao tác ấn phím. Biến nó thành lệnh gửi đến server
      *
      * @param e Key Event
@@ -139,11 +147,15 @@ public class Client {
                 jsonException.printStackTrace();
             }
         } else if (e.getCode() == KeyCode.SPACE) {
-            try {
-                jsonObject.put("player", GameVariables.playerRole);
-                jsonObject.put("direction", "placeBomb");
-            } catch (JSONException jsonException) {
-                jsonException.printStackTrace();
+            if (!alreadyCreateBombThisTurn) {
+                try {
+                    jsonObject.put("player", GameVariables.playerRole);
+                    jsonObject.put("direction", "placeBomb");
+                } catch (JSONException jsonException) {
+                    jsonException.printStackTrace();
+                }
+
+                alreadyCreateBombThisTurn = true;
             }
         } else return;
 
@@ -201,62 +213,90 @@ public class Client {
         if (command.equals("NOT COMMAND")) {
             return false;
         }
-        
+
         try {
             JSONArray commandList = new JSONArray(command);
             for (int i = 0; i < commandList.length(); i++) {
                 JSONObject object = (JSONObject) commandList.get(i);
 
-                if (object.has("player") && object.get("player").equals("PLAYER_1") && GameVariables.playerRole == GameVariables.role.PLAYER_1) {
+                // **************************** Render ***********************************
+                if (object.has("Image")) {
+                    if (object.has("player") && object.get("player").equals("PLAYER_1") && GameVariables.playerRole == GameVariables.role.PLAYER_1) {
+                        double x = Double.parseDouble((String) object.get("x"));
+                        double y = Double.parseDouble((String) object.get("y"));
+                        double width = Double.parseDouble((String) object.get("width"));
+                        double length = Double.parseDouble((String) object.get("length"));
+
+                        RenderVariable.gc.drawImage(
+                                FilesPath.decodeImageName((String) object.get("Image")),
+                                x,
+                                y,
+                                width,
+                                length
+                        );
+
+                        return true;
+                    } else if (object.has("player") && object.get("player").equals("PLAYER_2") && GameVariables.playerRole == GameVariables.role.PLAYER_2) {
+                        double x = Double.parseDouble((String) object.get("x"));
+                        double y = Double.parseDouble((String) object.get("y"));
+                        double width = Double.parseDouble((String) object.get("width"));
+                        double length = Double.parseDouble((String) object.get("length"));
+
+                        RenderVariable.gc.drawImage(
+                                FilesPath.decodeImageName((String) object.get("Image")),
+                                x,
+                                y,
+                                width,
+                                length
+                        );
+
+                        return true;
+                    }
+
+                    if (object.has("player")) {
+                        continue;
+                    }
+
+                    double imageX = Double.parseDouble((String) object.get("imageX"));
+                    double imageY = Double.parseDouble((String) object.get("imageY"));
+                    double imageWidth = Double.parseDouble((String) object.get("imageWidth"));
+                    double imageLength = Double.parseDouble((String) object.get("imageLength"));
                     double x = Double.parseDouble((String) object.get("x"));
                     double y = Double.parseDouble((String) object.get("y"));
                     double width = Double.parseDouble((String) object.get("width"));
                     double length = Double.parseDouble((String) object.get("length"));
                     RenderVariable.gc.drawImage(
                             FilesPath.decodeImageName((String) object.get("Image")),
+                            imageX,
+                            imageY,
+                            imageWidth,
+                            imageLength,
                             x,
                             y,
                             width,
                             length
                     );
-                    return true;
-                } else if (object.has("player") && object.get("player").equals("PLAYER_2") && GameVariables.playerRole == GameVariables.role.PLAYER_2) {
-                    double x = Double.parseDouble((String) object.get("x"));
-                    double y = Double.parseDouble((String) object.get("y"));
-                    double width = Double.parseDouble((String) object.get("width"));
-                    double length = Double.parseDouble((String) object.get("length"));
-                    RenderVariable.gc.drawImage(
-                            FilesPath.decodeImageName((String) object.get("Image")),
-                            x,
-                            y,
-                            width,
-                            length
-                    );
-                    return true;
+                } else if (object.has("Audio")) {
+                    // **************************** Audio ***********************************
+
+                    String audioMode = (String) object.get("Mode");
+
+                    if (audioMode.equals("Play")) {
+                        Clip tempSound = FilesPath.decodeClipName((String) object.get("Audio"));
+
+                        SoundVariable.playSoundOnly(tempSound);
+                    } else if (audioMode.equals("Loop")) {
+                        Clip tempSound = FilesPath.decodeClipName((String) object.get("Audio"));
+
+                        int tempTime = Integer.parseInt((String) object.get("Time"));
+
+                        SoundVariable.loopSoundOnly(tempSound, tempTime);
+                    } else if (audioMode.equals("EndAllSound")) {
+                        SoundVariable.endAllSoundsOnly();
+                    }
                 }
-
-                if (object.has("player")) continue;
-
-                double imageX = Double.parseDouble((String) object.get("imageX"));
-                double imageY = Double.parseDouble((String) object.get("imageY"));
-                double imageWidth = Double.parseDouble((String) object.get("imageWidth"));
-                double imageLength = Double.parseDouble((String) object.get("imageLength"));
-                double x = Double.parseDouble((String) object.get("x"));
-                double y = Double.parseDouble((String) object.get("y"));
-                double width = Double.parseDouble((String) object.get("width"));
-                double length = Double.parseDouble((String) object.get("length"));
-                RenderVariable.gc.drawImage(
-                        FilesPath.decodeImageName((String) object.get("Image")),
-                        imageX,
-                        imageY,
-                        imageWidth,
-                        imageLength,
-                        x,
-                        y,
-                        width,
-                        length
-                );
             }
+
             return false;
         } catch (JSONException e) {
             return false;

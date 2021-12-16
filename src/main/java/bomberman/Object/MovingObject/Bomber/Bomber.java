@@ -94,6 +94,10 @@ public class Bomber extends MovingObject {
      * Tạo bomb.
      */
     public void createBomb() {
+        if (!canCreateBomb()) {
+            return;
+        }
+
         SoundVariable.playSound(FilesPath.PlaceBombAudio);
         int tempX = (int) ((GameVariables.calculateCellIndex(this.getX() + this.getWidth() / 2))
                 * GameVariables.cellLength);
