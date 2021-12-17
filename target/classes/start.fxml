@@ -21,7 +21,7 @@
            <children>
                <ImageView fx:id="playPvB" fitHeight="128.0" fitWidth="278.0" layoutX="295.0" layoutY="205.0">
                    <image>
-                       <Image url="@image/PlayPvB.png" />
+                       <Image url="@image/play_pvb.png" />
                    </image>
                    <cursor>
                        <Cursor fx:constant="HAND" />
@@ -29,7 +29,7 @@
                </ImageView>
                <ImageView fx:id="playPvP" fitHeight="128.0" fitWidth="278.0" layoutX="295.0" layoutY="350.0">
                    <image>
-                       <Image url="@image/PlayPvP.png" />
+                       <Image url="@image/play_pvp.png" />
                    </image>
                    <cursor>
                        <Cursor fx:constant="HAND" />
@@ -49,12 +49,12 @@
                </ImageView>
                <ImageView fx:id="createSV" fitHeight="77.0" fitWidth="272.0" layoutX="93.0" layoutY="216.0">
                    <image>
-                       <Image url="@image/createSv.png" />
+                       <Image url="@image/create_server.png" />
                    </image>
                </ImageView>
                <ImageView fx:id="joinSV" fitHeight="77.0" fitWidth="272.0" layoutX="438.0" layoutY="216.0">
                    <image>
-                       <Image url="@image/joinSv.png" />
+                       <Image url="@image/join_server.png" />
                    </image>
                    <cursor>
                        <Cursor fx:constant="HAND" />

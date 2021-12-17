@@ -205,11 +205,11 @@ public class PlayGround {
      * @param mapPath đường dẫn đến map
      */
     private void readMapsFromFile(String mapPath) {
-        FileInputStream fileInputStream = null;
+        InputStream fileInputStream = null;
         BufferedReader bufferedReader = null;
 
         try {
-            fileInputStream = new FileInputStream(mapPath);
+            fileInputStream = FilesPath.class.getResource(mapPath).openStream();
             bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
 
             String[] item;

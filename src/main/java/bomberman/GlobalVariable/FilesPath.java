@@ -2,7 +2,6 @@ package bomberman.GlobalVariable;
 
 import javafx.scene.image.Image;
 
-import java.io.File;
 import java.net.URISyntaxException;
 import javax.sound.sampled.*;
 
@@ -18,9 +17,10 @@ public class FilesPath {
     }
 
     public static Clip createClip(String filePath) {
-        filePath = "src/main/java/resources/sound/" + filePath;
+        filePath = "/sound/" + filePath;
+
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(FilesPath.class.getResource(filePath));
             Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             return clip;
@@ -32,7 +32,7 @@ public class FilesPath {
     }
 
     // IMAGE FILE PATH
-    public static final Image BackGroundGame = createImage("/image/backgroundgame.png");
+    public static final Image BackGroundGame = createImage("/image/background_game.png");
 
     public static final Image Bomber = createImage("/image/bomber.png");
 
@@ -44,7 +44,7 @@ public class FilesPath {
 
     public static final Image Grass = createImage("/image/grass.png");
     public static final Image Wall = createImage("/image/wall.png");
-    public static final Image Portal = createImage("/image/Portal.png");
+    public static final Image Portal = createImage("/image/portal.png");
     public static final Image Brick = createImage("/image/brick.png");
     public static final Image BrickExploded = createImage("/image/brick_exploded.png");
 
@@ -64,25 +64,25 @@ public class FilesPath {
     public static final Image SoundOff = createImage("/image/sound_off.png");
 
     // MAP FILE PATH
-    public static final String PVB_MAP_PATH = "src/main/java/resources/Map/map.txt";
-    public static final String PVP_MAP_PATH = "src/main/java/resources/Map/PvPmap.txt";
+    public static final String PVB_MAP_PATH = "/map/map.txt";
+    public static final String PVP_MAP_PATH = "/map/pvp_map.txt";
 
     // AUDIO CLIP FILE PATH
-    public static Clip BomberDieAudio = createClip("BomberDie.wav");
-    public static Clip BalloomDieAudio = createClip("BalloomDie.wav");
-    public static Clip OnealDieAudio = createClip("OnealDie.wav");
-    public static Clip TeleportDieAudio = createClip("TeleportDie.wav");
+    public static Clip BomberDieAudio = createClip("bomber_die.wav");
+    public static Clip BalloomDieAudio = createClip("balloom_die.wav");
+    public static Clip OnealDieAudio = createClip("oneal_die.wav");
+    public static Clip TeleportDieAudio = createClip("teleport_die.wav");
 
-    public static Clip ExplosionAudio = createClip("Explosion.wav");
-    public static Clip PlaceBombAudio = createClip("PlaceBomb.wav");
-    public static Clip ItemAppearsAudio = createClip("ItemAppears.wav");
-    public static Clip PowerUpAudio = createClip("PowerUp.wav");
+    public static Clip ExplosionAudio = createClip("explosion.wav");
+    public static Clip PlaceBombAudio = createClip("place_bomb.wav");
+    public static Clip ItemAppearsAudio = createClip("item_appears.wav");
+    public static Clip PowerUpAudio = createClip("power_up.wav");
 
-    public static Clip LevelUpAudio = createClip("LevelUp.wav");
-    public static Clip YouWonAudio = createClip("YouWon.wav");
-    public static Clip YouLoseAudio = createClip("YouLose.wav");
+    public static Clip LevelUpAudio = createClip("level_up.wav");
+    public static Clip YouWonAudio = createClip("you_won.wav");
+    public static Clip YouLoseAudio = createClip("you_lose.wav");
 
-    public static Clip PlayGroundAudio = createClip("PlayGround.wav");
+    public static Clip PlayGroundAudio = createClip("play_ground.wav");
 
     public FilesPath() throws URISyntaxException {
     }
