@@ -16,6 +16,8 @@ import bomberman.Object.MovingObject.Bomber.Bomber;
 import bomberman.Object.MovingObject.MovingObject;
 import bomberman.Object.MovingObject.Threats.Enemy;
 
+import javax.sound.sampled.FloatControl;
+
 public class Bomb extends GameObject {
     /**
      * Owner of the bomb.
@@ -266,7 +268,7 @@ public class Bomb extends GameObject {
         this.getBelongTo().addFlame(new Flame(this.getBelongTo(), tempX * side, tempY * side, side, side, Flame.FlameType.CENTER_));
 
         SoundVariable.playSound(FilesPath.ExplosionAudio);
-        FilesPath.ExplosionAudio.setMicrosecondPosition(0);
+        //FilesPath.ExplosionAudio.setMicrosecondPosition(0);
     }
 
     @Override
